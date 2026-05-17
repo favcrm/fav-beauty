@@ -296,7 +296,9 @@
       </div>
     {:else}
       <!-- confirmation -->
-      <div class="flex flex-col gap-6 border border-line bg-bone p-8">
+      <div
+        class="flex flex-col gap-6 rounded-bloom border border-line bg-bone p-8"
+      >
         <span class="text-3xl text-accent">✦</span>
         <h2 class="font-display text-display-md text-ink">You're booked in.</h2>
         <p class="max-w-md font-sans leading-relaxed text-ink-soft">
@@ -380,7 +382,9 @@
   </div>
 
   <!-- ── summary rail ─────────────────────────────────── -->
-  <aside class="h-fit border border-line bg-bone p-6 lg:sticky lg:top-28">
+  <aside
+    class="h-fit rounded-bloom border border-line bg-bone p-6 lg:sticky lg:top-28"
+  >
     <Img
       src={treatment.image}
       hue={treatment.hue}

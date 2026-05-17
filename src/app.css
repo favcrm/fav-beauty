@@ -3,18 +3,20 @@
 @tailwind utilities;
 
 :root {
-  /* Editorial-luxury beauty palette — warm neutrals + rosewood accent */
-  --paper: #fbf8f3;
-  --bone: #f1eadf;
-  --shell: #e9ddcf;
-  --ink: #211c17;
-  --ink-soft: #6b6359;
-  --ink-faint: #9b9183;
-  --clay: #c2a98f;
-  --blush: #e4c9be;
-  --accent: #9a4a35;
-  --accent-deep: #6f3325;
-  --line: #ddd3c6;
+  /* "Dewy" — a soft, luminous cosmetic palette: porcelain, blush, rosewood */
+  --paper: #fcf5f1;
+  --bone: #f6e7e0;
+  --shell: #f0d8d1;
+  --ink: #3b2a2f;
+  --ink-soft: #7e6068;
+  --ink-faint: #ac9197;
+  --clay: #c9a88f;
+  --blush: #ecc6c1;
+  --rose: #db938c;
+  --accent: #9e4a55;
+  --accent-deep: #6e2f3c;
+  --gilt: #c6a06a;
+  --line: #ecd6cf;
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
 
   color-scheme: light;
@@ -27,12 +29,30 @@ html {
 
 body {
   margin: 0;
-  background: var(--paper);
   color: var(--ink);
-  font-family: "Jost", ui-sans-serif, system-ui, sans-serif;
+  font-family: "Hanken Grotesk", ui-sans-serif, system-ui, sans-serif;
   font-weight: 400;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+  /* dewy atmosphere — soft blush light blooming across the page */
+  background:
+    radial-gradient(
+      48% 38% at 88% 2%,
+      rgba(219, 147, 140, 0.32),
+      transparent 72%
+    ),
+    radial-gradient(
+      42% 32% at 4% 26%,
+      rgba(236, 198, 193, 0.42),
+      transparent 70%
+    ),
+    radial-gradient(
+      60% 44% at 50% 102%,
+      rgba(240, 216, 209, 0.5),
+      transparent 72%
+    ),
+    var(--paper);
+  background-attachment: fixed;
 }
 
 ::selection {
@@ -40,16 +60,16 @@ body {
   color: var(--paper);
 }
 
-/* Paper-grain texture for atmosphere */
+/* fine paper-grain texture */
 .grain::before {
   content: "";
   position: fixed;
   inset: 0;
   z-index: 1;
   pointer-events: none;
-  opacity: 0.4;
+  opacity: 0.28;
   mix-blend-mode: multiply;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.35'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.3'/%3E%3C/svg%3E");
 }
 
 @layer components {
@@ -76,6 +96,24 @@ body {
     background-size: 100% 1px;
   }
 
+  /* signature — soft blurred blush bloom for hero atmosphere */
+  .bloom {
+    position: absolute;
+    border-radius: 999px;
+    filter: blur(72px);
+    pointer-events: none;
+    z-index: 0;
+    animation: drift 18s var(--ease) infinite alternate;
+  }
+
+  /* signature — scalloped petal edge between sections */
+  .scallop-top {
+    -webkit-mask: radial-gradient(22px at 50% 0, transparent 96%, #000) repeat-x
+      50% 0 / 44px 44px;
+    mask: radial-gradient(22px at 50% 0, transparent 96%, #000) repeat-x 50% 0 /
+      44px 44px;
+  }
+
   /* staggered page-load reveal */
   .reveal > * {
     animation: rise-in 0.9s var(--ease) both;
@@ -100,6 +138,15 @@ body {
   }
 }
 
+@keyframes drift {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  100% {
+    transform: translate3d(18px, -22px, 0) scale(1.12);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -111,7 +158,6 @@ body {
   }
 }
 
-/* form controls inherit the palette */
 input,
 textarea,
 select {

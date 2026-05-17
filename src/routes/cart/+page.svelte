@@ -75,7 +75,9 @@
         {/each}
       </ul>
 
-      <aside class="h-fit border border-line bg-bone p-6 lg:sticky lg:top-28">
+      <aside
+        class="h-fit rounded-bloom border border-line bg-bone p-6 lg:sticky lg:top-28"
+      >
         <h2 class="font-display text-2xl text-ink">Summary</h2>
         <dl
           class="mt-5 flex flex-col gap-2 border-t border-line pt-4 font-sans text-sm"

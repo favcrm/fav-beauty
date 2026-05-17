@@ -67,7 +67,7 @@
   </div>
 
   <form
-    class="flex h-fit flex-col gap-6 border border-line bg-bone p-8 lg:sticky lg:top-28"
+    class="flex h-fit flex-col gap-6 rounded-bloom border border-line bg-bone p-8 lg:sticky lg:top-28"
     onsubmit={submit}
   >
     <h2 class="font-display text-2xl text-ink">Send a message</h2>

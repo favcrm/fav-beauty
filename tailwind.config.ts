@@ -14,13 +14,15 @@ export default {
         "ink-faint": "var(--ink-faint)",
         clay: "var(--clay)",
         blush: "var(--blush)",
+        rose: "var(--rose)",
         accent: "var(--accent)",
         "accent-deep": "var(--accent-deep)",
+        gilt: "var(--gilt)",
         line: "var(--line)",
       },
       fontFamily: {
         display: ['"Cormorant"', "Georgia", "serif"],
-        sans: ['"Jost"', "ui-sans-serif", "system-ui", "sans-serif"],
+        sans: ['"Hanken Grotesk"', "ui-sans-serif", "system-ui", "sans-serif"],
       },
       fontSize: {
         "display-xl": [
@@ -43,9 +45,14 @@ export default {
       maxWidth: {
         shell: "82rem",
       },
+      borderRadius: {
+        petal: "1.5rem",
+        bloom: "2.25rem",
+      },
       boxShadow: {
-        soft: "0 24px 60px -32px rgba(33, 28, 23, 0.45)",
-        lift: "0 36px 80px -40px rgba(33, 28, 23, 0.55)",
+        soft: "0 26px 60px -34px rgba(110, 47, 60, 0.4)",
+        lift: "0 40px 90px -44px rgba(110, 47, 60, 0.5)",
+        glow: "0 18px 44px -20px rgba(158, 74, 85, 0.5)",
       },
       transitionTimingFunction: {
         editorial: "cubic-bezier(0.22, 1, 0.36, 1)",
@@ -58,10 +65,6 @@ export default {
         "fade-in": {
           "0%": { opacity: "0" },
           "100%": { opacity: "1" },
-        },
-        "veil-up": {
-          "0%": { transform: "scaleY(1)" },
-          "100%": { transform: "scaleY(0)" },
         },
         marquee: {
           "0%": { transform: "translateX(0)" },

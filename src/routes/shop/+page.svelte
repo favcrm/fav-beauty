@@ -28,7 +28,7 @@
     {#each categories as cat (cat)}
       <button
         onclick={() => (active = cat)}
-        class="border px-5 py-2 font-sans text-[0.68rem] uppercase tracking-wide transition-colors
+        class="rounded-full border px-5 py-2 font-sans text-[0.68rem] uppercase tracking-wide transition-colors
                {active === cat
           ? 'border-ink bg-ink text-paper'
           : 'border-line text-ink-soft hover:border-ink'}"

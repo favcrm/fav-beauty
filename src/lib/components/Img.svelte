@@ -72,7 +72,7 @@
     isolation: isolate;
   }
   .rounded {
-    border-radius: 2px;
+    border-radius: 1.5rem;
   }
   img {
     position: absolute;
@@ -89,15 +89,18 @@
     letter-spacing: 0.04em;
     user-select: none;
   }
+  /* dewy finish — glossy top highlight + soft inner ring */
   .sheen {
     position: absolute;
     inset: 0;
     pointer-events: none;
-    background: linear-gradient(
-      180deg,
-      transparent 55%,
-      rgba(33, 28, 23, 0.16)
-    );
-    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.28);
+    background:
+      radial-gradient(
+        80% 36% at 28% 6%,
+        rgba(255, 255, 255, 0.55),
+        transparent 70%
+      ),
+      linear-gradient(180deg, transparent 58%, rgba(59, 42, 47, 0.14));
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.4);
   }
 </style>

@@ -132,7 +132,7 @@
       <div class="grid gap-6 lg:grid-cols-3">
         <!-- membership card -->
         <div
-          class="flex flex-col gap-3 border border-ink bg-ink p-6 text-paper"
+          class="flex flex-col gap-3 rounded-bloom border border-ink bg-ink p-6 text-paper"
         >
           <span class="eyebrow !text-blush">Membership</span>
           <span class="font-display text-3xl">{tier?.name ?? "Essential"}</span>
@@ -147,7 +147,7 @@
         <!-- bookings stat -->
         <a
           href="/account/bookings"
-          class="flex flex-col gap-2 border border-line p-6 transition-colors hover:border-ink"
+          class="flex flex-col gap-2 rounded-bloom border border-line p-6 transition-colors hover:border-ink"
         >
           <span class="eyebrow !text-ink-soft">Upcoming visits</span>
           <span class="font-display text-5xl text-ink">{upcoming.length}</span>
@@ -159,7 +159,7 @@
         <!-- orders stat -->
         <a
           href="/account/orders"
-          class="flex flex-col gap-2 border border-line p-6 transition-colors hover:border-ink"
+          class="flex flex-col gap-2 rounded-bloom border border-line p-6 transition-colors hover:border-ink"
         >
           <span class="eyebrow !text-ink-soft">Shop orders</span>
           <span class="font-display text-5xl text-ink">{$orders.length}</span>

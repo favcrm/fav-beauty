@@ -96,7 +96,7 @@
         <fieldset class="flex flex-col gap-3">
           <legend class="eyebrow !text-ink-soft mb-2">Payment</legend>
           <div
-            class="border border-line bg-bone p-4 font-sans text-[0.78rem] text-ink-soft"
+            class="rounded-petal border border-line bg-bone p-4 font-sans text-[0.78rem] text-ink-soft"
           >
             Demo checkout — no card is charged. In live mode this step hands off
             to the FavCRM payment gateway.
@@ -108,7 +108,9 @@
         </Button>
       </form>
 
-      <aside class="h-fit border border-line bg-bone p-6 lg:sticky lg:top-28">
+      <aside
+        class="h-fit rounded-bloom border border-line bg-bone p-6 lg:sticky lg:top-28"
+      >
         <h2 class="font-display text-2xl text-ink">Your order</h2>
         <ul
           class="mt-4 flex flex-col gap-2 border-t border-line pt-4 font-sans text-sm"

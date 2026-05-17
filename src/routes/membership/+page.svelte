@@ -46,7 +46,7 @@
     {#each tiers as tier (tier.id)}
       {@const current = $auth.account?.tierId === tier.id}
       <div
-        class="flex flex-col border p-8 transition-colors
+        class="flex flex-col rounded-bloom border p-8 transition-colors
                {tier.popular
           ? 'border-ink bg-ink text-paper'
           : 'border-line bg-paper'}"
