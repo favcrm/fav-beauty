@@ -47,5 +47,8 @@ for (const [name, data] of Object.entries(datasets)) {
   console.log(`seed/${file} — ${manifest.counts[name]} record(s)`);
 }
 
-writeFileSync(join(outDir, "manifest.json"), JSON.stringify(manifest, null, 2) + "\n");
+writeFileSync(
+  join(outDir, "manifest.json"),
+  JSON.stringify(manifest, null, 2) + "\n",
+);
 console.log("seed/manifest.json written");

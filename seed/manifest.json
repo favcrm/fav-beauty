@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-17T14:48:23.961Z",
+  "generatedAt": "2026-05-17T15:22:53.957Z",
   "source": "src/lib/data/mock",
   "note": "Demo seed data for the fav-beauty template. Regenerate with `pnpm seed:export`.",
   "counts": {
