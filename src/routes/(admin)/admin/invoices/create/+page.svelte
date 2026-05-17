@@ -2,8 +2,17 @@
   import { page } from "$app/stores";
   import { goto } from "$app/navigation";
   import { onMount } from "svelte";
-  import { adminInvoicesApi, adminOrdersApi, adminCustomersApi } from "$lib/api/admin";
-  import type { Account, CreateInvoiceInput, CreateLineItemInput, OrderDetail } from "$lib/types/admin";
+  import {
+    adminInvoicesApi,
+    adminOrdersApi,
+    adminCustomersApi,
+  } from "$lib/api/admin";
+  import type {
+    Account,
+    CreateInvoiceInput,
+    CreateLineItemInput,
+    OrderDetail,
+  } from "$lib/types/admin";
   import Button from "$lib/components/ui/Button.svelte";
   import Input from "$lib/components/ui/Input.svelte";
   import Select from "$lib/components/ui/Select.svelte";
@@ -17,9 +26,14 @@
   let showCustomerDropdown = $state(false);
   let searchingCustomers = $state(false);
 
-  let lineItems = $state<{ description: string; quantity: string; unitPrice: string; total: string }[]>([
-    { description: "", quantity: "1", unitPrice: "", total: "" },
-  ]);
+  let lineItems = $state<
+    {
+      description: string;
+      quantity: string;
+      unitPrice: string;
+      total: string;
+    }[]
+  >([{ description: "", quantity: "1", unitPrice: "", total: "" }]);
 
   let taxAmount = $state("0");
   let currency = $state("HKD");
@@ -63,7 +77,8 @@
           total: item.lineTotal,
         }));
         if (order.customerInfo) {
-          accountName = `${order.customerInfo.firstName} ${order.customerInfo.lastName}`.trim();
+          accountName =
+            `${order.customerInfo.firstName} ${order.customerInfo.lastName}`.trim();
         }
       } catch {
         // Order not found — continue with blank form
@@ -83,7 +98,10 @@
     searchTimeout = setTimeout(async () => {
       searchingCustomers = true;
       try {
-        const res = await adminCustomersApi.list({ search: customerSearch, pageSize: 5 });
+        const res = await adminCustomersApi.list({
+          search: customerSearch,
+          pageSize: 5,
+        });
         customerResults = res.items;
         showCustomerDropdown = true;
       } catch {
@@ -109,7 +127,10 @@
 
   // Line items
   function addLineItem() {
-    lineItems = [...lineItems, { description: "", quantity: "1", unitPrice: "", total: "" }];
+    lineItems = [
+      ...lineItems,
+      { description: "", quantity: "1", unitPrice: "", total: "" },
+    ];
   }
 
   function removeLineItem(index: number) {
@@ -124,7 +145,7 @@
   }
 
   const subtotal = $derived(
-    lineItems.reduce((sum, item) => sum + (parseFloat(item.total) || 0), 0)
+    lineItems.reduce((sum, item) => sum + (parseFloat(item.total) || 0), 0),
   );
 
   const grandTotal = $derived(subtotal + (parseFloat(taxAmount) || 0));
@@ -183,17 +204,28 @@
 </script>
 
 <div>
-  <a href="/admin/invoices" class="text-sm text-gray-500 hover:text-gray-700 mb-4 inline-block">
+  <a
+    href="/admin/invoices"
+    class="text-sm text-gray-500 hover:text-gray-700 mb-4 inline-block"
+  >
     &larr; Back to Invoices
   </a>
 
   <h1 class="text-xl font-semibold text-gray-900 mb-6">Create Invoice</h1>
 
   {#if error}
-    <div class="p-3 bg-red-50 text-red-700 rounded-lg text-sm mb-4">{error}</div>
+    <div class="p-3 bg-red-50 text-red-700 rounded-lg text-sm mb-4">
+      {error}
+    </div>
   {/if}
 
-  <form novalidate onsubmit={(e) => { e.preventDefault(); handleCreate(); }}>
+  <form
+    novalidate
+    onsubmit={(e) => {
+      e.preventDefault();
+      handleCreate();
+    }}
+  >
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
       <!-- Main content -->
       <div class="lg:col-span-2 space-y-4">
@@ -201,45 +233,65 @@
         <div class="bg-white rounded-lg border border-gray-200 p-4">
           <h2 class="font-medium text-gray-900 mb-3">Customer</h2>
           {#if accountId}
-            <div class="flex items-center justify-between bg-gray-50 rounded-lg px-3 py-2">
-              <span class="text-sm font-medium text-gray-900">{accountName}</span>
-              <button type="button" onclick={clearCustomer} class="text-xs text-gray-500 hover:text-red-600">
+            <div
+              class="flex items-center justify-between bg-gray-50 rounded-lg px-3 py-2"
+            >
+              <span class="text-sm font-medium text-gray-900"
+                >{accountName}</span
+              >
+              <button
+                type="button"
+                onclick={clearCustomer}
+                class="text-xs text-gray-500 hover:text-red-600"
+              >
                 Remove
               </button>
             </div>
           {:else}
             <div class="relative">
               <div class="relative">
-                <Search class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                <Search
+                  class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"
+                />
                 <input
                   type="text"
                   bind:value={customerSearch}
                   oninput={handleCustomerSearch}
-                  onfocus={() => customerSearch && (showCustomerDropdown = true)}
-                  onblur={() => setTimeout(() => (showCustomerDropdown = false), 200)}
+                  onfocus={() =>
+                    customerSearch && (showCustomerDropdown = true)}
+                  onblur={() =>
+                    setTimeout(() => (showCustomerDropdown = false), 200)}
                   placeholder="Search customers by name, email, or phone..."
                   class="form-input"
                   style="padding-left: 2.5rem;"
                 />
               </div>
               {#if showCustomerDropdown && customerResults.length > 0}
-                <div class="absolute z-10 mt-1 w-full bg-white rounded-lg border border-gray-200 shadow-lg max-h-48 overflow-y-auto">
+                <div
+                  class="absolute z-10 mt-1 w-full bg-white rounded-lg border border-gray-200 shadow-lg max-h-48 overflow-y-auto"
+                >
                   {#each customerResults as customer (customer.id)}
                     <button
                       type="button"
                       class="w-full text-left px-3 py-2.5 hover:bg-gray-50 transition-colors"
                       onmousedown={() => selectCustomer(customer)}
                     >
-                      <div class="text-sm font-medium text-gray-900">{customer.name}</div>
+                      <div class="text-sm font-medium text-gray-900">
+                        {customer.name}
+                      </div>
                       <div class="text-xs text-gray-500">
-                        {[customer.email, customer.phone].filter(Boolean).join(" · ") || "No contact info"}
+                        {[customer.email, customer.phone]
+                          .filter(Boolean)
+                          .join(" · ") || "No contact info"}
                       </div>
                     </button>
                   {/each}
                 </div>
               {/if}
             </div>
-            <p class="text-xs text-gray-400 mt-1">Optional — leave blank for no customer</p>
+            <p class="text-xs text-gray-400 mt-1">
+              Optional — leave blank for no customer
+            </p>
           {/if}
         </div>
 
@@ -314,9 +366,12 @@
           <div class="border-t border-gray-200 mt-4 pt-3 space-y-1">
             <div class="flex justify-between text-sm text-gray-600">
               <span>Subtotal</span>
-              <span class="tabular-nums font-medium">{subtotal.toFixed(2)}</span>
+              <span class="tabular-nums font-medium">{subtotal.toFixed(2)}</span
+              >
             </div>
-            <div class="flex justify-between text-sm text-gray-600 items-center">
+            <div
+              class="flex justify-between text-sm text-gray-600 items-center"
+            >
               <span>Tax</span>
               <input
                 type="text"
@@ -324,9 +379,13 @@
                 class="w-28 text-right text-sm border border-gray-200 rounded px-2 py-1"
               />
             </div>
-            <div class="flex justify-between text-base font-semibold text-gray-900 pt-1">
+            <div
+              class="flex justify-between text-base font-semibold text-gray-900 pt-1"
+            >
               <span>Total</span>
-              <span class="tabular-nums">{grandTotal.toFixed(2)} {currency}</span>
+              <span class="tabular-nums"
+                >{grandTotal.toFixed(2)} {currency}</span
+              >
             </div>
           </div>
         </div>
@@ -353,15 +412,31 @@
           </button>
           {#if showAddress}
             <div class="mt-3 space-y-3">
-              <Input name="addrLine1" label="Address Line 1" bind:value={addrLine1} />
-              <Input name="addrLine2" label="Address Line 2" bind:value={addrLine2} />
+              <Input
+                name="addrLine1"
+                label="Address Line 1"
+                bind:value={addrLine1}
+              />
+              <Input
+                name="addrLine2"
+                label="Address Line 2"
+                bind:value={addrLine2}
+              />
               <div class="grid grid-cols-2 gap-3">
                 <Input name="addrCity" label="City" bind:value={addrCity} />
                 <Input name="addrState" label="State" bind:value={addrState} />
               </div>
               <div class="grid grid-cols-2 gap-3">
-                <Input name="addrPostal" label="Postal Code" bind:value={addrPostal} />
-                <Input name="addrCountry" label="Country" bind:value={addrCountry} />
+                <Input
+                  name="addrPostal"
+                  label="Postal Code"
+                  bind:value={addrPostal}
+                />
+                <Input
+                  name="addrCountry"
+                  label="Country"
+                  bind:value={addrCountry}
+                />
               </div>
             </div>
           {/if}
@@ -397,7 +472,12 @@
         </div>
 
         <div class="space-y-2">
-          <Button variant="primary" type="submit" disabled={saving} class="w-full">
+          <Button
+            variant="primary"
+            type="submit"
+            disabled={saving}
+            class="w-full"
+          >
             {saving ? "Creating..." : "Create Invoice"}
           </Button>
           <a href="/admin/invoices">

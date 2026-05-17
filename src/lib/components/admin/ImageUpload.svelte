@@ -22,7 +22,8 @@
   const MAX_SIZE = 10 * 1024 * 1024;
 
   function validateFile(file: File): string | null {
-    if (!ACCEPTED_TYPES.includes(file.type)) return "Only JPEG, PNG, WebP, and GIF images are allowed.";
+    if (!ACCEPTED_TYPES.includes(file.type))
+      return "Only JPEG, PNG, WebP, and GIF images are allowed.";
     if (file.size > MAX_SIZE) return "Image must be under 10MB.";
     return null;
   }
@@ -62,7 +63,9 @@
   async function setPrimary(imageId: number) {
     actionLoading = imageId;
     try {
-      await adminProductsApi.updateImage(productId, imageId, { isPrimary: true });
+      await adminProductsApi.updateImage(productId, imageId, {
+        isPrimary: true,
+      });
       onChanged();
     } catch {
       uploadError = "Failed to set primary image";
@@ -88,22 +91,34 @@
   <h2 class="font-medium text-gray-900 mb-3">Images</h2>
 
   {#if uploadError}
-    <div class="p-2 bg-red-50 text-red-700 rounded text-xs mb-3">{uploadError}</div>
+    <div class="p-2 bg-red-50 text-red-700 rounded text-xs mb-3">
+      {uploadError}
+    </div>
   {/if}
 
   <!-- Existing images -->
   {#if images.length > 0}
     <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-4">
       {#each images as image (image.id)}
-        <div class="relative aspect-square rounded-lg overflow-hidden bg-gray-100 group">
-          <img src={image.src} alt={image.alt ?? ""} class="w-full h-full object-cover" />
+        <div
+          class="relative aspect-square rounded-lg overflow-hidden bg-gray-100 group"
+        >
+          <img
+            src={image.src}
+            alt={image.alt ?? ""}
+            class="w-full h-full object-cover"
+          />
           {#if image.isPrimary}
-            <span class="absolute top-1 left-1 bg-blue-600 text-white text-[10px] px-1.5 py-0.5 rounded">
+            <span
+              class="absolute top-1 left-1 bg-blue-600 text-white text-[10px] px-1.5 py-0.5 rounded"
+            >
               Primary
             </span>
           {/if}
           <!-- Actions overlay -->
-          <div class="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-colors flex items-end justify-center gap-1 p-2 opacity-0 group-hover:opacity-100">
+          <div
+            class="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-colors flex items-end justify-center gap-1 p-2 opacity-0 group-hover:opacity-100"
+          >
             {#if !image.isPrimary}
               <button
                 onclick={() => setPrimary(image.id)}
@@ -140,7 +155,9 @@
     ondragover={handleDragOver}
     ondragleave={() => (dragging = false)}
     class="w-full border-2 border-dashed rounded-lg p-6 text-center transition-colors cursor-pointer
-      {dragging ? 'border-blue-400 bg-blue-50' : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'}"
+      {dragging
+      ? 'border-blue-400 bg-blue-50'
+      : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'}"
     disabled={uploading}
   >
     {#if uploading}
@@ -149,7 +166,9 @@
     {:else}
       <Upload class="w-6 h-6 text-gray-400 mx-auto" />
       <p class="text-xs text-gray-500 mt-2">Click or drag to upload</p>
-      <p class="text-xs text-gray-400 mt-0.5">JPEG, PNG, WebP, GIF &middot; Max 10MB</p>
+      <p class="text-xs text-gray-400 mt-0.5">
+        JPEG, PNG, WebP, GIF &middot; Max 10MB
+      </p>
     {/if}
   </button>
 

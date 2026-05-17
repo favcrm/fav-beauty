@@ -1,7 +1,11 @@
 <script lang="ts">
   import { untrack } from "svelte";
   import { adminProductsApi } from "$lib/api/admin";
-  import type { Product, AdminPaginatedResponse, CreateProductInput } from "$lib/types/admin";
+  import type {
+    Product,
+    AdminPaginatedResponse,
+    CreateProductInput,
+  } from "$lib/types/admin";
   import { formatCurrency, formatDate } from "$lib/utils/formatting";
 
   import StatusBadge from "$lib/components/admin/StatusBadge.svelte";
@@ -70,7 +74,9 @@
   $effect(() => {
     search;
     page;
-    untrack(() => { loadProducts(); });
+    untrack(() => {
+      loadProducts();
+    });
   });
 
   function resetCreateForm() {
@@ -113,13 +119,15 @@
         const qty = parseInt(createStockQuantity, 10);
         if (!isNaN(qty)) input.stockQuantity = qty;
       }
-      if (createDescription.trim()) input.description = createDescription.trim();
+      if (createDescription.trim())
+        input.description = createDescription.trim();
 
       await adminProductsApi.create(input);
       showCreateModal = false;
       loadProducts();
     } catch (err: unknown) {
-      createError = err instanceof Error ? err.message : "Failed to create product";
+      createError =
+        err instanceof Error ? err.message : "Failed to create product";
     } finally {
       creating = false;
     }
@@ -179,11 +187,18 @@
   {:else if error}
     <div class="p-4 bg-red-50 text-red-700 rounded-lg text-sm">{error}</div>
   {:else if data && data.items.length === 0}
-    <EmptyState title="No products found" message={search ? "Try adjusting your search terms" : "Add your first product to start selling"}>
+    <EmptyState
+      title="No products found"
+      message={search
+        ? "Try adjusting your search terms"
+        : "Add your first product to start selling"}
+    >
       {#snippet icon()}<Package class="w-6 h-6" />{/snippet}
       {#snippet actions()}
         {#if !search}
-          <Button size="sm" onclick={openCreateModal}><Plus class="w-4 h-4" /> New Product</Button>
+          <Button size="sm" onclick={openCreateModal}
+            ><Plus class="w-4 h-4" /> New Product</Button
+          >
         {/if}
       {/snippet}
     </EmptyState>
@@ -193,20 +208,37 @@
         <table class="w-full text-sm">
           <thead>
             <tr class="border-b border-gray-200 bg-gray-50">
-              <th class="text-left px-4 py-3 font-medium text-gray-600">Product</th>
+              <th class="text-left px-4 py-3 font-medium text-gray-600"
+                >Product</th
+              >
               <th class="text-left px-4 py-3 font-medium text-gray-600">SKU</th>
-              <th class="text-right px-4 py-3 font-medium text-gray-600">Price</th>
-              <th class="text-right px-4 py-3 font-medium text-gray-600">Stock</th>
-              <th class="text-left px-4 py-3 font-medium text-gray-600">Status</th>
-              <th class="text-left px-4 py-3 font-medium text-gray-600">Created</th>
-              <th class="text-right px-4 py-3 font-medium text-gray-600">Actions</th>
+              <th class="text-right px-4 py-3 font-medium text-gray-600"
+                >Price</th
+              >
+              <th class="text-right px-4 py-3 font-medium text-gray-600"
+                >Stock</th
+              >
+              <th class="text-left px-4 py-3 font-medium text-gray-600"
+                >Status</th
+              >
+              <th class="text-left px-4 py-3 font-medium text-gray-600"
+                >Created</th
+              >
+              <th class="text-right px-4 py-3 font-medium text-gray-600"
+                >Actions</th
+              >
             </tr>
           </thead>
           <tbody>
             {#each data.items as product (product.id)}
-              <tr class="border-b border-gray-100 hover:bg-gray-50 transition-colors">
+              <tr
+                class="border-b border-gray-100 hover:bg-gray-50 transition-colors"
+              >
                 <td class="px-4 py-3">
-                  <a href="/admin/products/{product.id}" class="flex items-center gap-3">
+                  <a
+                    href="/admin/products/{product.id}"
+                    class="flex items-center gap-3"
+                  >
                     {#if product.imageUrl}
                       <img
                         src={product.imageUrl}
@@ -219,12 +251,16 @@
                     <div>
                       <p class="font-medium text-gray-900">{product.name}</p>
                       {#if product.categoryName}
-                        <p class="text-xs text-gray-500">{product.categoryName}</p>
+                        <p class="text-xs text-gray-500">
+                          {product.categoryName}
+                        </p>
                       {/if}
                     </div>
                   </a>
                 </td>
-                <td class="px-4 py-3 text-gray-500 font-mono text-xs">{product.sku ?? "—"}</td>
+                <td class="px-4 py-3 text-gray-500 font-mono text-xs"
+                  >{product.sku ?? "—"}</td
+                >
                 <td class="px-4 py-3 text-right font-medium text-gray-900">
                   {formatCurrency(parseFloat(product.price))}
                   {#if product.discountPrice}
@@ -234,14 +270,19 @@
                   {/if}
                 </td>
                 <td class="px-4 py-3 text-right">
-                  <span class:text-red-600={product.stockQuantity <= 0} class:text-gray-700={product.stockQuantity > 0}>
+                  <span
+                    class:text-red-600={product.stockQuantity <= 0}
+                    class:text-gray-700={product.stockQuantity > 0}
+                  >
                     {product.stockQuantity}
                   </span>
                 </td>
                 <td class="px-4 py-3">
                   <StatusBadge status={product.status} variant="product" />
                 </td>
-                <td class="px-4 py-3 text-gray-500">{formatDate(product.createdAt)}</td>
+                <td class="px-4 py-3 text-gray-500"
+                  >{formatDate(product.createdAt)}</td
+                >
                 <td class="px-4 py-3">
                   <div class="flex items-center justify-end gap-1">
                     <a
@@ -279,9 +320,18 @@
 
 <!-- Create Product Modal -->
 <Modal bind:open={showCreateModal} title="New Product">
-  <form novalidate onsubmit={(e) => { e.preventDefault(); handleCreate(); }} class="space-y-4">
+  <form
+    novalidate
+    onsubmit={(e) => {
+      e.preventDefault();
+      handleCreate();
+    }}
+    class="space-y-4"
+  >
     {#if createError}
-      <div class="p-3 bg-red-50 text-red-700 rounded-lg text-sm">{createError}</div>
+      <div class="p-3 bg-red-50 text-red-700 rounded-lg text-sm">
+        {createError}
+      </div>
     {/if}
 
     <Input
@@ -336,7 +386,12 @@
     </div>
 
     <div class="flex justify-end gap-2 pt-2">
-      <Button variant="ghost" type="button" onclick={() => (showCreateModal = false)} disabled={creating}>
+      <Button
+        variant="ghost"
+        type="button"
+        onclick={() => (showCreateModal = false)}
+        disabled={creating}
+      >
         Cancel
       </Button>
       <Button variant="primary" type="submit" disabled={creating}>
@@ -350,7 +405,9 @@
 <ConfirmDialog
   bind:open={showDeleteDialog}
   title="Delete Product"
-  message={deleteTarget ? `Are you sure you want to delete "${deleteTarget.name}"? This action cannot be undone.` : ""}
+  message={deleteTarget
+    ? `Are you sure you want to delete "${deleteTarget.name}"? This action cannot be undone.`
+    : ""}
   confirmLabel="Delete"
   confirmVariant="danger"
   loading={deleting}

@@ -5,7 +5,11 @@
   import { adminInvoicesApi, adminSettingsApi } from "$lib/api/admin";
   import type { CompanyProfile } from "$lib/api/admin";
   import type { InvoiceDetail } from "$lib/types/admin";
-  import { formatCurrency, formatDate, formatDateTime } from "$lib/utils/formatting";
+  import {
+    formatCurrency,
+    formatDate,
+    formatDateTime,
+  } from "$lib/utils/formatting";
   import { openAlignedInvoicePrint } from "$lib/utils/admin-invoice-print";
   import StatusBadge from "$lib/components/admin/StatusBadge.svelte";
   import Button from "$lib/components/ui/Button.svelte";
@@ -26,9 +30,12 @@
 
   onMount(() => {
     loadOrder();
-    adminSettingsApi.getProfile().then((data) => (profile = data)).catch(() => {
-      profile = null;
-    });
+    adminSettingsApi
+      .getProfile()
+      .then((data) => (profile = data))
+      .catch(() => {
+        profile = null;
+      });
   });
 
   async function loadOrder() {
@@ -47,7 +54,13 @@
     downloadingInvoice = true;
     try {
       const cityLine = invoice.billingAddress
-        ? [invoice.billingAddress.city, invoice.billingAddress.state, invoice.billingAddress.postalCode].filter(Boolean).join(", ")
+        ? [
+            invoice.billingAddress.city,
+            invoice.billingAddress.state,
+            invoice.billingAddress.postalCode,
+          ]
+            .filter(Boolean)
+            .join(", ")
         : "";
       const opened = openAlignedInvoicePrint({
         profile,
@@ -123,12 +136,17 @@
     return val ? parseFloat(val) : 0;
   }
 
-  const canVoid = $derived(invoice && invoice.status !== "VOID" && invoice.status !== "CANCELLED");
+  const canVoid = $derived(
+    invoice && invoice.status !== "VOID" && invoice.status !== "CANCELLED",
+  );
   const canDelete = $derived(invoice?.status === "DRAFT");
 </script>
 
 <div>
-  <a href="/admin/orders" class="text-sm text-gray-500 hover:text-gray-700 mb-4 inline-block">
+  <a
+    href="/admin/orders"
+    class="text-sm text-gray-500 hover:text-gray-700 mb-4 inline-block"
+  >
     &larr; Back to Orders
   </a>
 
@@ -141,8 +159,13 @@
     <div class="flex items-start justify-between mb-6">
       <div>
         <div class="flex items-center gap-2">
-          <h1 class="text-xl font-semibold text-gray-900">{invoice.invoiceNumber}</h1>
-          <span class="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full font-medium">Manual</span>
+          <h1 class="text-xl font-semibold text-gray-900">
+            {invoice.invoiceNumber}
+          </h1>
+          <span
+            class="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full font-medium"
+            >Manual</span
+          >
         </div>
         <p class="text-sm text-gray-500 mt-1">
           Created {formatDate(invoice.createdAt)}
@@ -159,17 +182,27 @@
       <div class="lg:col-span-2 space-y-4">
         <!-- Line Items -->
         <div class="bg-white rounded-lg border border-gray-200 p-4">
-          <h2 class="font-medium text-gray-900 mb-3">Items ({invoice.lineItems.length})</h2>
+          <h2 class="font-medium text-gray-900 mb-3">
+            Items ({invoice.lineItems.length})
+          </h2>
           {#if invoice.lineItems.length > 0}
             <div class="divide-y divide-gray-100">
               {#each invoice.lineItems as item (item.id)}
                 <div class="flex items-center justify-between py-3">
                   <div class="flex-1 min-w-0">
-                    <p class="text-sm font-medium text-gray-900">{item.description}</p>
+                    <p class="text-sm font-medium text-gray-900">
+                      {item.description}
+                    </p>
                   </div>
                   <div class="text-right ml-4">
-                    <p class="text-sm text-gray-700">{item.quantity} &times; {formatCurrency(amt(item.unitPrice))}</p>
-                    <p class="text-sm font-medium text-gray-900">{formatCurrency(amt(item.total))}</p>
+                    <p class="text-sm text-gray-700">
+                      {item.quantity} &times; {formatCurrency(
+                        amt(item.unitPrice),
+                      )}
+                    </p>
+                    <p class="text-sm font-medium text-gray-900">
+                      {formatCurrency(amt(item.total))}
+                    </p>
                   </div>
                 </div>
               {/each}
@@ -179,17 +212,25 @@
           <div class="border-t border-gray-200 mt-3 pt-3 space-y-1">
             <div class="flex justify-between text-sm text-gray-600">
               <span>Subtotal</span>
-              <span class="tabular-nums">{formatCurrency(amt(invoice.amount))}</span>
+              <span class="tabular-nums"
+                >{formatCurrency(amt(invoice.amount))}</span
+              >
             </div>
             {#if amt(invoice.taxAmount) > 0}
               <div class="flex justify-between text-sm text-gray-600">
                 <span>Tax</span>
-                <span class="tabular-nums">{formatCurrency(amt(invoice.taxAmount))}</span>
+                <span class="tabular-nums"
+                  >{formatCurrency(amt(invoice.taxAmount))}</span
+                >
               </div>
             {/if}
-            <div class="flex justify-between text-base font-semibold text-gray-900 pt-1">
+            <div
+              class="flex justify-between text-base font-semibold text-gray-900 pt-1"
+            >
               <span>Total</span>
-              <span class="tabular-nums">{formatCurrency(amt(invoice.total))} {invoice.currency}</span>
+              <span class="tabular-nums"
+                >{formatCurrency(amt(invoice.total))} {invoice.currency}</span
+              >
             </div>
           </div>
         </div>
@@ -198,7 +239,9 @@
         {#if invoice.notes}
           <div class="bg-white rounded-lg border border-gray-200 p-4">
             <h2 class="font-medium text-gray-900 mb-2">Notes</h2>
-            <p class="text-sm text-gray-700 whitespace-pre-wrap">{invoice.notes}</p>
+            <p class="text-sm text-gray-700 whitespace-pre-wrap">
+              {invoice.notes}
+            </p>
           </div>
         {/if}
       </div>
@@ -226,10 +269,18 @@
           <div class="bg-white rounded-lg border border-gray-200 p-4">
             <h2 class="font-medium text-gray-900 mb-2">Shipping Address</h2>
             <div class="text-sm text-gray-600 space-y-0.5">
-              {#if invoice.billingAddress.line1}<p>{invoice.billingAddress.line1}</p>{/if}
-              {#if invoice.billingAddress.line2}<p>{invoice.billingAddress.line2}</p>{/if}
+              {#if invoice.billingAddress.line1}<p>
+                  {invoice.billingAddress.line1}
+                </p>{/if}
+              {#if invoice.billingAddress.line2}<p>
+                  {invoice.billingAddress.line2}
+                </p>{/if}
               {#if invoice.billingAddress.city}
-                <p>{[invoice.billingAddress.city, invoice.billingAddress.country].filter(Boolean).join(", ")}</p>
+                <p>
+                  {[invoice.billingAddress.city, invoice.billingAddress.country]
+                    .filter(Boolean)
+                    .join(", ")}
+                </p>
               {/if}
             </div>
           </div>
@@ -239,16 +290,33 @@
         <div class="bg-white rounded-lg border border-gray-200 p-4">
           <h2 class="font-medium text-gray-900 mb-3">Actions</h2>
           <div class="space-y-2">
-            <Button variant="outline" size="sm" class="w-full" onclick={handleDownloadPdf} disabled={downloadingInvoice}>
-              <Download class="w-4 h-4" /> {downloadingInvoice ? "Preparing..." : "Download Invoice"}
+            <Button
+              variant="outline"
+              size="sm"
+              class="w-full"
+              onclick={handleDownloadPdf}
+              disabled={downloadingInvoice}
+            >
+              <Download class="w-4 h-4" />
+              {downloadingInvoice ? "Preparing..." : "Download Invoice"}
             </Button>
             {#if canVoid}
-              <Button variant="danger" size="sm" class="w-full" onclick={() => (voidOpen = true)}>
+              <Button
+                variant="danger"
+                size="sm"
+                class="w-full"
+                onclick={() => (voidOpen = true)}
+              >
                 <Ban class="w-4 h-4" /> Void Order
               </Button>
             {/if}
             {#if canDelete}
-              <Button variant="ghost" size="sm" class="w-full text-red-600" onclick={() => (deleteOpen = true)}>
+              <Button
+                variant="ghost"
+                size="sm"
+                class="w-full text-red-600"
+                onclick={() => (deleteOpen = true)}
+              >
                 <Trash2 class="w-4 h-4" /> Delete Draft
               </Button>
             {/if}
@@ -283,7 +351,9 @@
 <ConfirmDialog
   bind:open={voidOpen}
   title="Void Order"
-  message={invoice ? `Void order "${invoice.invoiceNumber}"? This cannot be undone.` : ""}
+  message={invoice
+    ? `Void order "${invoice.invoiceNumber}"? This cannot be undone.`
+    : ""}
   confirmLabel="Void Order"
   confirmVariant="danger"
   loading={voiding}
@@ -294,7 +364,9 @@
 <ConfirmDialog
   bind:open={deleteOpen}
   title="Delete Draft Order"
-  message={invoice ? `Delete draft "${invoice.invoiceNumber}"? This cannot be undone.` : ""}
+  message={invoice
+    ? `Delete draft "${invoice.invoiceNumber}"? This cannot be undone.`
+    : ""}
   confirmLabel="Delete"
   confirmVariant="danger"
   loading={deleting}

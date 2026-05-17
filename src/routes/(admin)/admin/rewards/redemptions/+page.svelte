@@ -64,7 +64,9 @@
       page = 1;
     }
     page;
-    untrack(() => { loadData(); });
+    untrack(() => {
+      loadData();
+    });
   });
 
   function resetCreateForm() {
@@ -161,12 +163,16 @@
   {:else if data && data.items.length === 0}
     <EmptyState
       title="No redemptions found"
-      message={search ? "Try adjusting your search terms" : "Issue rewards to members to see them here"}
+      message={search
+        ? "Try adjusting your search terms"
+        : "Issue rewards to members to see them here"}
     >
       {#snippet icon()}<Ticket class="w-6 h-6" />{/snippet}
       {#snippet actions()}
         {#if !search}
-          <Button size="sm" onclick={openCreateModal}><Plus class="w-4 h-4" /> Issue Reward</Button>
+          <Button size="sm" onclick={openCreateModal}
+            ><Plus class="w-4 h-4" /> Issue Reward</Button
+          >
         {/if}
       {/snippet}
     </EmptyState>
@@ -176,27 +182,47 @@
         <table class="w-full text-sm">
           <thead>
             <tr class="border-b border-gray-200 bg-gray-50">
-              <th class="text-left px-4 py-3 font-medium text-gray-600">Member</th>
-              <th class="text-left px-4 py-3 font-medium text-gray-600">Gift Offer</th>
-              <th class="text-left px-4 py-3 font-medium text-gray-600">Coupon Code</th>
-              <th class="text-left px-4 py-3 font-medium text-gray-600">Status</th>
-              <th class="text-left px-4 py-3 font-medium text-gray-600">Expires At</th>
-              <th class="text-left px-4 py-3 font-medium text-gray-600">Created</th>
-              <th class="text-right px-4 py-3 font-medium text-gray-600">Actions</th>
+              <th class="text-left px-4 py-3 font-medium text-gray-600"
+                >Member</th
+              >
+              <th class="text-left px-4 py-3 font-medium text-gray-600"
+                >Gift Offer</th
+              >
+              <th class="text-left px-4 py-3 font-medium text-gray-600"
+                >Coupon Code</th
+              >
+              <th class="text-left px-4 py-3 font-medium text-gray-600"
+                >Status</th
+              >
+              <th class="text-left px-4 py-3 font-medium text-gray-600"
+                >Expires At</th
+              >
+              <th class="text-left px-4 py-3 font-medium text-gray-600"
+                >Created</th
+              >
+              <th class="text-right px-4 py-3 font-medium text-gray-600"
+                >Actions</th
+              >
             </tr>
           </thead>
           <tbody>
             {#each data.items as redemption (redemption.id)}
-              <tr class="border-b border-gray-100 hover:bg-gray-50 transition-colors">
+              <tr
+                class="border-b border-gray-100 hover:bg-gray-50 transition-colors"
+              >
                 <td class="px-4 py-3">
-                  <p class="font-medium text-gray-900">{redemption.accountName ?? redemption.accountId}</p>
+                  <p class="font-medium text-gray-900">
+                    {redemption.accountName ?? redemption.accountId}
+                  </p>
                 </td>
                 <td class="px-4 py-3 text-gray-700">
                   {redemption.giftOfferName ?? redemption.giftOfferId}
                 </td>
                 <td class="px-4 py-3">
                   {#if redemption.couponCode}
-                    <code class="px-2 py-0.5 bg-gray-100 text-gray-800 rounded text-xs font-mono">
+                    <code
+                      class="px-2 py-0.5 bg-gray-100 text-gray-800 rounded text-xs font-mono"
+                    >
                       {redemption.couponCode}
                     </code>
                   {:else}
@@ -204,10 +230,15 @@
                   {/if}
                 </td>
                 <td class="px-4 py-3">
-                  <StatusBadge status={redemption.status} variant="redemption" />
+                  <StatusBadge
+                    status={redemption.status}
+                    variant="redemption"
+                  />
                 </td>
                 <td class="px-4 py-3 text-gray-500">
-                  {redemption.expiresAt ? formatDate(redemption.expiresAt) : "—"}
+                  {redemption.expiresAt
+                    ? formatDate(redemption.expiresAt)
+                    : "—"}
                 </td>
                 <td class="px-4 py-3 text-gray-500">
                   {formatDate(redemption.createdAt)}
@@ -244,9 +275,18 @@
 
 <!-- Issue Reward Modal -->
 <Modal bind:open={showCreateModal} title="Issue Reward">
-  <form novalidate onsubmit={(e) => { e.preventDefault(); handleCreate(); }} class="space-y-4">
+  <form
+    novalidate
+    onsubmit={(e) => {
+      e.preventDefault();
+      handleCreate();
+    }}
+    class="space-y-4"
+  >
     {#if createError}
-      <div class="p-3 bg-red-50 text-red-700 rounded-lg text-sm">{createError}</div>
+      <div class="p-3 bg-red-50 text-red-700 rounded-lg text-sm">
+        {createError}
+      </div>
     {/if}
 
     <Input
@@ -273,7 +313,12 @@
     />
 
     <div class="flex justify-end gap-2 pt-2">
-      <Button variant="ghost" type="button" onclick={() => (showCreateModal = false)} disabled={creating}>
+      <Button
+        variant="ghost"
+        type="button"
+        onclick={() => (showCreateModal = false)}
+        disabled={creating}
+      >
         Cancel
       </Button>
       <Button variant="primary" type="submit" disabled={creating}>
@@ -287,10 +332,15 @@
 <ConfirmDialog
   bind:open={showDeleteDialog}
   title="Delete Redemption"
-  message={deleteTarget ? `Are you sure you want to delete this redemption for "${deleteTarget.accountName ?? deleteTarget.accountId}"? This action cannot be undone.` : ""}
+  message={deleteTarget
+    ? `Are you sure you want to delete this redemption for "${deleteTarget.accountName ?? deleteTarget.accountId}"? This action cannot be undone.`
+    : ""}
   confirmLabel="Delete"
   confirmVariant="danger"
   loading={deleting}
   onConfirm={handleDelete}
-  onCancel={() => { showDeleteDialog = false; deleteTarget = null; }}
+  onCancel={() => {
+    showDeleteDialog = false;
+    deleteTarget = null;
+  }}
 />

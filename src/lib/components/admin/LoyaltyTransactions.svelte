@@ -1,8 +1,16 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import { adminLoyaltyApi } from "$lib/api/admin";
-  import type { LoyaltySummary, RewardTransaction, ManualEarnInput } from "$lib/types/admin";
-  import { formatDate, getErrorMessage, formatCurrency } from "$lib/utils/formatting";
+  import type {
+    LoyaltySummary,
+    RewardTransaction,
+    ManualEarnInput,
+  } from "$lib/types/admin";
+  import {
+    formatDate,
+    getErrorMessage,
+    formatCurrency,
+  } from "$lib/utils/formatting";
   import LoadingSkeleton from "$lib/components/ui/LoadingSkeleton.svelte";
   import Button from "$lib/components/ui/Button.svelte";
   import Input from "$lib/components/ui/Input.svelte";
@@ -115,11 +123,20 @@
     REWARD_EXPIRY: "Expired",
   };
 
-  function typeBadgeVariant(type: string): "success" | "warning" | "error" | "info" | "default" {
+  function typeBadgeVariant(
+    type: string,
+  ): "success" | "warning" | "error" | "info" | "default" {
     if (type.includes("VOID") || type === "REWARD_EXPIRY") return "error";
-    if (type === "REDEMPTION" || type === "PAY_WITH_POINTS" || type.includes("DEDUCT")) return "warning";
-    if (type === "PURCHASE" || type === "BOOKING" || type === "AUTO_REWARD") return "success";
-    if (type === "MANUAL" || type === "ADJUSTMENT" || type === "INITIAL") return "info";
+    if (
+      type === "REDEMPTION" ||
+      type === "PAY_WITH_POINTS" ||
+      type.includes("DEDUCT")
+    )
+      return "warning";
+    if (type === "PURCHASE" || type === "BOOKING" || type === "AUTO_REWARD")
+      return "success";
+    if (type === "MANUAL" || type === "ADJUSTMENT" || type === "INITIAL")
+      return "info";
     return "default";
   }
 </script>
@@ -152,7 +169,9 @@
         <p class="text-xs text-gray-500 mt-1">Stamps</p>
       </div>
       <div class="bg-white rounded-lg border border-gray-200 p-3 text-center">
-        <p class="text-2xl font-bold text-gray-900">{formatCurrency(parseFloat(summary.credits || "0"))}</p>
+        <p class="text-2xl font-bold text-gray-900">
+          {formatCurrency(parseFloat(summary.credits || "0"))}
+        </p>
         <p class="text-xs text-gray-500 mt-1">Credits</p>
       </div>
     </div>
@@ -162,7 +181,9 @@
         <Coins class="w-4 h-4" />
         Tier: <Badge>{summary.tier.name}</Badge>
         {#if summary.tier.multiplier > 1}
-          <span class="text-xs text-gray-400">({summary.tier.multiplier}x multiplier)</span>
+          <span class="text-xs text-gray-400"
+            >({summary.tier.multiplier}x multiplier)</span
+          >
         {/if}
       </div>
     {/if}
@@ -177,13 +198,27 @@
           <table class="w-full text-sm">
             <thead>
               <tr class="border-b border-gray-200 bg-gray-50">
-                <th class="text-left px-4 py-2 font-medium text-gray-600">Type</th>
-                <th class="text-right px-4 py-2 font-medium text-gray-600">Points</th>
-                <th class="text-right px-4 py-2 font-medium text-gray-600">Stamps</th>
-                <th class="text-right px-4 py-2 font-medium text-gray-600">Credit</th>
-                <th class="text-right px-4 py-2 font-medium text-gray-600">Balance</th>
-                <th class="text-left px-4 py-2 font-medium text-gray-600">Reference</th>
-                <th class="text-left px-4 py-2 font-medium text-gray-600">Date</th>
+                <th class="text-left px-4 py-2 font-medium text-gray-600"
+                  >Type</th
+                >
+                <th class="text-right px-4 py-2 font-medium text-gray-600"
+                  >Points</th
+                >
+                <th class="text-right px-4 py-2 font-medium text-gray-600"
+                  >Stamps</th
+                >
+                <th class="text-right px-4 py-2 font-medium text-gray-600"
+                  >Credit</th
+                >
+                <th class="text-right px-4 py-2 font-medium text-gray-600"
+                  >Balance</th
+                >
+                <th class="text-left px-4 py-2 font-medium text-gray-600"
+                  >Reference</th
+                >
+                <th class="text-left px-4 py-2 font-medium text-gray-600"
+                  >Date</th
+                >
               </tr>
             </thead>
             <tbody>
@@ -196,7 +231,10 @@
                   </td>
                   <td class="px-4 py-2 text-right font-mono">
                     {#if tx.points && tx.points !== "0"}
-                      <span class:text-green-600={parseFloat(tx.points) > 0} class:text-red-600={parseFloat(tx.points) < 0}>
+                      <span
+                        class:text-green-600={parseFloat(tx.points) > 0}
+                        class:text-red-600={parseFloat(tx.points) < 0}
+                      >
                         {parseFloat(tx.points) > 0 ? "+" : ""}{tx.points}
                       </span>
                     {:else}
@@ -205,7 +243,10 @@
                   </td>
                   <td class="px-4 py-2 text-right font-mono">
                     {#if tx.stamps && tx.stamps !== 0}
-                      <span class:text-green-600={tx.stamps > 0} class:text-red-600={tx.stamps < 0}>
+                      <span
+                        class:text-green-600={tx.stamps > 0}
+                        class:text-red-600={tx.stamps < 0}
+                      >
                         {tx.stamps > 0 ? "+" : ""}{tx.stamps}
                       </span>
                     {:else}
@@ -214,20 +255,31 @@
                   </td>
                   <td class="px-4 py-2 text-right font-mono">
                     {#if tx.credit && tx.credit !== "0"}
-                      <span class:text-green-600={parseFloat(tx.credit) > 0} class:text-red-600={parseFloat(tx.credit) < 0}>
-                        {parseFloat(tx.credit) > 0 ? "+" : ""}{formatCurrency(parseFloat(tx.credit))}
+                      <span
+                        class:text-green-600={parseFloat(tx.credit) > 0}
+                        class:text-red-600={parseFloat(tx.credit) < 0}
+                      >
+                        {parseFloat(tx.credit) > 0 ? "+" : ""}{formatCurrency(
+                          parseFloat(tx.credit),
+                        )}
                       </span>
                     {:else}
                       <span class="text-gray-300">—</span>
                     {/if}
                   </td>
-                  <td class="px-4 py-2 text-right text-gray-500 font-mono text-xs">
+                  <td
+                    class="px-4 py-2 text-right text-gray-500 font-mono text-xs"
+                  >
                     {tx.pointBalance}pts
                   </td>
-                  <td class="px-4 py-2 text-gray-500 text-xs max-w-[200px] truncate">
+                  <td
+                    class="px-4 py-2 text-gray-500 text-xs max-w-[200px] truncate"
+                  >
                     {tx.reference ?? "—"}
                   </td>
-                  <td class="px-4 py-2 text-gray-500 text-xs">{formatDate(tx.createdAt)}</td>
+                  <td class="px-4 py-2 text-gray-500 text-xs"
+                    >{formatDate(tx.createdAt)}</td
+                  >
                 </tr>
               {/each}
             </tbody>
@@ -235,7 +287,9 @@
         </div>
       </div>
     {:else}
-      <div class="bg-white rounded-lg border border-gray-200 p-6 text-center text-sm text-gray-500">
+      <div
+        class="bg-white rounded-lg border border-gray-200 p-6 text-center text-sm text-gray-500"
+      >
         No transactions yet
       </div>
     {/if}
@@ -244,9 +298,18 @@
 
 <!-- Manual Earn Modal -->
 <Modal bind:open={showEarnModal} title="Adjust Points / Credits">
-  <form novalidate onsubmit={(e) => { e.preventDefault(); handleEarn(); }} class="space-y-4">
+  <form
+    novalidate
+    onsubmit={(e) => {
+      e.preventDefault();
+      handleEarn();
+    }}
+    class="space-y-4"
+  >
     {#if earnError}
-      <div class="p-3 bg-red-50 text-red-700 rounded-lg text-sm">{earnError}</div>
+      <div class="p-3 bg-red-50 text-red-700 rounded-lg text-sm">
+        {earnError}
+      </div>
     {/if}
 
     <p class="text-sm text-gray-500">
@@ -284,7 +347,12 @@
     />
 
     <div class="flex justify-end gap-2 pt-2">
-      <Button variant="ghost" type="button" onclick={() => (showEarnModal = false)} disabled={earning}>
+      <Button
+        variant="ghost"
+        type="button"
+        onclick={() => (showEarnModal = false)}
+        disabled={earning}
+      >
         Cancel
       </Button>
       <Button variant="primary" type="submit" disabled={earning}>

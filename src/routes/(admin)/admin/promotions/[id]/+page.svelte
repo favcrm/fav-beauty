@@ -3,9 +3,27 @@
   import { goto } from "$app/navigation";
   import { onMount } from "svelte";
   import { adminPromotionsApi } from "$lib/api/admin";
-  import type { PromotionDetail, UpdatePromotionInput, PromotionUsage, AdminPaginatedResponse, PromotionStatus } from "$lib/types/admin";
-  import { formatDate, formatDateTime, formatCurrency, getErrorMessage } from "$lib/utils/formatting";
-  import { promotionTypeOptions, promotionTypeLabels, formatPromotionValue, channelLabels, getEnabledChannels, toDatetimeLocal } from "$lib/utils/admin-helpers";
+  import type {
+    PromotionDetail,
+    UpdatePromotionInput,
+    PromotionUsage,
+    AdminPaginatedResponse,
+    PromotionStatus,
+  } from "$lib/types/admin";
+  import {
+    formatDate,
+    formatDateTime,
+    formatCurrency,
+    getErrorMessage,
+  } from "$lib/utils/formatting";
+  import {
+    promotionTypeOptions,
+    promotionTypeLabels,
+    formatPromotionValue,
+    channelLabels,
+    getEnabledChannels,
+    toDatetimeLocal,
+  } from "$lib/utils/admin-helpers";
 
   import StatusBadge from "$lib/components/admin/StatusBadge.svelte";
   import LoadingSkeleton from "$lib/components/ui/LoadingSkeleton.svelte";
@@ -73,7 +91,10 @@
 
   async function loadUsages() {
     try {
-      usages = await adminPromotionsApi.usages($page.params.id!, { page: 1, pageSize: 50 });
+      usages = await adminPromotionsApi.usages($page.params.id!, {
+        page: 1,
+        pageSize: 50,
+      });
     } catch {
       // Non-critical — silently ignore
     }
@@ -90,10 +111,19 @@
     editStatus = promotion.status;
     editStartsAt = toDatetimeLocal(promotion.startsAt);
     editEndsAt = toDatetimeLocal(promotion.endsAt);
-    editUsageLimitTotal = promotion.usageLimitTotal !== null ? String(promotion.usageLimitTotal) : "";
-    editUsageLimitPerCustomer = promotion.usageLimitPerCustomer !== null ? String(promotion.usageLimitPerCustomer) : "";
+    editUsageLimitTotal =
+      promotion.usageLimitTotal !== null
+        ? String(promotion.usageLimitTotal)
+        : "";
+    editUsageLimitPerCustomer =
+      promotion.usageLimitPerCustomer !== null
+        ? String(promotion.usageLimitPerCustomer)
+        : "";
     editMinimumAmount = promotion.minimumAmount ?? "";
-    editMinimumQuantity = promotion.minimumQuantity !== null ? String(promotion.minimumQuantity) : "";
+    editMinimumQuantity =
+      promotion.minimumQuantity !== null
+        ? String(promotion.minimumQuantity)
+        : "";
     editBookingEnabled = promotion.bookingEnabled;
     editEventEnabled = promotion.eventEnabled;
     editOnlineEnabled = promotion.onlineEnabled;
@@ -125,10 +155,16 @@
         status: editStatus as UpdatePromotionInput["status"],
         startsAt: editStartsAt ? new Date(editStartsAt).toISOString() : null,
         endsAt: editEndsAt ? new Date(editEndsAt).toISOString() : null,
-        usageLimitTotal: editUsageLimitTotal.trim() ? parseInt(editUsageLimitTotal, 10) : null,
-        usageLimitPerCustomer: editUsageLimitPerCustomer.trim() ? parseInt(editUsageLimitPerCustomer, 10) : null,
+        usageLimitTotal: editUsageLimitTotal.trim()
+          ? parseInt(editUsageLimitTotal, 10)
+          : null,
+        usageLimitPerCustomer: editUsageLimitPerCustomer.trim()
+          ? parseInt(editUsageLimitPerCustomer, 10)
+          : null,
         minimumAmount: editMinimumAmount.trim() || null,
-        minimumQuantity: editMinimumQuantity.trim() ? parseInt(editMinimumQuantity, 10) : null,
+        minimumQuantity: editMinimumQuantity.trim()
+          ? parseInt(editMinimumQuantity, 10)
+          : null,
         bookingEnabled: editBookingEnabled,
         eventEnabled: editEventEnabled,
         onlineEnabled: editOnlineEnabled,
@@ -172,11 +208,13 @@
       deleting = false;
     }
   }
-
 </script>
 
 <div>
-  <a href="/admin/promotions" class="text-sm text-gray-500 hover:text-gray-700 mb-4 inline-block">
+  <a
+    href="/admin/promotions"
+    class="text-sm text-gray-500 hover:text-gray-700 mb-4 inline-block"
+  >
     &larr; Back to Promotions
   </a>
 
@@ -196,10 +234,20 @@
       </div>
       <div class="flex items-center gap-2">
         {#if editing}
-          <Button variant="ghost" size="sm" onclick={cancelEditing} disabled={saving}>
+          <Button
+            variant="ghost"
+            size="sm"
+            onclick={cancelEditing}
+            disabled={saving}
+          >
             Cancel
           </Button>
-          <Button variant="primary" size="sm" onclick={handleSave} disabled={saving}>
+          <Button
+            variant="primary"
+            size="sm"
+            onclick={handleSave}
+            disabled={saving}
+          >
             {saving ? "Saving..." : "Save Changes"}
           </Button>
         {:else}
@@ -207,11 +255,20 @@
             <Pencil class="w-4 h-4" />
             Edit
           </Button>
-          <Button variant="outline" size="sm" onclick={handleClone} disabled={cloneLoading}>
+          <Button
+            variant="outline"
+            size="sm"
+            onclick={handleClone}
+            disabled={cloneLoading}
+          >
             <Copy class="w-4 h-4" />
             {cloneLoading ? "Cloning..." : "Clone"}
           </Button>
-          <Button variant="danger" size="sm" onclick={() => (showDeleteDialog = true)}>
+          <Button
+            variant="danger"
+            size="sm"
+            onclick={() => (showDeleteDialog = true)}
+          >
             <Trash2 class="w-4 h-4" />
             Delete
           </Button>
@@ -220,7 +277,9 @@
     </div>
 
     {#if error}
-      <div class="p-4 bg-red-50 text-red-700 rounded-lg text-sm mb-4">{error}</div>
+      <div class="p-4 bg-red-50 text-red-700 rounded-lg text-sm mb-4">
+        {error}
+      </div>
     {/if}
 
     {#if editing}
@@ -247,7 +306,9 @@
                 id="editCode"
                 name="editCode"
                 bind:value={editCode}
-                oninput={(e) => { editCode = e.currentTarget.value.toUpperCase(); }}
+                oninput={(e) => {
+                  editCode = e.currentTarget.value.toUpperCase();
+                }}
                 placeholder="e.g. SUMMER25"
                 aria-required="true"
                 class="w-full px-4 py-3 bg-slate-50 border border-slate-200 focus:ring-0 focus:bg-white focus:border-green-700 text-slate-900 font-medium font-mono uppercase transition-colors rounded-none"
@@ -255,7 +316,8 @@
             </div>
 
             <div class="space-y-1">
-              <label for="editDescription" class="form-label">Description</label>
+              <label for="editDescription" class="form-label">Description</label
+              >
               <textarea
                 id="editDescription"
                 name="editDescription"
@@ -335,7 +397,9 @@
 
         <!-- Limits -->
         <div class="bg-white rounded-lg border border-gray-200 p-4">
-          <h2 class="font-medium text-gray-900 mb-4">Usage Limits & Requirements</h2>
+          <h2 class="font-medium text-gray-900 mb-4">
+            Usage Limits & Requirements
+          </h2>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <Input
               name="editUsageLimitTotal"
@@ -376,19 +440,35 @@
           <h2 class="font-medium text-gray-900 mb-4">Channels</h2>
           <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
             <label class="flex items-center gap-2 text-sm text-gray-700">
-              <input type="checkbox" bind:checked={editBookingEnabled} class="rounded border-gray-300" />
+              <input
+                type="checkbox"
+                bind:checked={editBookingEnabled}
+                class="rounded border-gray-300"
+              />
               Booking
             </label>
             <label class="flex items-center gap-2 text-sm text-gray-700">
-              <input type="checkbox" bind:checked={editEventEnabled} class="rounded border-gray-300" />
+              <input
+                type="checkbox"
+                bind:checked={editEventEnabled}
+                class="rounded border-gray-300"
+              />
               Event
             </label>
             <label class="flex items-center gap-2 text-sm text-gray-700">
-              <input type="checkbox" bind:checked={editOnlineEnabled} class="rounded border-gray-300" />
+              <input
+                type="checkbox"
+                bind:checked={editOnlineEnabled}
+                class="rounded border-gray-300"
+              />
               Online
             </label>
             <label class="flex items-center gap-2 text-sm text-gray-700">
-              <input type="checkbox" bind:checked={editPosEnabled} class="rounded border-gray-300" />
+              <input
+                type="checkbox"
+                bind:checked={editPosEnabled}
+                class="rounded border-gray-300"
+              />
               POS
             </label>
           </div>
@@ -403,7 +483,9 @@
           {#if promotion.description}
             <div class="bg-white rounded-lg border border-gray-200 p-4">
               <h2 class="font-medium text-gray-900 mb-2">Description</h2>
-              <p class="text-sm text-gray-700 whitespace-pre-wrap">{promotion.description}</p>
+              <p class="text-sm text-gray-700 whitespace-pre-wrap">
+                {promotion.description}
+              </p>
             </div>
           {/if}
 
@@ -415,7 +497,9 @@
                 {#if promotion.minimumAmount}
                   <div class="flex justify-between">
                     <dt class="text-gray-500">Minimum Amount</dt>
-                    <dd class="text-gray-700">{formatCurrency(parseFloat(promotion.minimumAmount))}</dd>
+                    <dd class="text-gray-700">
+                      {formatCurrency(parseFloat(promotion.minimumAmount))}
+                    </dd>
                   </div>
                 {/if}
                 {#if promotion.minimumQuantity}
@@ -433,7 +517,9 @@
             <h2 class="font-medium text-gray-900 mb-3">
               Usage History
               {#if usages}
-                <span class="text-sm font-normal text-gray-500">({usages.total})</span>
+                <span class="text-sm font-normal text-gray-500"
+                  >({usages.total})</span
+                >
               {/if}
             </h2>
             {#if usages && usages.items.length > 0}
@@ -441,30 +527,50 @@
                 <table class="w-full text-sm">
                   <thead>
                     <tr class="border-b border-gray-200">
-                      <th class="text-left py-2 font-medium text-gray-600">Channel</th>
-                      <th class="text-left py-2 font-medium text-gray-600">Order ID</th>
-                      <th class="text-right py-2 font-medium text-gray-600">Discount</th>
-                      <th class="text-left py-2 font-medium text-gray-600">Date</th>
+                      <th class="text-left py-2 font-medium text-gray-600"
+                        >Channel</th
+                      >
+                      <th class="text-left py-2 font-medium text-gray-600"
+                        >Order ID</th
+                      >
+                      <th class="text-right py-2 font-medium text-gray-600"
+                        >Discount</th
+                      >
+                      <th class="text-left py-2 font-medium text-gray-600"
+                        >Date</th
+                      >
                     </tr>
                   </thead>
                   <tbody>
                     {#each usages.items as usage (usage.id)}
                       <tr class="border-b border-gray-50">
                         <td class="py-2.5">
-                          <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium bg-blue-50 text-blue-700">
+                          <span
+                            class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium bg-blue-50 text-blue-700"
+                          >
                             {usage.channel}
                           </span>
                         </td>
-                        <td class="py-2.5 text-gray-700 font-mono text-xs">{usage.orderId ?? "—"}</td>
-                        <td class="py-2.5 text-right text-gray-900 tabular-nums">{formatCurrency(parseFloat(usage.discountAmount))}</td>
-                        <td class="py-2.5 text-gray-500">{formatDate(usage.createdAt)}</td>
+                        <td class="py-2.5 text-gray-700 font-mono text-xs"
+                          >{usage.orderId ?? "—"}</td
+                        >
+                        <td class="py-2.5 text-right text-gray-900 tabular-nums"
+                          >{formatCurrency(
+                            parseFloat(usage.discountAmount),
+                          )}</td
+                        >
+                        <td class="py-2.5 text-gray-500"
+                          >{formatDate(usage.createdAt)}</td
+                        >
                       </tr>
                     {/each}
                   </tbody>
                 </table>
               </div>
             {:else}
-              <p class="text-sm text-gray-400 py-4 text-center">No usage recorded yet</p>
+              <p class="text-sm text-gray-400 py-4 text-center">
+                No usage recorded yet
+              </p>
             {/if}
           </div>
         </div>
@@ -483,16 +589,22 @@
             <dl class="text-sm space-y-2">
               <div class="flex justify-between">
                 <dt class="text-gray-500">Type</dt>
-                <dd class="text-gray-700">{promotionTypeLabels[promotion.type] ?? promotion.type}</dd>
+                <dd class="text-gray-700">
+                  {promotionTypeLabels[promotion.type] ?? promotion.type}
+                </dd>
               </div>
               <div class="flex justify-between">
                 <dt class="text-gray-500">Value</dt>
-                <dd class="text-gray-900 font-medium">{formatPromotionValue(promotion.type, promotion.value)}</dd>
+                <dd class="text-gray-900 font-medium">
+                  {formatPromotionValue(promotion.type, promotion.value)}
+                </dd>
               </div>
               {#if promotion.maximumDiscount}
                 <div class="flex justify-between">
                   <dt class="text-gray-500">Max Discount</dt>
-                  <dd class="text-gray-700">{formatCurrency(parseFloat(promotion.maximumDiscount))}</dd>
+                  <dd class="text-gray-700">
+                    {formatCurrency(parseFloat(promotion.maximumDiscount))}
+                  </dd>
                 </div>
               {/if}
             </dl>
@@ -504,11 +616,19 @@
             <dl class="text-sm space-y-2">
               <div class="flex justify-between">
                 <dt class="text-gray-500">Starts</dt>
-                <dd class="text-gray-700">{promotion.startsAt ? formatDateTime(promotion.startsAt) : "No start date"}</dd>
+                <dd class="text-gray-700">
+                  {promotion.startsAt
+                    ? formatDateTime(promotion.startsAt)
+                    : "No start date"}
+                </dd>
               </div>
               <div class="flex justify-between">
                 <dt class="text-gray-500">Ends</dt>
-                <dd class="text-gray-700">{promotion.endsAt ? formatDateTime(promotion.endsAt) : "No end date"}</dd>
+                <dd class="text-gray-700">
+                  {promotion.endsAt
+                    ? formatDateTime(promotion.endsAt)
+                    : "No end date"}
+                </dd>
               </div>
             </dl>
           </div>
@@ -519,15 +639,25 @@
             <dl class="text-sm space-y-2">
               <div class="flex justify-between">
                 <dt class="text-gray-500">Total Limit</dt>
-                <dd class="text-gray-700">{promotion.usageLimitTotal !== null ? promotion.usageLimitTotal : "Unlimited"}</dd>
+                <dd class="text-gray-700">
+                  {promotion.usageLimitTotal !== null
+                    ? promotion.usageLimitTotal
+                    : "Unlimited"}
+                </dd>
               </div>
               <div class="flex justify-between">
                 <dt class="text-gray-500">Per Customer</dt>
-                <dd class="text-gray-700">{promotion.usageLimitPerCustomer !== null ? promotion.usageLimitPerCustomer : "Unlimited"}</dd>
+                <dd class="text-gray-700">
+                  {promotion.usageLimitPerCustomer !== null
+                    ? promotion.usageLimitPerCustomer
+                    : "Unlimited"}
+                </dd>
               </div>
               <div class="flex justify-between">
                 <dt class="text-gray-500">Used</dt>
-                <dd class="text-gray-900 font-medium">{promotion.usageCount}</dd>
+                <dd class="text-gray-900 font-medium">
+                  {promotion.usageCount}
+                </dd>
               </div>
             </dl>
           </div>
@@ -538,7 +668,9 @@
             {#if getEnabledChannels(promotion).length > 0}
               <div class="flex items-center gap-2 flex-wrap">
                 {#each getEnabledChannels(promotion) as channel (channel)}
-                  <span class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-blue-50 text-blue-700">
+                  <span
+                    class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-blue-50 text-blue-700"
+                  >
                     {channelLabels[channel]}
                   </span>
                 {/each}
@@ -572,7 +704,9 @@
 <ConfirmDialog
   bind:open={showDeleteDialog}
   title="Delete Promotion"
-  message={promotion ? `Are you sure you want to delete "${promotion.name}"? This action cannot be undone.` : ""}
+  message={promotion
+    ? `Are you sure you want to delete "${promotion.name}"? This action cannot be undone.`
+    : ""}
   confirmLabel="Delete"
   confirmVariant="danger"
   loading={deleting}

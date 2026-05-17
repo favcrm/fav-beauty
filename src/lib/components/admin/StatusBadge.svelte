@@ -1,7 +1,16 @@
 <script lang="ts">
   interface Props {
     status: string;
-    variant?: "order" | "product" | "tier" | "invoice" | "promotion" | "announcement" | "automaticReward" | "giftOffer" | "redemption";
+    variant?:
+      | "order"
+      | "product"
+      | "tier"
+      | "invoice"
+      | "promotion"
+      | "announcement"
+      | "automaticReward"
+      | "giftOffer"
+      | "redemption";
   }
 
   let { status, variant = "order" }: Props = $props();

@@ -83,15 +83,21 @@
     <!-- Show base (default) values as read-only reference -->
     <div class="space-y-3">
       <div>
-        <p class="block text-sm font-medium text-gray-500 mb-1">Name (default)</p>
+        <p class="block text-sm font-medium text-gray-500 mb-1">
+          Name (default)
+        </p>
         <p class="text-sm text-gray-900 bg-gray-50 rounded-md px-3 py-2">
           {baseName || "—"}
         </p>
       </div>
       {#if showDescription}
         <div>
-          <p class="block text-sm font-medium text-gray-500 mb-1">Description (default)</p>
-          <p class="text-sm text-gray-900 bg-gray-50 rounded-md px-3 py-2 whitespace-pre-wrap min-h-[2.5rem]">
+          <p class="block text-sm font-medium text-gray-500 mb-1">
+            Description (default)
+          </p>
+          <p
+            class="text-sm text-gray-900 bg-gray-50 rounded-md px-3 py-2 whitespace-pre-wrap min-h-[2.5rem]"
+          >
             {baseDescription || "—"}
           </p>
         </div>
@@ -112,7 +118,9 @@
       />
       {#if showDescription}
         <div class="space-y-1">
-          <label for="zhDescription" class="form-label">描述 (Description)</label>
+          <label for="zhDescription" class="form-label"
+            >描述 (Description)</label
+          >
           <textarea
             id="zhDescription"
             bind:value={zhDescription}

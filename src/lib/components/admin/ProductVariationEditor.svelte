@@ -1,9 +1,6 @@
 <script lang="ts">
   import { adminProductsApi } from "$lib/api/admin";
-  import type {
-    ProductVariationAdmin,
-    ProductOption,
-  } from "$lib/types/admin";
+  import type { ProductVariationAdmin, ProductOption } from "$lib/types/admin";
   import { formatCurrency } from "$lib/utils/formatting";
   import Input from "$lib/components/ui/Input.svelte";
   import Select from "$lib/components/ui/Select.svelte";
@@ -100,9 +97,10 @@
     saving = true;
     formError = "";
 
-    const name = Object.keys(formSelectedOptions).length > 0
-      ? Object.values(formSelectedOptions).join(" / ")
-      : null;
+    const name =
+      Object.keys(formSelectedOptions).length > 0
+        ? Object.values(formSelectedOptions).join(" / ")
+        : null;
 
     try {
       if (editingVariation) {
@@ -132,7 +130,8 @@
       editingVariation = null;
       onChanged();
     } catch (err: unknown) {
-      formError = err instanceof Error ? err.message : "Failed to save variation";
+      formError =
+        err instanceof Error ? err.message : "Failed to save variation";
     } finally {
       saving = false;
     }
@@ -176,17 +175,23 @@
   </div>
 
   {#if formError && !showForm}
-    <div class="p-2 bg-red-50 text-red-700 rounded text-xs mb-3">{formError}</div>
+    <div class="p-2 bg-red-50 text-red-700 rounded text-xs mb-3">
+      {formError}
+    </div>
   {/if}
 
   <!-- Existing variations -->
   {#if variations.length > 0 && !showForm}
     <div class="space-y-2">
       {#each variations as v (v.id)}
-        <div class="flex items-center justify-between py-2 border-b border-gray-50 last:border-0">
+        <div
+          class="flex items-center justify-between py-2 border-b border-gray-50 last:border-0"
+        >
           <div class="min-w-0">
             <div class="flex items-center gap-2">
-              <span class="text-sm font-medium text-gray-900 truncate">{variationLabel(v)}</span>
+              <span class="text-sm font-medium text-gray-900 truncate"
+                >{variationLabel(v)}</span
+              >
               <span class="text-sm text-gray-900 font-semibold shrink-0">
                 {formatCurrency(parseFloat(v.price))}
               </span>
@@ -198,10 +203,14 @@
               <span>Stock: {v.stockQuantity}</span>
               <span class="capitalize">{v.stockStatus.replace(/_/g, " ")}</span>
               {#if v.discountPrice}
-                <span class="text-green-600">Sale: {formatCurrency(parseFloat(v.discountPrice))}</span>
+                <span class="text-green-600"
+                  >Sale: {formatCurrency(parseFloat(v.discountPrice))}</span
+                >
               {/if}
               {#if v.memberPrice}
-                <span class="text-blue-600">Member: {formatCurrency(parseFloat(v.memberPrice))}</span>
+                <span class="text-blue-600"
+                  >Member: {formatCurrency(parseFloat(v.memberPrice))}</span
+                >
               {/if}
             </div>
           </div>
@@ -230,7 +239,9 @@
   {#if showForm}
     <div class="border border-gray-200 rounded-lg p-3 space-y-3 mt-2">
       {#if formError}
-        <div class="p-2 bg-red-50 text-red-700 rounded text-xs">{formError}</div>
+        <div class="p-2 bg-red-50 text-red-700 rounded text-xs">
+          {formError}
+        </div>
       {/if}
 
       <!-- Option selectors (only if product has options defined) -->
@@ -252,20 +263,56 @@
 
       <!-- Pricing row -->
       <div class="grid grid-cols-3 gap-2">
-        <Input name="varPrice" label="Price" bind:value={formPrice} required placeholder="138" />
-        <Input name="varDiscount" label="Sale Price" bind:value={formDiscountPrice} placeholder="Optional" />
-        <Input name="varMember" label="Member Price" bind:value={formMemberPrice} placeholder="Optional" />
+        <Input
+          name="varPrice"
+          label="Price"
+          bind:value={formPrice}
+          required
+          placeholder="138"
+        />
+        <Input
+          name="varDiscount"
+          label="Sale Price"
+          bind:value={formDiscountPrice}
+          placeholder="Optional"
+        />
+        <Input
+          name="varMember"
+          label="Member Price"
+          bind:value={formMemberPrice}
+          placeholder="Optional"
+        />
       </div>
 
       <!-- Inventory row -->
       <div class="grid grid-cols-3 gap-2">
-        <Input name="varSku" label="SKU" bind:value={formSku} placeholder="Optional" />
-        <Input name="varStock" label="Stock Qty" type="number" bind:value={formStockQuantity} />
-        <Select name="varStockStatus" label="Stock Status" bind:value={formStockStatus} options={stockStatusOptions} />
+        <Input
+          name="varSku"
+          label="SKU"
+          bind:value={formSku}
+          placeholder="Optional"
+        />
+        <Input
+          name="varStock"
+          label="Stock Qty"
+          type="number"
+          bind:value={formStockQuantity}
+        />
+        <Select
+          name="varStockStatus"
+          label="Stock Status"
+          bind:value={formStockStatus}
+          options={stockStatusOptions}
+        />
       </div>
 
       <div class="flex justify-end gap-2">
-        <Button variant="ghost" size="sm" onclick={cancelForm} disabled={saving}>
+        <Button
+          variant="ghost"
+          size="sm"
+          onclick={cancelForm}
+          disabled={saving}
+        >
           Cancel
         </Button>
         <Button size="sm" onclick={handleSave} disabled={saving}>
@@ -278,7 +325,8 @@
   {#if variations.length === 0 && !showForm}
     <p class="text-sm text-gray-400 text-center py-4">
       {#if options.length === 0}
-        Add options first (e.g. Size), then create variations with pricing for each.
+        Add options first (e.g. Size), then create variations with pricing for
+        each.
       {:else}
         No variations yet. Add one for each option combination.
       {/if}
@@ -289,10 +337,15 @@
 <ConfirmDialog
   bind:open={deleteOpen}
   title="Delete Variation"
-  message={deleteTarget ? `Delete variation "${variationLabel(deleteTarget)}"?` : ""}
+  message={deleteTarget
+    ? `Delete variation "${variationLabel(deleteTarget)}"?`
+    : ""}
   confirmLabel="Delete"
   confirmVariant="danger"
   loading={deleteLoading}
   onConfirm={handleDelete}
-  onCancel={() => { deleteOpen = false; deleteTarget = null; }}
+  onCancel={() => {
+    deleteOpen = false;
+    deleteTarget = null;
+  }}
 />

@@ -46,10 +46,7 @@
       <span class="text-xs text-gray-500 hidden sm:inline">
         {$adminAuthStore.user?.email ?? ""}
       </span>
-      <button
-        onclick={handleLogout}
-        class="admin-bar-logout"
-      >
+      <button onclick={handleLogout} class="admin-bar-logout">
         <LogOut class="w-3.5 h-3.5" />
         <span class="hidden sm:inline">Logout</span>
       </button>
@@ -113,7 +110,9 @@
     font-size: 12px;
     color: #4b5563;
     border-radius: 6px;
-    transition: color 120ms, background 120ms;
+    transition:
+      color 120ms,
+      background 120ms;
   }
   .admin-bar-logout:hover {
     color: #dc2626;

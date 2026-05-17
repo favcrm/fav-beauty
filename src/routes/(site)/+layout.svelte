@@ -17,7 +17,10 @@
 
 <div class="flex min-h-screen flex-col">
   {#if brand.demoMode}
-    <a href="/setup" class="block bg-ink text-paper transition-colors hover:bg-accent-deep">
+    <a
+      href="/setup"
+      class="block bg-ink text-paper transition-colors hover:bg-accent-deep"
+    >
       <div
         class="shell flex items-center justify-center gap-2 py-1.5 text-center font-sans text-[0.64rem] uppercase tracking-wide"
       >

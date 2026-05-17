@@ -1,11 +1,18 @@
 <script lang="ts">
   import { page } from "$app/stores";
   import { onMount } from "svelte";
-  import { adminOrdersApi, adminInvoicesApi, adminSettingsApi } from "$lib/api/admin";
+  import {
+    adminOrdersApi,
+    adminInvoicesApi,
+    adminSettingsApi,
+  } from "$lib/api/admin";
   import type { CompanyProfile } from "$lib/api/admin";
   import type { OrderDetail, OrderStatus } from "$lib/types/admin";
   import { formatCurrency, formatDateTime } from "$lib/utils/formatting";
-  import { buildLineItemDescription, getLineItemMetaParts } from "$lib/utils/order-line-items";
+  import {
+    buildLineItemDescription,
+    getLineItemMetaParts,
+  } from "$lib/utils/order-line-items";
   import { openAlignedInvoicePrint } from "$lib/utils/admin-invoice-print";
   import OrderStatusStepper from "$lib/components/admin/OrderStatusStepper.svelte";
   import StatusBadge from "$lib/components/admin/StatusBadge.svelte";
@@ -34,9 +41,12 @@
 
   onMount(() => {
     loadOrder();
-    adminSettingsApi.getProfile().then((data) => (profile = data)).catch(() => {
-      profile = null;
-    });
+    adminSettingsApi
+      .getProfile()
+      .then((data) => (profile = data))
+      .catch(() => {
+        profile = null;
+      });
   });
 
   async function loadOrder() {
@@ -97,7 +107,10 @@
         : [],
       items: order.items.map((item) => ({
         name: item.productName,
-        meta: getLineItemMetaParts(item, { sku: "SKU", variant: "Variant" }).join(" · "),
+        meta: getLineItemMetaParts(item, {
+          sku: "SKU",
+          variant: "Variant",
+        }).join(" · "),
         quantity: item.quantity,
         unitPrice: amt(item.unitPrice),
         total: amt(item.lineTotal),
@@ -125,7 +138,10 @@
           currency: "HKD",
           status: "PAID",
           lineItems: order.items.map((item, i) => ({
-            description: buildLineItemDescription(item, { sku: "SKU", variant: "Variant" }),
+            description: buildLineItemDescription(item, {
+              sku: "SKU",
+              variant: "Variant",
+            }),
             quantity: item.quantity,
             unitPrice: item.unitPrice,
             total: item.lineTotal,
@@ -143,7 +159,10 @@
 </script>
 
 <div>
-  <a href="/admin/orders" class="text-sm text-gray-500 hover:text-gray-700 mb-4 inline-block">
+  <a
+    href="/admin/orders"
+    class="text-sm text-gray-500 hover:text-gray-700 mb-4 inline-block"
+  >
     &larr; Back to Orders
   </a>
 
@@ -155,8 +174,12 @@
     <!-- Header -->
     <div class="flex items-start justify-between mb-4">
       <div>
-        <h1 class="text-xl font-semibold text-gray-900">Order {order.orderNumber}</h1>
-        <p class="text-sm text-gray-500 mt-1">Placed {formatDateTime(order.createdAt)}</p>
+        <h1 class="text-xl font-semibold text-gray-900">
+          Order {order.orderNumber}
+        </h1>
+        <p class="text-sm text-gray-500 mt-1">
+          Placed {formatDateTime(order.createdAt)}
+        </p>
       </div>
       <StatusBadge status={order.status} variant="order" />
     </div>
@@ -170,20 +193,35 @@
       <!-- Order Items -->
       <div class="lg:col-span-2 space-y-4">
         <div class="bg-white rounded-lg border border-gray-200 p-4">
-          <h2 class="font-medium text-gray-900 mb-3">Items ({order.items.length})</h2>
+          <h2 class="font-medium text-gray-900 mb-3">
+            Items ({order.items.length})
+          </h2>
           <div class="divide-y divide-gray-100">
             {#each order.items as item (item.id)}
-              {@const metaParts = getLineItemMetaParts(item, { sku: "SKU", variant: "Variant" })}
+              {@const metaParts = getLineItemMetaParts(item, {
+                sku: "SKU",
+                variant: "Variant",
+              })}
               <div class="flex items-center justify-between py-3">
                 <div class="flex-1 min-w-0">
-                  <p class="text-sm font-medium text-gray-900">{item.productName}</p>
+                  <p class="text-sm font-medium text-gray-900">
+                    {item.productName}
+                  </p>
                   {#if metaParts.length > 0}
-                    <p class="mt-1 text-xs text-gray-500">{metaParts.join(" · ")}</p>
+                    <p class="mt-1 text-xs text-gray-500">
+                      {metaParts.join(" · ")}
+                    </p>
                   {/if}
                 </div>
                 <div class="text-right ml-4">
-                  <p class="text-sm text-gray-700">{item.quantity} &times; {formatCurrency(amt(item.unitPrice))}</p>
-                  <p class="text-sm font-medium text-gray-900">{formatCurrency(amt(item.lineTotal))}</p>
+                  <p class="text-sm text-gray-700">
+                    {item.quantity} &times; {formatCurrency(
+                      amt(item.unitPrice),
+                    )}
+                  </p>
+                  <p class="text-sm font-medium text-gray-900">
+                    {formatCurrency(amt(item.lineTotal))}
+                  </p>
                 </div>
               </div>
             {/each}
@@ -207,7 +245,9 @@
                 <span>{formatCurrency(amt(order.shippingCost))}</span>
               </div>
             {/if}
-            <div class="flex justify-between text-base font-semibold text-gray-900 pt-1">
+            <div
+              class="flex justify-between text-base font-semibold text-gray-900 pt-1"
+            >
               <span>Total</span>
               <span>{formatCurrency(amt(order.totalAmount))}</span>
             </div>
@@ -229,7 +269,10 @@
             {#if order.status === "delivered" || order.status === "shipped"}
               <button
                 class="inline-flex items-center gap-2 px-3 py-2 text-sm font-medium text-red-700 bg-red-50 border border-red-200 rounded-lg hover:bg-red-100 transition-colors"
-                onclick={() => { newStatus = "refunded"; updateStatus(); }}
+                onclick={() => {
+                  newStatus = "refunded";
+                  updateStatus();
+                }}
               >
                 <RotateCcw class="w-4 h-4" />
                 Process Refund
@@ -246,7 +289,8 @@
           <h2 class="font-medium text-gray-900 mb-2">Customer</h2>
           {#if order.customerInfo}
             <p class="text-sm text-gray-700">
-              {order.customerInfo.firstName} {order.customerInfo.lastName}
+              {order.customerInfo.firstName}
+              {order.customerInfo.lastName}
             </p>
             {#if order.customerInfo.email}
               <p class="text-sm text-gray-500">{order.customerInfo.email}</p>
@@ -268,7 +312,9 @@
               {#if order.shippingAddress.addressLine2}
                 <p>{order.shippingAddress.addressLine2}</p>
               {/if}
-              <p>{order.shippingAddress.city}, {order.shippingAddress.country}</p>
+              <p>
+                {order.shippingAddress.city}, {order.shippingAddress.country}
+              </p>
             </div>
           </div>
         {/if}
@@ -292,7 +338,9 @@
             {updating ? "Updating..." : "Update Status"}
           </Button>
           {#if updateSuccess}
-            <p class="text-xs text-emerald-600 mt-2 text-center">Status updated</p>
+            <p class="text-xs text-emerald-600 mt-2 text-center">
+              Status updated
+            </p>
           {/if}
         </div>
 

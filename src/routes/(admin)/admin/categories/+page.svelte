@@ -1,6 +1,10 @@
 <script lang="ts">
   import { adminCategoriesApi } from "$lib/api/admin";
-  import type { Category, CreateCategoryInput, Translations } from "$lib/types/admin";
+  import type {
+    Category,
+    CreateCategoryInput,
+    Translations,
+  } from "$lib/types/admin";
   import Button from "$lib/components/ui/Button.svelte";
   import Input from "$lib/components/ui/Input.svelte";
   import Modal from "$lib/components/ui/Modal.svelte";
@@ -59,7 +63,9 @@
     formName = category.name;
     formOnlineEnabled = category.onlineEnabled;
     formSortOrder = String(category.sortOrder);
-    formTranslations = category.translations ? { ...category.translations } : {};
+    formTranslations = category.translations
+      ? { ...category.translations }
+      : {};
     formError = "";
     modalOpen = true;
   }
@@ -89,7 +95,8 @@
       modalOpen = false;
       await loadCategories();
     } catch (err: unknown) {
-      formError = err instanceof Error ? err.message : "Failed to save category";
+      formError =
+        err instanceof Error ? err.message : "Failed to save category";
     } finally {
       saving = false;
     }
@@ -116,7 +123,9 @@
     }
   }
 
-  const modalTitle = $derived(editingCategory ? "Edit Category" : "Add Category");
+  const modalTitle = $derived(
+    editingCategory ? "Edit Category" : "Add Category",
+  );
 </script>
 
 <div>
@@ -136,10 +145,15 @@
   {:else if error}
     <div class="p-4 bg-red-50 text-red-700 rounded-lg text-sm">{error}</div>
   {:else if categories.length === 0}
-    <EmptyState title="No categories yet" message="Organize your products by creating categories">
+    <EmptyState
+      title="No categories yet"
+      message="Organize your products by creating categories"
+    >
       {#snippet icon()}<Tag class="w-6 h-6" />{/snippet}
       {#snippet actions()}
-        <Button size="sm" onclick={openCreate}><Plus class="w-4 h-4" /> Add Category</Button>
+        <Button size="sm" onclick={openCreate}
+          ><Plus class="w-4 h-4" /> Add Category</Button
+        >
       {/snippet}
     </EmptyState>
   {:else}
@@ -149,24 +163,39 @@
           <tr class="border-b border-gray-200 bg-gray-50">
             <th class="text-left px-4 py-3 font-medium text-gray-600">Name</th>
             <th class="text-left px-4 py-3 font-medium text-gray-600">Slug</th>
-            <th class="text-left px-4 py-3 font-medium text-gray-600">Online</th>
+            <th class="text-left px-4 py-3 font-medium text-gray-600">Online</th
+            >
             <th class="text-right px-4 py-3 font-medium text-gray-600">Sort</th>
-            <th class="text-right px-4 py-3 font-medium text-gray-600">Products</th>
-            <th class="text-right px-4 py-3 font-medium text-gray-600">Actions</th>
+            <th class="text-right px-4 py-3 font-medium text-gray-600"
+              >Products</th
+            >
+            <th class="text-right px-4 py-3 font-medium text-gray-600"
+              >Actions</th
+            >
           </tr>
         </thead>
         <tbody>
           {#each categories as category (category.id)}
-            <tr class="border-b border-gray-100 hover:bg-gray-50 transition-colors">
-              <td class="px-4 py-3 font-medium text-gray-900">{category.name}</td>
-              <td class="px-4 py-3 text-gray-500 font-mono text-xs">{category.slug}</td>
+            <tr
+              class="border-b border-gray-100 hover:bg-gray-50 transition-colors"
+            >
+              <td class="px-4 py-3 font-medium text-gray-900"
+                >{category.name}</td
+              >
+              <td class="px-4 py-3 text-gray-500 font-mono text-xs"
+                >{category.slug}</td
+              >
               <td class="px-4 py-3">
                 <Badge variant={category.onlineEnabled ? "success" : "default"}>
                   {category.onlineEnabled ? "Yes" : "No"}
                 </Badge>
               </td>
-              <td class="px-4 py-3 text-right text-gray-500 tabular-nums">{category.sortOrder}</td>
-              <td class="px-4 py-3 text-right text-gray-700 tabular-nums">{category.productCount}</td>
+              <td class="px-4 py-3 text-right text-gray-500 tabular-nums"
+                >{category.sortOrder}</td
+              >
+              <td class="px-4 py-3 text-right text-gray-700 tabular-nums"
+                >{category.productCount}</td
+              >
               <td class="px-4 py-3">
                 <div class="flex items-center justify-end gap-1">
                   <button
@@ -194,9 +223,18 @@
 </div>
 
 <Modal bind:open={modalOpen} title={modalTitle}>
-  <form novalidate onsubmit={(e) => { e.preventDefault(); handleSave(); }} class="space-y-4">
+  <form
+    novalidate
+    onsubmit={(e) => {
+      e.preventDefault();
+      handleSave();
+    }}
+    class="space-y-4"
+  >
     {#if formError}
-      <div class="p-3 bg-red-50 text-red-700 rounded-lg text-sm">{formError}</div>
+      <div class="p-3 bg-red-50 text-red-700 rounded-lg text-sm">
+        {formError}
+      </div>
     {/if}
 
     <Input
@@ -222,7 +260,9 @@
         bind:checked={formOnlineEnabled}
         class="rounded border-gray-300"
       />
-      <label for="onlineEnabled" class="text-sm text-gray-700">Show online</label>
+      <label for="onlineEnabled" class="text-sm text-gray-700"
+        >Show online</label
+      >
     </div>
 
     <LocaleTabs
@@ -233,11 +273,20 @@
     />
 
     <div class="flex justify-end gap-2 pt-2">
-      <Button variant="ghost" type="button" onclick={() => (modalOpen = false)} disabled={saving}>
+      <Button
+        variant="ghost"
+        type="button"
+        onclick={() => (modalOpen = false)}
+        disabled={saving}
+      >
         Cancel
       </Button>
       <Button type="submit" disabled={saving}>
-        {saving ? "Saving..." : editingCategory ? "Save Changes" : "Create Category"}
+        {saving
+          ? "Saving..."
+          : editingCategory
+            ? "Save Changes"
+            : "Create Category"}
       </Button>
     </div>
   </form>
@@ -246,10 +295,15 @@
 <ConfirmDialog
   bind:open={deleteOpen}
   title="Delete Category"
-  message={deleteTarget ? `Are you sure you want to delete "${deleteTarget.name}"?${deleteTarget.productCount > 0 ? ` This category has ${deleteTarget.productCount} products.` : ""}` : ""}
+  message={deleteTarget
+    ? `Are you sure you want to delete "${deleteTarget.name}"?${deleteTarget.productCount > 0 ? ` This category has ${deleteTarget.productCount} products.` : ""}`
+    : ""}
   confirmLabel="Delete"
   confirmVariant="danger"
   loading={deleteLoading}
   onConfirm={handleDelete}
-  onCancel={() => { deleteOpen = false; deleteTarget = null; }}
+  onCancel={() => {
+    deleteOpen = false;
+    deleteTarget = null;
+  }}
 />

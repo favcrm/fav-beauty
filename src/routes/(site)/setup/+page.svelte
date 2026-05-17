@@ -1,6 +1,11 @@
 <script lang="ts">
   import { getBrand, isLiveMode } from "$lib/data/provider";
-  import { listTreatments, listProducts, listStylists, listTiers } from "$lib/data/provider";
+  import {
+    listTreatments,
+    listProducts,
+    listStylists,
+    listTiers,
+  } from "$lib/data/provider";
   import Button from "$lib/components/Button.svelte";
 
   const brand = getBrand();
@@ -45,12 +50,14 @@
       <header class="flex flex-col gap-4">
         <span class="eyebrow">Template setup</span>
         <h1 class="font-display text-display-lg text-ink">
-          Connect this template to <span class="italic text-accent">FavCRM.</span>
+          Connect this template to <span class="italic text-accent"
+            >FavCRM.</span
+          >
         </h1>
         <p class="font-sans leading-relaxed text-ink-soft">
-          This template runs in two modes. Right now it is showing built-in demo content so
-          you can deploy and explore with zero configuration. When you are ready, connect a
-          FavCRM workspace to make it live.
+          This template runs in two modes. Right now it is showing built-in demo
+          content so you can deploy and explore with zero configuration. When
+          you are ready, connect a FavCRM workspace to make it live.
         </p>
       </header>
 
@@ -91,16 +98,21 @@
           <h2 class="font-display text-2xl text-ink">What the demo includes</h2>
           <div class="grid grid-cols-2 gap-3 sm:grid-cols-4">
             {#each seeded as item (item.label)}
-              <div class="rounded-petal border border-line bg-paper px-4 py-5 text-center">
+              <div
+                class="rounded-petal border border-line bg-paper px-4 py-5 text-center"
+              >
                 <div class="font-display text-4xl text-ink">{item.count}</div>
-                <div class="mt-1 font-sans text-[0.62rem] uppercase tracking-wide text-ink-faint">
+                <div
+                  class="mt-1 font-sans text-[0.62rem] uppercase tracking-wide text-ink-faint"
+                >
                   {item.label}
                 </div>
               </div>
             {/each}
           </div>
           <p class="font-sans text-[0.8rem] text-ink-soft">
-            Edit the seed content in <code class="bg-bone px-1.5 py-0.5 text-[0.85em]"
+            Edit the seed content in <code
+              class="bg-bone px-1.5 py-0.5 text-[0.85em]"
               >src/lib/data/mock/</code
             > — or replace it entirely once your workspace is connected.
           </p>
@@ -112,11 +124,19 @@
         <h2 class="font-display text-2xl text-ink">Going live</h2>
         <ol class="flex flex-col gap-3">
           {#each steps as step (step.n)}
-            <li class="flex gap-5 rounded-bloom border border-line bg-paper p-6">
-              <span class="font-display text-3xl italic text-accent">{step.n}</span>
+            <li
+              class="flex gap-5 rounded-bloom border border-line bg-paper p-6"
+            >
+              <span class="font-display text-3xl italic text-accent"
+                >{step.n}</span
+              >
               <div class="flex flex-col gap-1">
                 <h3 class="font-display text-xl text-ink">{step.title}</h3>
-                <p class="font-sans text-[0.86rem] leading-relaxed text-ink-soft">{step.body}</p>
+                <p
+                  class="font-sans text-[0.86rem] leading-relaxed text-ink-soft"
+                >
+                  {step.body}
+                </p>
               </div>
             </li>
           {/each}
@@ -124,12 +144,14 @@
       </div>
 
       <!-- phase 2 note -->
-      <div class="rounded-bloom border border-dashed border-clay bg-bone/60 p-6">
+      <div
+        class="rounded-bloom border border-dashed border-clay bg-bone/60 p-6"
+      >
         <div class="eyebrow !text-ink-soft">Roadmap</div>
         <p class="mt-2 font-sans text-[0.86rem] leading-relaxed text-ink-soft">
-          Live-mode data wiring (FavCRM SDK), a guided in-app registration flow and the
-          merchant admin panel are part of the next release. Until then, demo mode is the
-          full, deployable experience.
+          Live-mode data wiring (FavCRM SDK), a guided in-app registration flow
+          and the merchant admin panel are part of the next release. Until then,
+          demo mode is the full, deployable experience.
         </p>
       </div>
 

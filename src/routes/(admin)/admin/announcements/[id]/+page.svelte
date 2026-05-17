@@ -3,7 +3,11 @@
   import { goto } from "$app/navigation";
   import { onMount } from "svelte";
   import { adminAnnouncementsApi } from "$lib/api/admin";
-  import type { AnnouncementDetail, UpdateAnnouncementInput, AnnouncementStatus } from "$lib/types/admin";
+  import type {
+    AnnouncementDetail,
+    UpdateAnnouncementInput,
+    AnnouncementStatus,
+  } from "$lib/types/admin";
   import { formatDate, getErrorMessage } from "$lib/utils/formatting";
   import { sanitizeHtml } from "$lib/utils/admin-helpers";
   import StatusBadge from "$lib/components/admin/StatusBadge.svelte";
@@ -127,7 +131,10 @@
 </script>
 
 <div>
-  <a href="/admin/announcements" class="text-sm text-gray-500 hover:text-gray-700 mb-4 inline-block">
+  <a
+    href="/admin/announcements"
+    class="text-sm text-gray-500 hover:text-gray-700 mb-4 inline-block"
+  >
     &larr; Back to Announcements
   </a>
 
@@ -140,9 +147,13 @@
     <div class="flex items-start justify-between mb-6">
       <div>
         {#if editing}
-          <h1 class="text-xl font-semibold text-gray-900">Editing: {announcement.title}</h1>
+          <h1 class="text-xl font-semibold text-gray-900">
+            Editing: {announcement.title}
+          </h1>
         {:else}
-          <h1 class="text-xl font-semibold text-gray-900">{announcement.title}</h1>
+          <h1 class="text-xl font-semibold text-gray-900">
+            {announcement.title}
+          </h1>
         {/if}
         <p class="text-sm text-gray-500 mt-1">
           Created {formatDate(announcement.createdAt)}
@@ -150,15 +161,29 @@
       </div>
       <div class="flex items-center gap-2">
         {#if editing}
-          <Button variant="ghost" size="sm" onclick={cancelEdit} disabled={saving}>Cancel</Button>
-          <Button variant="primary" size="sm" onclick={handleSave} disabled={saving}>
+          <Button
+            variant="ghost"
+            size="sm"
+            onclick={cancelEdit}
+            disabled={saving}>Cancel</Button
+          >
+          <Button
+            variant="primary"
+            size="sm"
+            onclick={handleSave}
+            disabled={saving}
+          >
             {saving ? "Saving..." : "Save Changes"}
           </Button>
         {:else}
           <Button variant="outline" size="sm" onclick={enterEditMode}>
             <Pencil class="w-4 h-4" /> Edit
           </Button>
-          <Button variant="danger" size="sm" onclick={() => (showDeleteDialog = true)}>
+          <Button
+            variant="danger"
+            size="sm"
+            onclick={() => (showDeleteDialog = true)}
+          >
             <Trash2 class="w-4 h-4" /> Delete
           </Button>
         {/if}
@@ -166,7 +191,9 @@
     </div>
 
     {#if editError}
-      <div class="p-3 bg-red-50 text-red-700 rounded-lg text-sm mb-4">{editError}</div>
+      <div class="p-3 bg-red-50 text-red-700 rounded-lg text-sm mb-4">
+        {editError}
+      </div>
     {/if}
 
     {#if editing}
@@ -175,7 +202,12 @@
         <div class="lg:col-span-2 space-y-4">
           <!-- Basic Info -->
           <div class="bg-white rounded-lg border border-gray-200 p-4 space-y-4">
-            <Input name="editTitle" label="Title" bind:value={editTitle} required />
+            <Input
+              name="editTitle"
+              label="Title"
+              bind:value={editTitle}
+              required
+            />
             <div class="space-y-1">
               <label for="editContent" class="form-label">Content</label>
               <textarea
@@ -201,7 +233,9 @@
               </div>
             {/if}
             <label class="block">
-              <span class="text-sm text-gray-600">{uploading ? "Uploading..." : "Upload new image"}</span>
+              <span class="text-sm text-gray-600"
+                >{uploading ? "Uploading..." : "Upload new image"}</span
+              >
               <input
                 type="file"
                 accept="image/*"
@@ -216,7 +250,12 @@
         <!-- Sidebar -->
         <div class="space-y-4">
           <div class="bg-white rounded-lg border border-gray-200 p-4 space-y-4">
-            <Select name="editStatus" label="Status" bind:value={editStatus} options={statusOptions} />
+            <Select
+              name="editStatus"
+              label="Status"
+              bind:value={editStatus}
+              options={statusOptions}
+            />
           </div>
         </div>
       </div>
@@ -254,7 +293,10 @@
           <div class="bg-white rounded-lg border border-gray-200 p-4">
             <div class="flex items-center justify-between">
               <h2 class="font-medium text-gray-900">Status</h2>
-              <StatusBadge status={announcement.status} variant="announcement" />
+              <StatusBadge
+                status={announcement.status}
+                variant="announcement"
+              />
             </div>
           </div>
 
@@ -263,12 +305,16 @@
             <dl class="text-sm space-y-2">
               <div class="flex justify-between">
                 <dt class="text-gray-500">Created</dt>
-                <dd class="text-gray-700">{formatDate(announcement.createdAt)}</dd>
+                <dd class="text-gray-700">
+                  {formatDate(announcement.createdAt)}
+                </dd>
               </div>
               {#if announcement.updatedAt}
                 <div class="flex justify-between">
                   <dt class="text-gray-500">Updated</dt>
-                  <dd class="text-gray-700">{formatDate(announcement.updatedAt)}</dd>
+                  <dd class="text-gray-700">
+                    {formatDate(announcement.updatedAt)}
+                  </dd>
                 </div>
               {/if}
             </dl>
@@ -282,7 +328,9 @@
 <ConfirmDialog
   bind:open={showDeleteDialog}
   title="Delete Announcement"
-  message={announcement ? `Are you sure you want to delete "${announcement.title}"? This action cannot be undone.` : ""}
+  message={announcement
+    ? `Are you sure you want to delete "${announcement.title}"? This action cannot be undone.`
+    : ""}
   confirmLabel="Delete"
   confirmVariant="danger"
   loading={deleting}

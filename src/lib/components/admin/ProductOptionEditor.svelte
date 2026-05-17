@@ -127,24 +127,32 @@
   </div>
 
   {#if formError && !showForm}
-    <div class="p-2 bg-red-50 text-red-700 rounded text-xs mb-3">{formError}</div>
+    <div class="p-2 bg-red-50 text-red-700 rounded text-xs mb-3">
+      {formError}
+    </div>
   {/if}
 
   <!-- Existing options -->
   {#if options.length > 0 && !showForm}
     <div class="space-y-2">
       {#each options as option (option.id)}
-        <div class="flex items-center justify-between py-2 border-b border-gray-50 last:border-0">
+        <div
+          class="flex items-center justify-between py-2 border-b border-gray-50 last:border-0"
+        >
           <div>
             <div class="flex items-center gap-2">
-              <span class="text-sm font-medium text-gray-900">{option.name}</span>
+              <span class="text-sm font-medium text-gray-900"
+                >{option.name}</span
+              >
               {#if option.required}
                 <Badge variant="warning">Required</Badge>
               {/if}
             </div>
             <div class="flex flex-wrap gap-1 mt-1">
               {#each option.values as val (val.id)}
-                <span class="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded">
+                <span
+                  class="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded"
+                >
                   {val.value}
                 </span>
               {/each}
@@ -175,7 +183,9 @@
   {#if showForm}
     <div class="border border-gray-200 rounded-lg p-3 space-y-3 mt-2">
       {#if formError}
-        <div class="p-2 bg-red-50 text-red-700 rounded text-xs">{formError}</div>
+        <div class="p-2 bg-red-50 text-red-700 rounded text-xs">
+          {formError}
+        </div>
       {/if}
 
       <Input
@@ -194,12 +204,22 @@
       />
 
       <div class="flex items-center gap-2">
-        <input type="checkbox" id="optRequired" bind:checked={formRequired} class="rounded border-gray-300" />
+        <input
+          type="checkbox"
+          id="optRequired"
+          bind:checked={formRequired}
+          class="rounded border-gray-300"
+        />
         <label for="optRequired" class="text-sm text-gray-700">Required</label>
       </div>
 
       <div class="flex justify-end gap-2">
-        <Button variant="ghost" size="sm" onclick={cancelForm} disabled={saving}>
+        <Button
+          variant="ghost"
+          size="sm"
+          onclick={cancelForm}
+          disabled={saving}
+        >
           Cancel
         </Button>
         <Button size="sm" onclick={handleSave} disabled={saving}>
@@ -217,10 +237,15 @@
 <ConfirmDialog
   bind:open={deleteOpen}
   title="Delete Option"
-  message={deleteTarget ? `Delete option "${deleteTarget.name}" and all its values?` : ""}
+  message={deleteTarget
+    ? `Delete option "${deleteTarget.name}" and all its values?`
+    : ""}
   confirmLabel="Delete"
   confirmVariant="danger"
   loading={deleteLoading}
   onConfirm={handleDelete}
-  onCancel={() => { deleteOpen = false; deleteTarget = null; }}
+  onCancel={() => {
+    deleteOpen = false;
+    deleteTarget = null;
+  }}
 />

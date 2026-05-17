@@ -3,7 +3,11 @@
   import { goto } from "$app/navigation";
   import { onMount } from "svelte";
   import { adminProductsApi, adminCategoriesApi } from "$lib/api/admin";
-  import type { ProductDetail, UpdateProductInput, Category } from "$lib/types/admin";
+  import type {
+    ProductDetail,
+    UpdateProductInput,
+    Category,
+  } from "$lib/types/admin";
   import type { Translations } from "$lib/types/admin";
   import { formatCurrency, formatDate } from "$lib/utils/formatting";
   import StatusBadge from "$lib/components/admin/StatusBadge.svelte";
@@ -133,7 +137,10 @@
         description: editDescription.trim() || null,
         discountPrice: editDiscountPrice.trim() || null,
         memberPrice: editMemberPrice.trim() || null,
-        stockStatus: editStockStatus as "in_stock" | "out_of_stock" | "low_stock",
+        stockStatus: editStockStatus as
+          | "in_stock"
+          | "out_of_stock"
+          | "low_stock",
         trackInventory: editTrackInventory,
         categoryId: editCategoryId ? Number(editCategoryId) : null,
         productType: editProductType as "one_time" | "subscription",
@@ -144,7 +151,8 @@
       editing = false;
       await loadProduct();
     } catch (err: unknown) {
-      editError = err instanceof Error ? err.message : "Failed to update product";
+      editError =
+        err instanceof Error ? err.message : "Failed to update product";
     } finally {
       saving = false;
     }
@@ -166,7 +174,10 @@
 </script>
 
 <div>
-  <a href="/admin/products" class="text-sm text-gray-500 hover:text-gray-700 mb-4 inline-block">
+  <a
+    href="/admin/products"
+    class="text-sm text-gray-500 hover:text-gray-700 mb-4 inline-block"
+  >
     &larr; Back to Products
   </a>
 
@@ -179,26 +190,43 @@
     <div class="flex items-start justify-between mb-6">
       <div>
         {#if editing}
-          <h1 class="text-xl font-semibold text-gray-900">Editing: {product.name}</h1>
+          <h1 class="text-xl font-semibold text-gray-900">
+            Editing: {product.name}
+          </h1>
         {:else}
           <h1 class="text-xl font-semibold text-gray-900">{product.name}</h1>
         {/if}
         <p class="text-sm text-gray-500 mt-1">
-          {#if product.sku}SKU: {product.sku} &middot; {/if}
+          {#if product.sku}SKU: {product.sku} &middot;
+          {/if}
           Created {formatDate(product.createdAt)}
         </p>
       </div>
       <div class="flex items-center gap-2">
         {#if editing}
-          <Button variant="ghost" size="sm" onclick={cancelEdit} disabled={saving}>Cancel</Button>
-          <Button variant="primary" size="sm" onclick={handleSave} disabled={saving}>
+          <Button
+            variant="ghost"
+            size="sm"
+            onclick={cancelEdit}
+            disabled={saving}>Cancel</Button
+          >
+          <Button
+            variant="primary"
+            size="sm"
+            onclick={handleSave}
+            disabled={saving}
+          >
             {saving ? "Saving..." : "Save Changes"}
           </Button>
         {:else}
           <Button variant="outline" size="sm" onclick={enterEditMode}>
             <Pencil class="w-4 h-4" /> Edit
           </Button>
-          <Button variant="danger" size="sm" onclick={() => (showDeleteDialog = true)}>
+          <Button
+            variant="danger"
+            size="sm"
+            onclick={() => (showDeleteDialog = true)}
+          >
             <Trash2 class="w-4 h-4" /> Delete
           </Button>
         {/if}
@@ -206,7 +234,9 @@
     </div>
 
     {#if editError}
-      <div class="p-3 bg-red-50 text-red-700 rounded-lg text-sm mb-4">{editError}</div>
+      <div class="p-3 bg-red-50 text-red-700 rounded-lg text-sm mb-4">
+        {editError}
+      </div>
     {/if}
 
     {#if editing}
@@ -215,9 +245,15 @@
         <div class="lg:col-span-2 space-y-4">
           <!-- Basic Info -->
           <div class="bg-white rounded-lg border border-gray-200 p-4 space-y-4">
-            <Input name="editName" label="Name" bind:value={editName} required />
+            <Input
+              name="editName"
+              label="Name"
+              bind:value={editName}
+              required
+            />
             <div class="space-y-1">
-              <label for="editDescription" class="form-label">Description</label>
+              <label for="editDescription" class="form-label">Description</label
+              >
               <textarea
                 id="editDescription"
                 bind:value={editDescription}
@@ -237,13 +273,26 @@
           />
 
           <!-- Images (interactive) -->
-          <ImageUpload productId={product.id} images={product.images} onChanged={loadProduct} />
+          <ImageUpload
+            productId={product.id}
+            images={product.images}
+            onChanged={loadProduct}
+          />
 
           <!-- Options (interactive) -->
-          <ProductOptionEditor productId={product.id} options={product.options} onChanged={loadProduct} />
+          <ProductOptionEditor
+            productId={product.id}
+            options={product.options}
+            onChanged={loadProduct}
+          />
 
           <!-- Variations (interactive) -->
-          <ProductVariationEditor productId={product.id} variations={product.variations ?? []} options={product.options} onChanged={loadProduct} />
+          <ProductVariationEditor
+            productId={product.id}
+            variations={product.variations ?? []}
+            options={product.options}
+            onChanged={loadProduct}
+          />
         </div>
 
         <!-- Sidebar -->
@@ -251,26 +300,73 @@
           <!-- Pricing -->
           <div class="bg-white rounded-lg border border-gray-200 p-4 space-y-4">
             <h2 class="font-medium text-gray-900">Pricing</h2>
-            <Input name="editPrice" label="Price" bind:value={editPrice} required />
-            <Input name="editDiscountPrice" label="Discount Price" bind:value={editDiscountPrice} placeholder="Optional" />
-            <Input name="editMemberPrice" label="Member Price" bind:value={editMemberPrice} placeholder="Optional" />
+            <Input
+              name="editPrice"
+              label="Price"
+              bind:value={editPrice}
+              required
+            />
+            <Input
+              name="editDiscountPrice"
+              label="Discount Price"
+              bind:value={editDiscountPrice}
+              placeholder="Optional"
+            />
+            <Input
+              name="editMemberPrice"
+              label="Member Price"
+              bind:value={editMemberPrice}
+              placeholder="Optional"
+            />
           </div>
 
           <!-- Status & Organization -->
           <div class="bg-white rounded-lg border border-gray-200 p-4 space-y-4">
-            <Select name="editStatus" label="Status" bind:value={editStatus} options={statusOptions} />
-            <Select name="editProductType" label="Product Type" bind:value={editProductType} options={productTypeOptions} />
-            <Select name="editCategoryId" label="Category" bind:value={editCategoryId} options={categoryOptions} />
+            <Select
+              name="editStatus"
+              label="Status"
+              bind:value={editStatus}
+              options={statusOptions}
+            />
+            <Select
+              name="editProductType"
+              label="Product Type"
+              bind:value={editProductType}
+              options={productTypeOptions}
+            />
+            <Select
+              name="editCategoryId"
+              label="Category"
+              bind:value={editCategoryId}
+              options={categoryOptions}
+            />
           </div>
 
           <!-- Inventory -->
           <div class="bg-white rounded-lg border border-gray-200 p-4 space-y-4">
             <h2 class="font-medium text-gray-900">Inventory</h2>
-            <Input name="editStockQuantity" label="Stock Quantity" type="number" bind:value={editStockQuantity} />
-            <Select name="editStockStatus" label="Stock Status" bind:value={editStockStatus} options={stockStatusOptions} />
+            <Input
+              name="editStockQuantity"
+              label="Stock Quantity"
+              type="number"
+              bind:value={editStockQuantity}
+            />
+            <Select
+              name="editStockStatus"
+              label="Stock Status"
+              bind:value={editStockStatus}
+              options={stockStatusOptions}
+            />
             <div class="flex items-center gap-2">
-              <input type="checkbox" id="editTrackInv" bind:checked={editTrackInventory} class="rounded border-gray-300" />
-              <label for="editTrackInv" class="text-sm text-gray-700">Track Inventory</label>
+              <input
+                type="checkbox"
+                id="editTrackInv"
+                bind:checked={editTrackInventory}
+                class="rounded border-gray-300"
+              />
+              <label for="editTrackInv" class="text-sm text-gray-700"
+                >Track Inventory</label
+              >
             </div>
           </div>
         </div>
@@ -285,10 +381,19 @@
               <h2 class="font-medium text-gray-900 mb-3">Images</h2>
               <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
                 {#each product.images as image (image.id)}
-                  <div class="relative aspect-square rounded-lg overflow-hidden bg-gray-100">
-                    <img src={image.src} alt={image.alt ?? product.name} class="w-full h-full object-cover" />
+                  <div
+                    class="relative aspect-square rounded-lg overflow-hidden bg-gray-100"
+                  >
+                    <img
+                      src={image.src}
+                      alt={image.alt ?? product.name}
+                      class="w-full h-full object-cover"
+                    />
                     {#if image.isPrimary}
-                      <span class="absolute top-1 left-1 bg-blue-600 text-white text-[10px] px-1.5 py-0.5 rounded">Primary</span>
+                      <span
+                        class="absolute top-1 left-1 bg-blue-600 text-white text-[10px] px-1.5 py-0.5 rounded"
+                        >Primary</span
+                      >
                     {/if}
                   </div>
                 {/each}
@@ -300,19 +405,26 @@
           {#if product.description}
             <div class="bg-white rounded-lg border border-gray-200 p-4">
               <h2 class="font-medium text-gray-900 mb-2">Description</h2>
-              <p class="text-sm text-gray-700 whitespace-pre-wrap">{product.description}</p>
+              <p class="text-sm text-gray-700 whitespace-pre-wrap">
+                {product.description}
+              </p>
             </div>
           {/if}
 
           <!-- Options -->
           {#if product.options.length > 0}
             <div class="bg-white rounded-lg border border-gray-200 p-4">
-              <h2 class="font-medium text-gray-900 mb-3">Options ({product.options.length})</h2>
+              <h2 class="font-medium text-gray-900 mb-3">
+                Options ({product.options.length})
+              </h2>
               <div class="space-y-2">
                 {#each product.options as option (option.id)}
                   <div class="text-sm">
-                    <span class="font-medium text-gray-700">{option.name}:</span>
-                    <span class="text-gray-500 ml-1">{option.values.map(v => v.value).join(", ")}</span>
+                    <span class="font-medium text-gray-700">{option.name}:</span
+                    >
+                    <span class="text-gray-500 ml-1"
+                      >{option.values.map((v) => v.value).join(", ")}</span
+                    >
                   </div>
                 {/each}
               </div>
@@ -322,14 +434,23 @@
           <!-- Variations -->
           {#if (product.variations ?? []).length > 0}
             <div class="bg-white rounded-lg border border-gray-200 p-4">
-              <h2 class="font-medium text-gray-900 mb-3">Variations ({product.variations.length})</h2>
+              <h2 class="font-medium text-gray-900 mb-3">
+                Variations ({product.variations.length})
+              </h2>
               <div class="space-y-2">
                 {#each product.variations as v (v.id)}
-                  <div class="flex items-center justify-between py-1.5 border-b border-gray-50 last:border-0 text-sm">
+                  <div
+                    class="flex items-center justify-between py-1.5 border-b border-gray-50 last:border-0 text-sm"
+                  >
                     <span class="font-medium text-gray-700">
-                      {v.name || (v.selectedOptions ? Object.values(v.selectedOptions).join(" / ") : `#${v.id}`)}
+                      {v.name ||
+                        (v.selectedOptions
+                          ? Object.values(v.selectedOptions).join(" / ")
+                          : `#${v.id}`)}
                     </span>
-                    <span class="text-gray-900 font-semibold">{formatCurrency(parseFloat(v.price))}</span>
+                    <span class="text-gray-900 font-semibold"
+                      >{formatCurrency(parseFloat(v.price))}</span
+                    >
                   </div>
                 {/each}
               </div>
@@ -351,18 +472,24 @@
             <dl class="text-sm space-y-2">
               <div class="flex justify-between">
                 <dt class="text-gray-500">Price</dt>
-                <dd class="font-medium text-gray-900">{formatCurrency(parseFloat(product.price))}</dd>
+                <dd class="font-medium text-gray-900">
+                  {formatCurrency(parseFloat(product.price))}
+                </dd>
               </div>
               {#if product.discountPrice}
                 <div class="flex justify-between">
                   <dt class="text-gray-500">Discount Price</dt>
-                  <dd class="text-green-600 font-medium">{formatCurrency(parseFloat(product.discountPrice))}</dd>
+                  <dd class="text-green-600 font-medium">
+                    {formatCurrency(parseFloat(product.discountPrice))}
+                  </dd>
                 </div>
               {/if}
               {#if product.memberPrice}
                 <div class="flex justify-between">
                   <dt class="text-gray-500">Member Price</dt>
-                  <dd class="text-blue-600 font-medium">{formatCurrency(parseFloat(product.memberPrice))}</dd>
+                  <dd class="text-blue-600 font-medium">
+                    {formatCurrency(parseFloat(product.memberPrice))}
+                  </dd>
                 </div>
               {/if}
             </dl>
@@ -373,15 +500,24 @@
             <dl class="text-sm space-y-2">
               <div class="flex justify-between">
                 <dt class="text-gray-500">Stock</dt>
-                <dd class:text-red-600={product.stockQuantity <= 0} class="font-medium">{product.stockQuantity}</dd>
+                <dd
+                  class:text-red-600={product.stockQuantity <= 0}
+                  class="font-medium"
+                >
+                  {product.stockQuantity}
+                </dd>
               </div>
               <div class="flex justify-between">
                 <dt class="text-gray-500">Stock Status</dt>
-                <dd class="text-gray-700">{product.stockStatus.replace(/_/g, " ")}</dd>
+                <dd class="text-gray-700">
+                  {product.stockStatus.replace(/_/g, " ")}
+                </dd>
               </div>
               <div class="flex justify-between">
                 <dt class="text-gray-500">Track Inventory</dt>
-                <dd class="text-gray-700">{product.trackInventory ? "Yes" : "No"}</dd>
+                <dd class="text-gray-700">
+                  {product.trackInventory ? "Yes" : "No"}
+                </dd>
               </div>
             </dl>
           </div>
@@ -432,7 +568,9 @@
 <ConfirmDialog
   bind:open={showDeleteDialog}
   title="Delete Product"
-  message={product ? `Are you sure you want to delete "${product.name}"? This action cannot be undone.` : ""}
+  message={product
+    ? `Are you sure you want to delete "${product.name}"? This action cannot be undone.`
+    : ""}
   confirmLabel="Delete"
   confirmVariant="danger"
   loading={deleting}

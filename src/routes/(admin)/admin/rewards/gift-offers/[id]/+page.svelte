@@ -3,9 +3,16 @@
   import { goto } from "$app/navigation";
   import { onMount } from "svelte";
   import { adminGiftOffersApi } from "$lib/api/admin";
-  import type { GiftOfferDetail, UpdateGiftOfferInput, GiftOfferStatus } from "$lib/types/admin";
+  import type {
+    GiftOfferDetail,
+    UpdateGiftOfferInput,
+    GiftOfferStatus,
+  } from "$lib/types/admin";
   import { formatDate, getErrorMessage } from "$lib/utils/formatting";
-  import { faceValueTypeOptions, formatFaceValue } from "$lib/utils/admin-helpers";
+  import {
+    faceValueTypeOptions,
+    formatFaceValue,
+  } from "$lib/utils/admin-helpers";
 
   import StatusBadge from "$lib/components/admin/StatusBadge.svelte";
   import LoadingSkeleton from "$lib/components/ui/LoadingSkeleton.svelte";
@@ -88,9 +95,11 @@
     editFaceValue = offer.faceValue != null ? String(offer.faceValue) : "";
     editFaceValueType = offer.faceValueType ?? "AMOUNT";
     editQuota = offer.quota != null ? String(offer.quota) : "";
-    editQuotaPerMember = offer.quotaPerMember != null ? String(offer.quotaPerMember) : "";
+    editQuotaPerMember =
+      offer.quotaPerMember != null ? String(offer.quotaPerMember) : "";
     editTermsAndConditions = offer.termsAndConditions ?? "";
-    editExpiryPeriod = offer.expiryPeriod != null ? String(offer.expiryPeriod) : "";
+    editExpiryPeriod =
+      offer.expiryPeriod != null ? String(offer.expiryPeriod) : "";
     editExpiryPeriodUnit = offer.expiryPeriodUnit ?? "";
     editStartDate = offer.startDate ?? "";
     editEndDate = offer.endDate ?? "";
@@ -121,11 +130,17 @@
         stamps: parseInt(editStamps, 10) || 0,
         isRedeemable: editIsRedeemable,
         faceValue: editFaceValue.trim() ? parseFloat(editFaceValue) : null,
-        faceValueType: editFaceValue.trim() ? (editFaceValueType as "PERCENTAGE" | "AMOUNT") : null,
+        faceValueType: editFaceValue.trim()
+          ? (editFaceValueType as "PERCENTAGE" | "AMOUNT")
+          : null,
         quota: editQuota.trim() ? parseInt(editQuota, 10) : null,
-        quotaPerMember: editQuotaPerMember.trim() ? parseInt(editQuotaPerMember, 10) : null,
+        quotaPerMember: editQuotaPerMember.trim()
+          ? parseInt(editQuotaPerMember, 10)
+          : null,
         termsAndConditions: editTermsAndConditions.trim() || undefined,
-        expiryPeriod: editExpiryPeriod.trim() ? parseInt(editExpiryPeriod, 10) : null,
+        expiryPeriod: editExpiryPeriod.trim()
+          ? parseInt(editExpiryPeriod, 10)
+          : null,
         expiryPeriodUnit: editExpiryPeriodUnit || null,
         startDate: editStartDate || null,
         endDate: editEndDate || null,
@@ -172,11 +187,13 @@
       deleting = false;
     }
   }
-
 </script>
 
 <div>
-  <a href="/admin/rewards/gift-offers" class="text-sm text-gray-500 hover:text-gray-700 mb-4 inline-block">
+  <a
+    href="/admin/rewards/gift-offers"
+    class="text-sm text-gray-500 hover:text-gray-700 mb-4 inline-block"
+  >
     &larr; Back to Gift Offers
   </a>
 
@@ -189,7 +206,9 @@
     <div class="flex items-start justify-between mb-6">
       <div>
         {#if editing}
-          <h1 class="text-xl font-semibold text-gray-900">Editing: {offer.name}</h1>
+          <h1 class="text-xl font-semibold text-gray-900">
+            Editing: {offer.name}
+          </h1>
         {:else}
           <h1 class="text-xl font-semibold text-gray-900">{offer.name}</h1>
         {/if}
@@ -199,15 +218,29 @@
       </div>
       <div class="flex items-center gap-2">
         {#if editing}
-          <Button variant="ghost" size="sm" onclick={cancelEdit} disabled={saving}>Cancel</Button>
-          <Button variant="primary" size="sm" onclick={handleSave} disabled={saving}>
+          <Button
+            variant="ghost"
+            size="sm"
+            onclick={cancelEdit}
+            disabled={saving}>Cancel</Button
+          >
+          <Button
+            variant="primary"
+            size="sm"
+            onclick={handleSave}
+            disabled={saving}
+          >
             {saving ? "Saving..." : "Save Changes"}
           </Button>
         {:else}
           <Button variant="outline" size="sm" onclick={enterEditMode}>
             <Pencil class="w-4 h-4" /> Edit
           </Button>
-          <Button variant="danger" size="sm" onclick={() => (showDeleteDialog = true)}>
+          <Button
+            variant="danger"
+            size="sm"
+            onclick={() => (showDeleteDialog = true)}
+          >
             <Trash2 class="w-4 h-4" /> Delete
           </Button>
         {/if}
@@ -215,7 +248,9 @@
     </div>
 
     {#if editError}
-      <div class="p-3 bg-red-50 text-red-700 rounded-lg text-sm mb-4">{editError}</div>
+      <div class="p-3 bg-red-50 text-red-700 rounded-lg text-sm mb-4">
+        {editError}
+      </div>
     {/if}
 
     {#if editing}
@@ -225,9 +260,15 @@
           <!-- Basic Info -->
           <div class="bg-white rounded-lg border border-gray-200 p-4 space-y-4">
             <h2 class="font-medium text-gray-900">Basic Info</h2>
-            <Input name="editName" label="Name" bind:value={editName} required />
+            <Input
+              name="editName"
+              label="Name"
+              bind:value={editName}
+              required
+            />
             <div class="space-y-1">
-              <label for="editDescription" class="form-label">Description</label>
+              <label for="editDescription" class="form-label">Description</label
+              >
               <textarea
                 id="editDescription"
                 bind:value={editDescription}
@@ -237,7 +278,9 @@
               ></textarea>
             </div>
             <div class="space-y-1">
-              <label for="editTerms" class="form-label">Terms & Conditions</label>
+              <label for="editTerms" class="form-label"
+                >Terms & Conditions</label
+              >
               <textarea
                 id="editTerms"
                 bind:value={editTermsAndConditions}
@@ -252,8 +295,14 @@
           <div class="bg-white rounded-lg border border-gray-200 p-4 space-y-4">
             <h2 class="font-medium text-gray-900">Image</h2>
             {#if offer.image}
-              <div class="relative w-48 h-48 rounded-lg overflow-hidden bg-gray-100">
-                <img src={offer.image} alt={offer.name} class="w-full h-full object-cover" />
+              <div
+                class="relative w-48 h-48 rounded-lg overflow-hidden bg-gray-100"
+              >
+                <img
+                  src={offer.image}
+                  alt={offer.name}
+                  class="w-full h-full object-cover"
+                />
               </div>
             {/if}
             <label class="inline-flex items-center gap-2 cursor-pointer">
@@ -264,9 +313,18 @@
                 onchange={handleImageUpload}
                 disabled={uploading}
               />
-              <Button variant="outline" size="sm" type="button" disabled={uploading}>
+              <Button
+                variant="outline"
+                size="sm"
+                type="button"
+                disabled={uploading}
+              >
                 <Upload class="w-4 h-4" />
-                {uploading ? "Uploading..." : offer.image ? "Replace Image" : "Upload Image"}
+                {uploading
+                  ? "Uploading..."
+                  : offer.image
+                    ? "Replace Image"
+                    : "Upload Image"}
               </Button>
             </label>
           </div>
@@ -276,39 +334,107 @@
         <div class="space-y-4">
           <div class="bg-white rounded-lg border border-gray-200 p-4 space-y-4">
             <h2 class="font-medium text-gray-900">Status</h2>
-            <Select name="editStatus" label="Status" bind:value={editStatus} options={statusOptions} />
+            <Select
+              name="editStatus"
+              label="Status"
+              bind:value={editStatus}
+              options={statusOptions}
+            />
           </div>
 
           <div class="bg-white rounded-lg border border-gray-200 p-4 space-y-4">
             <h2 class="font-medium text-gray-900">Cost</h2>
-            <Input name="editPoints" label="Points Cost" type="number" bind:value={editPoints} placeholder="0" />
-            <Input name="editStamps" label="Stamps Cost" type="number" bind:value={editStamps} placeholder="0" />
+            <Input
+              name="editPoints"
+              label="Points Cost"
+              type="number"
+              bind:value={editPoints}
+              placeholder="0"
+            />
+            <Input
+              name="editStamps"
+              label="Stamps Cost"
+              type="number"
+              bind:value={editStamps}
+              placeholder="0"
+            />
             <div class="flex items-center gap-2">
-              <input type="checkbox" id="editRedeemable" bind:checked={editIsRedeemable} class="rounded border-gray-300" />
-              <label for="editRedeemable" class="text-sm text-gray-700">Redeemable by members</label>
+              <input
+                type="checkbox"
+                id="editRedeemable"
+                bind:checked={editIsRedeemable}
+                class="rounded border-gray-300"
+              />
+              <label for="editRedeemable" class="text-sm text-gray-700"
+                >Redeemable by members</label
+              >
             </div>
           </div>
 
           <div class="bg-white rounded-lg border border-gray-200 p-4 space-y-4">
             <h2 class="font-medium text-gray-900">Face Value</h2>
-            <Input name="editFaceValue" label="Value" type="number" bind:value={editFaceValue} placeholder="0" />
-            <Select name="editFaceValueType" label="Type" bind:value={editFaceValueType} options={faceValueTypeOptions} />
+            <Input
+              name="editFaceValue"
+              label="Value"
+              type="number"
+              bind:value={editFaceValue}
+              placeholder="0"
+            />
+            <Select
+              name="editFaceValueType"
+              label="Type"
+              bind:value={editFaceValueType}
+              options={faceValueTypeOptions}
+            />
           </div>
 
           <div class="bg-white rounded-lg border border-gray-200 p-4 space-y-4">
             <h2 class="font-medium text-gray-900">Quota</h2>
-            <Input name="editQuota" label="Total Quota" type="number" bind:value={editQuota} placeholder="Unlimited" />
-            <Input name="editQuotaPerMember" label="Per Member" type="number" bind:value={editQuotaPerMember} placeholder="Unlimited" />
+            <Input
+              name="editQuota"
+              label="Total Quota"
+              type="number"
+              bind:value={editQuota}
+              placeholder="Unlimited"
+            />
+            <Input
+              name="editQuotaPerMember"
+              label="Per Member"
+              type="number"
+              bind:value={editQuotaPerMember}
+              placeholder="Unlimited"
+            />
           </div>
 
           <div class="bg-white rounded-lg border border-gray-200 p-4 space-y-4">
             <h2 class="font-medium text-gray-900">Expiry</h2>
             <div class="grid grid-cols-2 gap-2">
-              <Input name="editExpiryPeriod" label="Period" type="number" bind:value={editExpiryPeriod} placeholder="—" />
-              <Select name="editExpiryUnit" label="Unit" bind:value={editExpiryPeriodUnit} options={expiryUnitOptions} />
+              <Input
+                name="editExpiryPeriod"
+                label="Period"
+                type="number"
+                bind:value={editExpiryPeriod}
+                placeholder="—"
+              />
+              <Select
+                name="editExpiryUnit"
+                label="Unit"
+                bind:value={editExpiryPeriodUnit}
+                options={expiryUnitOptions}
+              />
             </div>
-            <Input name="editStartDate" label="Start Date" type="date" bind:value={editStartDate} />
-            <Input name="editEndDate" label="End Date" type="date" bind:value={editEndDate} />
+            <Input
+              name="editStartDate"
+              label="Start Date"
+              type="date"
+              bind:value={editStartDate}
+            />
+            <Input
+              name="editEndDate"
+              label="End Date"
+              type="date"
+              bind:value={editEndDate}
+            />
           </div>
         </div>
       </div>
@@ -321,7 +447,11 @@
             <div class="bg-white rounded-lg border border-gray-200 p-4">
               <h2 class="font-medium text-gray-900 mb-3">Image</h2>
               <div class="w-48 h-48 rounded-lg overflow-hidden bg-gray-100">
-                <img src={offer.image} alt={offer.name} class="w-full h-full object-cover" />
+                <img
+                  src={offer.image}
+                  alt={offer.name}
+                  class="w-full h-full object-cover"
+                />
               </div>
             </div>
           {/if}
@@ -330,7 +460,9 @@
           {#if offer.description}
             <div class="bg-white rounded-lg border border-gray-200 p-4">
               <h2 class="font-medium text-gray-900 mb-2">Description</h2>
-              <p class="text-sm text-gray-700 whitespace-pre-wrap">{offer.description}</p>
+              <p class="text-sm text-gray-700 whitespace-pre-wrap">
+                {offer.description}
+              </p>
             </div>
           {/if}
 
@@ -338,7 +470,9 @@
           {#if offer.termsAndConditions}
             <div class="bg-white rounded-lg border border-gray-200 p-4">
               <h2 class="font-medium text-gray-900 mb-2">Terms & Conditions</h2>
-              <p class="text-sm text-gray-700 whitespace-pre-wrap">{offer.termsAndConditions}</p>
+              <p class="text-sm text-gray-700 whitespace-pre-wrap">
+                {offer.termsAndConditions}
+              </p>
             </div>
           {/if}
         </div>
@@ -365,7 +499,9 @@
               </div>
               <div class="flex justify-between">
                 <dt class="text-gray-500">Redeemable</dt>
-                <dd class="text-gray-700">{offer.isRedeemable ? "Yes" : "No"}</dd>
+                <dd class="text-gray-700">
+                  {offer.isRedeemable ? "Yes" : "No"}
+                </dd>
               </div>
             </dl>
           </div>
@@ -375,12 +511,18 @@
             <dl class="text-sm space-y-2">
               <div class="flex justify-between">
                 <dt class="text-gray-500">Value</dt>
-                <dd class="font-medium text-gray-900">{formatFaceValue(offer)}</dd>
+                <dd class="font-medium text-gray-900">
+                  {formatFaceValue(offer)}
+                </dd>
               </div>
               {#if offer.faceValueType}
                 <div class="flex justify-between">
                   <dt class="text-gray-500">Type</dt>
-                  <dd class="text-gray-700">{offer.faceValueType === "PERCENTAGE" ? "Percentage" : "Fixed Amount"}</dd>
+                  <dd class="text-gray-700">
+                    {offer.faceValueType === "PERCENTAGE"
+                      ? "Percentage"
+                      : "Fixed Amount"}
+                  </dd>
                 </div>
               {/if}
             </dl>
@@ -395,7 +537,9 @@
               </div>
               <div class="flex justify-between">
                 <dt class="text-gray-500">Per Member</dt>
-                <dd class="text-gray-700">{offer.quotaPerMember ?? "Unlimited"}</dd>
+                <dd class="text-gray-700">
+                  {offer.quotaPerMember ?? "Unlimited"}
+                </dd>
               </div>
             </dl>
           </div>
@@ -407,7 +551,10 @@
                 {#if offer.expiryPeriod != null}
                   <div class="flex justify-between">
                     <dt class="text-gray-500">Period</dt>
-                    <dd class="text-gray-700">{offer.expiryPeriod} {offer.expiryPeriodUnit?.toLowerCase() ?? ""}</dd>
+                    <dd class="text-gray-700">
+                      {offer.expiryPeriod}
+                      {offer.expiryPeriodUnit?.toLowerCase() ?? ""}
+                    </dd>
                   </div>
                 {/if}
                 {#if offer.startDate}
@@ -450,7 +597,9 @@
 <ConfirmDialog
   bind:open={showDeleteDialog}
   title="Delete Gift Offer"
-  message={offer ? `Are you sure you want to delete "${offer.name}"? This action cannot be undone.` : ""}
+  message={offer
+    ? `Are you sure you want to delete "${offer.name}"? This action cannot be undone.`
+    : ""}
   confirmLabel="Delete"
   confirmVariant="danger"
   loading={deleting}

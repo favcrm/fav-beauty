@@ -1,7 +1,11 @@
 <script lang="ts">
   import { untrack } from "svelte";
   import { adminCustomersApi } from "$lib/api/admin";
-  import type { Account, AdminPaginatedResponse, CreateAccountInput } from "$lib/types/admin";
+  import type {
+    Account,
+    AdminPaginatedResponse,
+    CreateAccountInput,
+  } from "$lib/types/admin";
   import { formatDate } from "$lib/utils/formatting";
   import SearchInput from "$lib/components/ui/SearchInput.svelte";
   import Pagination from "$lib/components/ui/Pagination.svelte";
@@ -60,13 +64,20 @@
     { value: "referral", label: "Referral" },
   ];
 
-  function lifeStageBadgeVariant(stage: string): "success" | "warning" | "error" | "info" | "default" {
+  function lifeStageBadgeVariant(
+    stage: string,
+  ): "success" | "warning" | "error" | "info" | "default" {
     switch (stage) {
-      case "vip": return "success";
-      case "active": return "info";
-      case "lead": return "warning";
-      case "churned": return "error";
-      default: return "default";
+      case "vip":
+        return "success";
+      case "active":
+        return "info";
+      case "lead":
+        return "warning";
+      case "churned":
+        return "error";
+      default:
+        return "default";
     }
   }
 
@@ -122,7 +133,8 @@
       createOpen = false;
       await loadCustomers();
     } catch (err: unknown) {
-      createError = err instanceof Error ? err.message : "Failed to create customer";
+      createError =
+        err instanceof Error ? err.message : "Failed to create customer";
     } finally {
       createLoading = false;
     }
@@ -163,7 +175,9 @@
   $effect(() => {
     search;
     page;
-    untrack(() => { loadCustomers(); });
+    untrack(() => {
+      loadCustomers();
+    });
   });
 </script>
 
@@ -194,11 +208,18 @@
   {:else if error}
     <div class="p-4 bg-red-50 text-red-700 rounded-lg text-sm">{error}</div>
   {:else if data && data.items.length === 0}
-    <EmptyState title="No customers found" message={search ? "Try adjusting your search terms" : "Add your first customer to get started"}>
+    <EmptyState
+      title="No customers found"
+      message={search
+        ? "Try adjusting your search terms"
+        : "Add your first customer to get started"}
+    >
       {#snippet icon()}<Users class="w-6 h-6" />{/snippet}
       {#snippet actions()}
         {#if !search}
-          <Button size="sm" onclick={openCreateModal}><Plus class="w-4 h-4" /> Add Customer</Button>
+          <Button size="sm" onclick={openCreateModal}
+            ><Plus class="w-4 h-4" /> Add Customer</Button
+          >
         {/if}
       {/snippet}
     </EmptyState>
@@ -208,20 +229,38 @@
         <table class="w-full text-sm">
           <thead>
             <tr class="border-b border-gray-200 bg-gray-50">
-              <th class="text-left px-4 py-3 font-medium text-gray-600">Name</th>
-              <th class="text-left px-4 py-3 font-medium text-gray-600">Email</th>
-              <th class="text-left px-4 py-3 font-medium text-gray-600">Phone</th>
-              <th class="text-left px-4 py-3 font-medium text-gray-600">Life Stage</th>
-              <th class="text-left px-4 py-3 font-medium text-gray-600">Membership</th>
-              <th class="text-left px-4 py-3 font-medium text-gray-600">Joined</th>
-              <th class="text-right px-4 py-3 font-medium text-gray-600">Actions</th>
+              <th class="text-left px-4 py-3 font-medium text-gray-600">Name</th
+              >
+              <th class="text-left px-4 py-3 font-medium text-gray-600"
+                >Email</th
+              >
+              <th class="text-left px-4 py-3 font-medium text-gray-600"
+                >Phone</th
+              >
+              <th class="text-left px-4 py-3 font-medium text-gray-600"
+                >Life Stage</th
+              >
+              <th class="text-left px-4 py-3 font-medium text-gray-600"
+                >Membership</th
+              >
+              <th class="text-left px-4 py-3 font-medium text-gray-600"
+                >Joined</th
+              >
+              <th class="text-right px-4 py-3 font-medium text-gray-600"
+                >Actions</th
+              >
             </tr>
           </thead>
           <tbody>
             {#each data.items as customer (customer.id)}
-              <tr class="border-b border-gray-100 hover:bg-gray-50 transition-colors">
+              <tr
+                class="border-b border-gray-100 hover:bg-gray-50 transition-colors"
+              >
                 <td class="px-4 py-3">
-                  <a href="/admin/customers/{customer.id}" class="font-medium text-blue-600 hover:text-blue-800">
+                  <a
+                    href="/admin/customers/{customer.id}"
+                    class="font-medium text-blue-600 hover:text-blue-800"
+                  >
                     {customer.name || "—"}
                   </a>
                 </td>
@@ -239,7 +278,9 @@
                     <span class="text-gray-400">—</span>
                   {/if}
                 </td>
-                <td class="px-4 py-3 text-gray-500">{formatDate(customer.createdAt)}</td>
+                <td class="px-4 py-3 text-gray-500"
+                  >{formatDate(customer.createdAt)}</td
+                >
                 <td class="px-4 py-3">
                   <div class="flex items-center justify-end gap-1">
                     <a
@@ -277,9 +318,18 @@
 
 <!-- Create Customer Modal -->
 <Modal bind:open={createOpen} title="Add Customer">
-  <form novalidate onsubmit={(e) => { e.preventDefault(); handleCreate(); }} class="space-y-4">
+  <form
+    novalidate
+    onsubmit={(e) => {
+      e.preventDefault();
+      handleCreate();
+    }}
+    class="space-y-4"
+  >
     {#if createError}
-      <div class="p-3 bg-red-50 text-red-700 rounded-lg text-sm">{createError}</div>
+      <div class="p-3 bg-red-50 text-red-700 rounded-lg text-sm">
+        {createError}
+      </div>
     {/if}
 
     <Input
@@ -328,7 +378,11 @@
     />
 
     <div class="flex justify-end gap-2 pt-2">
-      <Button variant="ghost" type="button" onclick={() => (createOpen = false)}>
+      <Button
+        variant="ghost"
+        type="button"
+        onclick={() => (createOpen = false)}
+      >
         Cancel
       </Button>
       <Button type="submit" disabled={createLoading}>
@@ -342,7 +396,9 @@
 <ConfirmDialog
   bind:open={deleteOpen}
   title="Delete Customer"
-  message={deleteTarget ? `Are you sure you want to delete "${deleteTarget.name || 'this customer'}"? This action cannot be undone.` : ""}
+  message={deleteTarget
+    ? `Are you sure you want to delete "${deleteTarget.name || "this customer"}"? This action cannot be undone.`
+    : ""}
   confirmLabel="Delete"
   confirmVariant="danger"
   loading={deleteLoading}

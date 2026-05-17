@@ -51,17 +51,26 @@
     { value: "api", label: "API" },
   ];
 
-  function lifeStageBadgeVariant(stage: string): "success" | "warning" | "error" | "info" | "default" {
+  function lifeStageBadgeVariant(
+    stage: string,
+  ): "success" | "warning" | "error" | "info" | "default" {
     switch (stage) {
-      case "vip": return "success";
-      case "active": return "info";
-      case "lead": return "warning";
-      case "churned": return "error";
-      default: return "default";
+      case "vip":
+        return "success";
+      case "active":
+        return "info";
+      case "lead":
+        return "warning";
+      case "churned":
+        return "error";
+      default:
+        return "default";
     }
   }
 
-  onMount(() => { loadCustomer(); });
+  onMount(() => {
+    loadCustomer();
+  });
 
   async function loadCustomer() {
     loading = true;
@@ -108,7 +117,8 @@
       editing = false;
       await loadCustomer();
     } catch (err: unknown) {
-      saveError = err instanceof Error ? err.message : "Failed to update customer";
+      saveError =
+        err instanceof Error ? err.message : "Failed to update customer";
     } finally {
       saveLoading = false;
     }
@@ -134,7 +144,10 @@
 </script>
 
 <div>
-  <a href="/admin/customers" class="text-sm text-gray-500 hover:text-gray-700 mb-4 inline-block">
+  <a
+    href="/admin/customers"
+    class="text-sm text-gray-500 hover:text-gray-700 mb-4 inline-block"
+  >
     &larr; Back to Customers
   </a>
 
@@ -145,7 +158,9 @@
   {:else if customer}
     <div class="flex items-start justify-between mb-6">
       <div>
-        <h1 class="text-xl font-semibold text-gray-900">{customer.name || "Unnamed"}</h1>
+        <h1 class="text-xl font-semibold text-gray-900">
+          {customer.name || "Unnamed"}
+        </h1>
         <p class="text-sm text-gray-500 mt-1">
           {customer.type} &middot; Joined {formatDate(customer.createdAt)}
         </p>
@@ -173,7 +188,12 @@
             <h2 class="font-medium text-gray-900">Contact Information</h2>
             {#if editing}
               <div class="flex items-center gap-2">
-                <Button variant="ghost" size="sm" onclick={cancelEditing} disabled={saveLoading}>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onclick={cancelEditing}
+                  disabled={saveLoading}
+                >
                   Cancel
                 </Button>
                 <Button size="sm" onclick={handleSave} disabled={saveLoading}>
@@ -184,7 +204,9 @@
           </div>
 
           {#if saveError}
-            <div class="p-3 bg-red-50 text-red-700 rounded-lg text-sm mb-3">{saveError}</div>
+            <div class="p-3 bg-red-50 text-red-700 rounded-lg text-sm mb-3">
+              {saveError}
+            </div>
           {/if}
 
           {#if editing}
@@ -265,7 +287,9 @@
         <!-- Contacts -->
         {#if customer.contacts.length > 0}
           <div class="bg-white rounded-lg border border-gray-200 p-4">
-            <h2 class="font-medium text-gray-900 mb-3">Contacts ({customer.contacts.length})</h2>
+            <h2 class="font-medium text-gray-900 mb-3">
+              Contacts ({customer.contacts.length})
+            </h2>
             <div class="divide-y divide-gray-100">
               {#each customer.contacts as contact (contact.id)}
                 <div class="py-2">
@@ -276,7 +300,9 @@
                     {/if}
                   </p>
                   <p class="text-xs text-gray-500">
-                    {[contact.email, contact.phone, contact.jobTitle].filter(Boolean).join(" · ")}
+                    {[contact.email, contact.phone, contact.jobTitle]
+                      .filter(Boolean)
+                      .join(" · ")}
                   </p>
                 </div>
               {/each}
@@ -296,7 +322,9 @@
               placeholder="Add notes about this customer..."
             ></textarea>
           {:else if customer.notes}
-            <p class="text-sm text-gray-700 whitespace-pre-wrap">{customer.notes}</p>
+            <p class="text-sm text-gray-700 whitespace-pre-wrap">
+              {customer.notes}
+            </p>
           {:else}
             <p class="text-sm text-gray-400">No notes</p>
           {/if}
@@ -328,16 +356,22 @@
               </div>
               <div class="flex justify-between">
                 <dt class="text-gray-500">Points</dt>
-                <dd class="font-medium text-gray-900">{customer.membership.loyaltyPoints}</dd>
+                <dd class="font-medium text-gray-900">
+                  {customer.membership.loyaltyPoints}
+                </dd>
               </div>
               {#if "lifetimePoints" in customer.membership}
                 <div class="flex justify-between">
                   <dt class="text-gray-500">Lifetime Points</dt>
-                  <dd class="text-gray-700">{customer.membership.lifetimePoints}</dd>
+                  <dd class="text-gray-700">
+                    {customer.membership.lifetimePoints}
+                  </dd>
                 </div>
                 <div class="flex justify-between">
                   <dt class="text-gray-500">Lifetime Spend</dt>
-                  <dd class="text-gray-700">${customer.membership.lifetimeSpend.toFixed(2)}</dd>
+                  <dd class="text-gray-700">
+                    ${customer.membership.lifetimeSpend.toFixed(2)}
+                  </dd>
                 </div>
                 {#if customer.membership.stamps > 0}
                   <div class="flex justify-between">
@@ -347,12 +381,16 @@
                 {/if}
                 <div class="flex justify-between">
                   <dt class="text-gray-500">Member Since</dt>
-                  <dd class="text-gray-700">{formatDate(customer.membership.memberSince)}</dd>
+                  <dd class="text-gray-700">
+                    {formatDate(customer.membership.memberSince)}
+                  </dd>
                 </div>
                 {#if customer.membership.expiresAt}
                   <div class="flex justify-between">
                     <dt class="text-gray-500">Expires</dt>
-                    <dd class="text-gray-700">{formatDate(customer.membership.expiresAt)}</dd>
+                    <dd class="text-gray-700">
+                      {formatDate(customer.membership.expiresAt)}
+                    </dd>
                   </div>
                 {/if}
               {/if}
@@ -377,7 +415,9 @@
 <ConfirmDialog
   bind:open={deleteOpen}
   title="Delete Customer"
-  message={customer ? `Are you sure you want to delete "${customer.name || 'this customer'}"? This action cannot be undone.` : ""}
+  message={customer
+    ? `Are you sure you want to delete "${customer.name || "this customer"}"? This action cannot be undone.`
+    : ""}
   confirmLabel="Delete"
   confirmVariant="danger"
   loading={deleteLoading}

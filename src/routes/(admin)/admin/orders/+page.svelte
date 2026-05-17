@@ -35,7 +35,10 @@
     let customer = "Guest";
     if (o.customerInfo) {
       const { firstName, lastName } = o.customerInfo;
-      customer = [firstName, lastName].filter(Boolean).join(" ") || o.customerInfo.email || "Guest";
+      customer =
+        [firstName, lastName].filter(Boolean).join(" ") ||
+        o.customerInfo.email ||
+        "Guest";
     }
     return {
       id: o.orderId,
@@ -69,8 +72,21 @@
     error = "";
     try {
       const [ordersRes, invoicesRes] = await Promise.all([
-        adminOrdersApi.list({ page: 1, pageSize: 100, search: search || undefined, ordering: "-createdAt" }),
-        adminInvoicesApi.list({ page: 1, pageSize: 100, search: search || undefined }).catch(() => ({ items: [] as Invoice[], total: 0, page: 1, pageSize: 100, pageCount: 0 })),
+        adminOrdersApi.list({
+          page: 1,
+          pageSize: 100,
+          search: search || undefined,
+          ordering: "-createdAt",
+        }),
+        adminInvoicesApi
+          .list({ page: 1, pageSize: 100, search: search || undefined })
+          .catch(() => ({
+            items: [] as Invoice[],
+            total: 0,
+            page: 1,
+            pageSize: 100,
+            pageCount: 0,
+          })),
       ]);
 
       const storeRows = ordersRes.items.map(orderToRow);
@@ -78,7 +94,8 @@
 
       // Merge and sort by date descending
       allRows = [...storeRows, ...manualRows].sort(
-        (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        (a, b) =>
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
       );
     } catch (err: unknown) {
       error = err instanceof Error ? err.message : "Failed to load orders";
@@ -88,14 +105,26 @@
   }
 
   // Reset page on search
-  $effect(() => { search; page = 1; });
+  $effect(() => {
+    search;
+    page = 1;
+  });
 
   // Reload on search change (debounced via the effect chain)
-  $effect(() => { search; untrack(() => { loadAll(); }); });
+  $effect(() => {
+    search;
+    untrack(() => {
+      loadAll();
+    });
+  });
 
   // Client-side pagination
-  const totalPages = $derived(Math.max(1, Math.ceil(allRows.length / pageSize)));
-  const pagedRows = $derived(allRows.slice((page - 1) * pageSize, page * pageSize));
+  const totalPages = $derived(
+    Math.max(1, Math.ceil(allRows.length / pageSize)),
+  );
+  const pagedRows = $derived(
+    allRows.slice((page - 1) * pageSize, page * pageSize),
+  );
 </script>
 
 <div>
@@ -117,7 +146,11 @@
 
   <!-- Search -->
   <div class="mb-4">
-    <SearchInput bind:value={search} placeholder="Search orders..." class="max-w-md" />
+    <SearchInput
+      bind:value={search}
+      placeholder="Search orders..."
+      class="max-w-md"
+    />
   </div>
 
   {#if loading && allRows.length === 0}
@@ -127,7 +160,9 @@
   {:else if allRows.length === 0}
     <EmptyState
       title="No orders yet"
-      message={search ? "Try adjusting your search" : "Orders from your store and manual orders will appear here"}
+      message={search
+        ? "Try adjusting your search"
+        : "Orders from your store and manual orders will appear here"}
     >
       {#snippet icon()}<ShoppingBag class="w-6 h-6" />{/snippet}
       {#snippet actions()}
@@ -144,34 +179,58 @@
         <table class="w-full text-sm">
           <thead>
             <tr class="border-b border-gray-200 bg-gray-50">
-              <th class="text-left px-4 py-3 font-medium text-gray-600">Order #</th>
-              <th class="text-left px-4 py-3 font-medium text-gray-600">Customer</th>
-              <th class="text-right px-4 py-3 font-medium text-gray-600">Total</th>
-              <th class="text-left px-4 py-3 font-medium text-gray-600">Status</th>
-              <th class="text-left px-4 py-3 font-medium text-gray-600">Date</th>
+              <th class="text-left px-4 py-3 font-medium text-gray-600"
+                >Order #</th
+              >
+              <th class="text-left px-4 py-3 font-medium text-gray-600"
+                >Customer</th
+              >
+              <th class="text-right px-4 py-3 font-medium text-gray-600"
+                >Total</th
+              >
+              <th class="text-left px-4 py-3 font-medium text-gray-600"
+                >Status</th
+              >
+              <th class="text-left px-4 py-3 font-medium text-gray-600">Date</th
+              >
             </tr>
           </thead>
           <tbody>
             {#each pagedRows as row (row.id)}
-              <tr class="border-b border-gray-100 hover:bg-gray-50 transition-colors">
+              <tr
+                class="border-b border-gray-100 hover:bg-gray-50 transition-colors"
+              >
                 <td class="px-4 py-3">
                   <div class="flex items-center gap-2">
-                    <a href={row.href} class="font-medium text-blue-600 hover:text-blue-800">
+                    <a
+                      href={row.href}
+                      class="font-medium text-blue-600 hover:text-blue-800"
+                    >
                       {row.number}
                     </a>
                     {#if row.isManual}
-                      <span class="text-[10px] font-medium bg-gray-100 text-gray-500 px-1.5 py-0.5 rounded">Manual</span>
+                      <span
+                        class="text-[10px] font-medium bg-gray-100 text-gray-500 px-1.5 py-0.5 rounded"
+                        >Manual</span
+                      >
                     {/if}
                   </div>
                 </td>
                 <td class="px-4 py-3 text-gray-700">{row.customer}</td>
-                <td class="px-4 py-3 text-right font-medium text-gray-900 tabular-nums">
+                <td
+                  class="px-4 py-3 text-right font-medium text-gray-900 tabular-nums"
+                >
                   {formatCurrency(row.total)}
                 </td>
                 <td class="px-4 py-3">
-                  <StatusBadge status={row.status} variant={row.statusVariant} />
+                  <StatusBadge
+                    status={row.status}
+                    variant={row.statusVariant}
+                  />
                 </td>
-                <td class="px-4 py-3 text-gray-500">{formatDate(row.createdAt)}</td>
+                <td class="px-4 py-3 text-gray-500"
+                  >{formatDate(row.createdAt)}</td
+                >
               </tr>
             {/each}
           </tbody>
@@ -181,7 +240,11 @@
 
     {#if totalPages > 1}
       <div class="mt-4">
-        <Pagination currentPage={page} {totalPages} onPageChange={(p) => (page = p)} />
+        <Pagination
+          currentPage={page}
+          {totalPages}
+          onPageChange={(p) => (page = p)}
+        />
       </div>
     {/if}
   {/if}

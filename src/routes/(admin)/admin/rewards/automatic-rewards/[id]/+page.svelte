@@ -3,9 +3,19 @@
   import { goto } from "$app/navigation";
   import { onMount } from "svelte";
   import { adminAutomaticRewardsApi } from "$lib/api/admin";
-  import type { AutomaticRewardDetail, UpdateAutomaticRewardInput, AutomaticRewardStatus, AutomaticRewardTrigger, AutomaticRewardRepeat } from "$lib/types/admin";
+  import type {
+    AutomaticRewardDetail,
+    UpdateAutomaticRewardInput,
+    AutomaticRewardStatus,
+    AutomaticRewardTrigger,
+    AutomaticRewardRepeat,
+  } from "$lib/types/admin";
   import { formatDate, getErrorMessage } from "$lib/utils/formatting";
-  import { triggerLabels, triggerOptions, repeatOptions } from "$lib/utils/admin-helpers";
+  import {
+    triggerLabels,
+    triggerOptions,
+    repeatOptions,
+  } from "$lib/utils/admin-helpers";
 
   import StatusBadge from "$lib/components/admin/StatusBadge.svelte";
   import LoadingSkeleton from "$lib/components/ui/LoadingSkeleton.svelte";
@@ -75,13 +85,29 @@
     editBonusStamps = String(reward.bonusStamps);
     editBonusPointMultiplier = String(reward.bonusPointMultiplier);
     editBonusStampMultiplier = String(reward.bonusStampMultiplier);
-    editMinSpendAmount = reward.minimumSpendingAmount != null ? String(reward.minimumSpendingAmount) : "";
-    editMinSpendCount = reward.minimumSpendingCount != null ? String(reward.minimumSpendingCount) : "";
-    editMinMembershipAge = reward.minimumMembershipAge != null ? String(reward.minimumMembershipAge) : "";
-    editTotalReferralCount = reward.totalReferralCount != null ? String(reward.totalReferralCount) : "";
-    editTargetTierIds = reward.targetTierIds.length > 0 ? reward.targetTierIds.join(", ") : "";
+    editMinSpendAmount =
+      reward.minimumSpendingAmount != null
+        ? String(reward.minimumSpendingAmount)
+        : "";
+    editMinSpendCount =
+      reward.minimumSpendingCount != null
+        ? String(reward.minimumSpendingCount)
+        : "";
+    editMinMembershipAge =
+      reward.minimumMembershipAge != null
+        ? String(reward.minimumMembershipAge)
+        : "";
+    editTotalReferralCount =
+      reward.totalReferralCount != null
+        ? String(reward.totalReferralCount)
+        : "";
+    editTargetTierIds =
+      reward.targetTierIds.length > 0 ? reward.targetTierIds.join(", ") : "";
     editBonusGiftOfferId = reward.bonusGiftOfferId ?? "";
-    editBonusGiftOfferQuantity = reward.bonusGiftOfferQuantity != null ? String(reward.bonusGiftOfferQuantity) : "";
+    editBonusGiftOfferQuantity =
+      reward.bonusGiftOfferQuantity != null
+        ? String(reward.bonusGiftOfferQuantity)
+        : "";
     editError = "";
     editing = true;
   }
@@ -110,15 +136,28 @@
         bonusStamps: parseInt(editBonusStamps, 10) || 0,
         bonusPointMultiplier: parseFloat(editBonusPointMultiplier) || 0,
         bonusStampMultiplier: parseFloat(editBonusStampMultiplier) || 0,
-        minimumSpendingAmount: editMinSpendAmount.trim() ? parseFloat(editMinSpendAmount) : null,
-        minimumSpendingCount: editMinSpendCount.trim() ? parseInt(editMinSpendCount, 10) : null,
-        minimumMembershipAge: editMinMembershipAge.trim() ? parseInt(editMinMembershipAge, 10) : null,
-        totalReferralCount: editTotalReferralCount.trim() ? parseInt(editTotalReferralCount, 10) : null,
+        minimumSpendingAmount: editMinSpendAmount.trim()
+          ? parseFloat(editMinSpendAmount)
+          : null,
+        minimumSpendingCount: editMinSpendCount.trim()
+          ? parseInt(editMinSpendCount, 10)
+          : null,
+        minimumMembershipAge: editMinMembershipAge.trim()
+          ? parseInt(editMinMembershipAge, 10)
+          : null,
+        totalReferralCount: editTotalReferralCount.trim()
+          ? parseInt(editTotalReferralCount, 10)
+          : null,
         targetTierIds: editTargetTierIds.trim()
-          ? editTargetTierIds.split(",").map((s) => s.trim()).filter(Boolean)
+          ? editTargetTierIds
+              .split(",")
+              .map((s) => s.trim())
+              .filter(Boolean)
           : [],
         bonusGiftOfferId: editBonusGiftOfferId.trim() || null,
-        bonusGiftOfferQuantity: editBonusGiftOfferQuantity.trim() ? parseInt(editBonusGiftOfferQuantity, 10) : null,
+        bonusGiftOfferQuantity: editBonusGiftOfferQuantity.trim()
+          ? parseInt(editBonusGiftOfferQuantity, 10)
+          : null,
       };
 
       await adminAutomaticRewardsApi.update(reward.id, input);
@@ -147,7 +186,10 @@
 </script>
 
 <div>
-  <a href="/admin/rewards/automatic-rewards" class="text-sm text-gray-500 hover:text-gray-700 mb-4 inline-block">
+  <a
+    href="/admin/rewards/automatic-rewards"
+    class="text-sm text-gray-500 hover:text-gray-700 mb-4 inline-block"
+  >
     &larr; Back to Automatic Rewards
   </a>
 
@@ -160,7 +202,9 @@
     <div class="flex items-start justify-between mb-6">
       <div>
         {#if editing}
-          <h1 class="text-xl font-semibold text-gray-900">Editing: {reward.name}</h1>
+          <h1 class="text-xl font-semibold text-gray-900">
+            Editing: {reward.name}
+          </h1>
         {:else}
           <h1 class="text-xl font-semibold text-gray-900">{reward.name}</h1>
         {/if}
@@ -170,15 +214,29 @@
       </div>
       <div class="flex items-center gap-2">
         {#if editing}
-          <Button variant="ghost" size="sm" onclick={cancelEdit} disabled={saving}>Cancel</Button>
-          <Button variant="primary" size="sm" onclick={handleSave} disabled={saving}>
+          <Button
+            variant="ghost"
+            size="sm"
+            onclick={cancelEdit}
+            disabled={saving}>Cancel</Button
+          >
+          <Button
+            variant="primary"
+            size="sm"
+            onclick={handleSave}
+            disabled={saving}
+          >
             {saving ? "Saving..." : "Save Changes"}
           </Button>
         {:else}
           <Button variant="outline" size="sm" onclick={enterEditMode}>
             <Pencil class="w-4 h-4" /> Edit
           </Button>
-          <Button variant="danger" size="sm" onclick={() => (showDeleteDialog = true)}>
+          <Button
+            variant="danger"
+            size="sm"
+            onclick={() => (showDeleteDialog = true)}
+          >
             <Trash2 class="w-4 h-4" /> Delete
           </Button>
         {/if}
@@ -186,7 +244,9 @@
     </div>
 
     {#if editError}
-      <div class="p-3 bg-red-50 text-red-700 rounded-lg text-sm mb-4">{editError}</div>
+      <div class="p-3 bg-red-50 text-red-700 rounded-lg text-sm mb-4">
+        {editError}
+      </div>
     {/if}
 
     {#if editing}
@@ -196,9 +256,24 @@
           <!-- Basic Info -->
           <div class="bg-white rounded-lg border border-gray-200 p-4 space-y-4">
             <h2 class="font-medium text-gray-900">Basic Info</h2>
-            <Input name="editName" label="Name" bind:value={editName} required />
-            <Select name="editTrigger" label="Trigger" bind:value={editTrigger} options={triggerOptions} />
-            <Select name="editRepeat" label="Repeat" bind:value={editRepeat} options={repeatOptions} />
+            <Input
+              name="editName"
+              label="Name"
+              bind:value={editName}
+              required
+            />
+            <Select
+              name="editTrigger"
+              label="Trigger"
+              bind:value={editTrigger}
+              options={triggerOptions}
+            />
+            <Select
+              name="editRepeat"
+              label="Repeat"
+              bind:value={editRepeat}
+              options={repeatOptions}
+            />
           </div>
 
           <!-- Conditions -->
@@ -267,7 +342,12 @@
         <div class="space-y-4">
           <div class="bg-white rounded-lg border border-gray-200 p-4 space-y-4">
             <h2 class="font-medium text-gray-900">Status</h2>
-            <Select name="editStatus" label="Status" bind:value={editStatus} options={statusOptions} />
+            <Select
+              name="editStatus"
+              label="Status"
+              bind:value={editStatus}
+              options={statusOptions}
+            />
           </div>
 
           <div class="bg-white rounded-lg border border-gray-200 p-4 space-y-4">
@@ -313,12 +393,16 @@
             <dl class="text-sm space-y-2">
               <div class="flex justify-between">
                 <dt class="text-gray-500">Trigger Event</dt>
-                <dd class="font-medium text-gray-900">{triggerLabels[reward.trigger] ?? reward.trigger}</dd>
+                <dd class="font-medium text-gray-900">
+                  {triggerLabels[reward.trigger] ?? reward.trigger}
+                </dd>
               </div>
               {#if reward.targetTierIds.length > 0}
                 <div class="flex justify-between">
                   <dt class="text-gray-500">Target Tiers</dt>
-                  <dd class="text-gray-700">{reward.targetTierIds.join(", ")}</dd>
+                  <dd class="text-gray-700">
+                    {reward.targetTierIds.join(", ")}
+                  </dd>
                 </div>
               {/if}
             </dl>
@@ -332,7 +416,9 @@
                 {#if reward.minimumSpendingAmount != null}
                   <div class="flex justify-between">
                     <dt class="text-gray-500">Min Spending Amount</dt>
-                    <dd class="text-gray-700">{reward.minimumSpendingAmount}</dd>
+                    <dd class="text-gray-700">
+                      {reward.minimumSpendingAmount}
+                    </dd>
                   </div>
                 {/if}
                 {#if reward.minimumSpendingCount != null}
@@ -344,7 +430,9 @@
                 {#if reward.minimumMembershipAge != null}
                   <div class="flex justify-between">
                     <dt class="text-gray-500">Min Membership Age</dt>
-                    <dd class="text-gray-700">{reward.minimumMembershipAge} days</dd>
+                    <dd class="text-gray-700">
+                      {reward.minimumMembershipAge} days
+                    </dd>
                   </div>
                 {/if}
                 {#if reward.totalReferralCount != null}
@@ -364,12 +452,16 @@
               <dl class="text-sm space-y-2">
                 <div class="flex justify-between">
                   <dt class="text-gray-500">Gift Offer ID</dt>
-                  <dd class="text-gray-700 font-mono text-xs">{reward.bonusGiftOfferId}</dd>
+                  <dd class="text-gray-700 font-mono text-xs">
+                    {reward.bonusGiftOfferId}
+                  </dd>
                 </div>
                 {#if reward.bonusGiftOfferQuantity != null}
                   <div class="flex justify-between">
                     <dt class="text-gray-500">Quantity</dt>
-                    <dd class="text-gray-700">{reward.bonusGiftOfferQuantity}</dd>
+                    <dd class="text-gray-700">
+                      {reward.bonusGiftOfferQuantity}
+                    </dd>
                   </div>
                 {/if}
               </dl>
@@ -391,7 +483,9 @@
             <dl class="text-sm space-y-2">
               <div class="flex justify-between">
                 <dt class="text-gray-500">Event</dt>
-                <dd class="text-gray-700">{triggerLabels[reward.trigger] ?? reward.trigger}</dd>
+                <dd class="text-gray-700">
+                  {triggerLabels[reward.trigger] ?? reward.trigger}
+                </dd>
               </div>
             </dl>
           </div>
@@ -402,7 +496,10 @@
               <div class="flex justify-between">
                 <dt class="text-gray-500">Frequency</dt>
                 <dd class="text-gray-700">
-                  {reward.repeat === "NONE" ? "One-time" : reward.repeat.charAt(0) + reward.repeat.slice(1).toLowerCase()}
+                  {reward.repeat === "NONE"
+                    ? "One-time"
+                    : reward.repeat.charAt(0) +
+                      reward.repeat.slice(1).toLowerCase()}
                 </dd>
               </div>
             </dl>
@@ -458,7 +555,9 @@
 <ConfirmDialog
   bind:open={showDeleteDialog}
   title="Delete Automatic Reward"
-  message={reward ? `Are you sure you want to delete "${reward.name}"? This action cannot be undone.` : ""}
+  message={reward
+    ? `Are you sure you want to delete "${reward.name}"? This action cannot be undone.`
+    : ""}
   confirmLabel="Delete"
   confirmVariant="danger"
   loading={deleting}

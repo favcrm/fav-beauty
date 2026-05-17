@@ -44,7 +44,10 @@
   function handlePaste(e: ClipboardEvent) {
     e.preventDefault();
     const text = e.clipboardData?.getData("text") ?? "";
-    const newTags = text.split(",").map((t) => t.trim()).filter((t) => t && !values.includes(t));
+    const newTags = text
+      .split(",")
+      .map((t) => t.trim())
+      .filter((t) => t && !values.includes(t));
     if (newTags.length > 0) {
       values = [...values, ...newTags];
     }
@@ -60,12 +63,17 @@
   <div
     class="flex flex-wrap items-center gap-1.5 form-input min-h-[42px] cursor-text"
     class:border-red-500={error}
-    onclick={(e) => { const input = (e.currentTarget as HTMLElement).querySelector('input'); input?.focus(); }}
+    onclick={(e) => {
+      const input = (e.currentTarget as HTMLElement).querySelector("input");
+      input?.focus();
+    }}
     role="textbox"
     tabindex="-1"
   >
     {#each values as tag, i (tag)}
-      <span class="inline-flex items-center gap-1 bg-gray-100 text-gray-700 text-xs font-medium px-2 py-1 rounded-md">
+      <span
+        class="inline-flex items-center gap-1 bg-gray-100 text-gray-700 text-xs font-medium px-2 py-1 rounded-md"
+      >
         {tag}
         <button
           type="button"

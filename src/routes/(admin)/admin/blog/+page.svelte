@@ -76,7 +76,9 @@
   $effect(() => {
     search;
     page;
-    untrack(() => { loadPosts(); });
+    untrack(() => {
+      loadPosts();
+    });
   });
 
   function resetCreateForm() {
@@ -104,12 +106,13 @@
         title: createTitle.trim(),
         status: createStatus as any,
         visibility: createVisibility as any,
-        type: "blog_post"
+        type: "blog_post",
       });
       showCreateModal = false;
       goto(`/admin/blog/${created.id}`);
     } catch (err: unknown) {
-      createError = err instanceof Error ? err.message : "Failed to create post";
+      createError =
+        err instanceof Error ? err.message : "Failed to create post";
     } finally {
       creating = false;
     }
@@ -169,11 +172,18 @@
   {:else if error}
     <div class="p-4 bg-red-50 text-red-700 rounded-lg text-sm">{error}</div>
   {:else if data && data.items.length === 0}
-    <EmptyState title="No posts found" message={search ? "Try adjusting your search terms" : "Write your first blog post to engage your audience"}>
+    <EmptyState
+      title="No posts found"
+      message={search
+        ? "Try adjusting your search terms"
+        : "Write your first blog post to engage your audience"}
+    >
       {#snippet icon()}<FileText class="w-6 h-6" />{/snippet}
       {#snippet actions()}
         {#if !search}
-          <Button size="sm" onclick={openCreateModal}><Plus class="w-4 h-4" /> New Post</Button>
+          <Button size="sm" onclick={openCreateModal}
+            ><Plus class="w-4 h-4" /> New Post</Button
+          >
         {/if}
       {/snippet}
     </EmptyState>
@@ -183,18 +193,33 @@
         <table class="w-full text-sm">
           <thead>
             <tr class="border-b border-gray-200 bg-gray-50">
-              <th class="text-left px-4 py-3 font-medium text-gray-600">Title</th>
-              <th class="text-left px-4 py-3 font-medium text-gray-600">Status</th>
-              <th class="text-left px-4 py-3 font-medium text-gray-600">Visibility</th>
-              <th class="text-left px-4 py-3 font-medium text-gray-600">Published</th>
-              <th class="text-right px-4 py-3 font-medium text-gray-600">Actions</th>
+              <th class="text-left px-4 py-3 font-medium text-gray-600"
+                >Title</th
+              >
+              <th class="text-left px-4 py-3 font-medium text-gray-600"
+                >Status</th
+              >
+              <th class="text-left px-4 py-3 font-medium text-gray-600"
+                >Visibility</th
+              >
+              <th class="text-left px-4 py-3 font-medium text-gray-600"
+                >Published</th
+              >
+              <th class="text-right px-4 py-3 font-medium text-gray-600"
+                >Actions</th
+              >
             </tr>
           </thead>
           <tbody>
             {#each data.items as post (post.id)}
-              <tr class="border-b border-gray-100 hover:bg-gray-50 transition-colors">
+              <tr
+                class="border-b border-gray-100 hover:bg-gray-50 transition-colors"
+              >
                 <td class="px-4 py-3">
-                  <a href="/admin/blog/{post.id}" class="flex items-center gap-3">
+                  <a
+                    href="/admin/blog/{post.id}"
+                    class="flex items-center gap-3"
+                  >
                     {#if post.featuredImage}
                       <img
                         src={post.featuredImage}
@@ -202,7 +227,9 @@
                         class="w-10 h-10 object-cover rounded-md bg-gray-100"
                       />
                     {:else}
-                      <div class="w-10 h-10 bg-gray-100 rounded-md flex items-center justify-center text-gray-400">
+                      <div
+                        class="w-10 h-10 bg-gray-100 rounded-md flex items-center justify-center text-gray-400"
+                      >
                         <FileText class="w-5 h-5" />
                       </div>
                     {/if}
@@ -215,21 +242,26 @@
                   </a>
                 </td>
                 <td class="px-4 py-3">
-                  <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium"
-                    class:bg-green-100={post.status === 'published'}
-                    class:text-green-800={post.status === 'published'}
-                    class:bg-gray-100={post.status === 'draft'}
-                    class:text-gray-800={post.status === 'draft'}
-                    class:bg-yellow-100={post.status === 'scheduled'}
-                    class:text-yellow-800={post.status === 'scheduled'}
-                    class:bg-red-100={post.status === 'archived'}
-                    class:text-red-800={post.status === 'archived'}
+                  <span
+                    class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium"
+                    class:bg-green-100={post.status === "published"}
+                    class:text-green-800={post.status === "published"}
+                    class:bg-gray-100={post.status === "draft"}
+                    class:text-gray-800={post.status === "draft"}
+                    class:bg-yellow-100={post.status === "scheduled"}
+                    class:text-yellow-800={post.status === "scheduled"}
+                    class:bg-red-100={post.status === "archived"}
+                    class:text-red-800={post.status === "archived"}
                   >
                     {post.status}
                   </span>
                 </td>
-                <td class="px-4 py-3 text-gray-500 capitalize">{post.visibility.replace('_', ' ')}</td>
-                <td class="px-4 py-3 text-gray-500">{post.publishedAt ? formatDate(post.publishedAt) : "—"}</td>
+                <td class="px-4 py-3 text-gray-500 capitalize"
+                  >{post.visibility.replace("_", " ")}</td
+                >
+                <td class="px-4 py-3 text-gray-500"
+                  >{post.publishedAt ? formatDate(post.publishedAt) : "—"}</td
+                >
                 <td class="px-4 py-3">
                   <div class="flex items-center justify-end gap-1">
                     <a
@@ -267,9 +299,18 @@
 
 <!-- Create Post Modal -->
 <Modal bind:open={showCreateModal} title="New Blog Post">
-  <form novalidate onsubmit={(e) => { e.preventDefault(); handleCreate(); }} class="space-y-4">
+  <form
+    novalidate
+    onsubmit={(e) => {
+      e.preventDefault();
+      handleCreate();
+    }}
+    class="space-y-4"
+  >
     {#if createError}
-      <div class="p-3 bg-red-50 text-red-700 rounded-lg text-sm">{createError}</div>
+      <div class="p-3 bg-red-50 text-red-700 rounded-lg text-sm">
+        {createError}
+      </div>
     {/if}
 
     <Input
@@ -286,7 +327,7 @@
       bind:value={createStatus}
       options={statusOptions}
     />
-    
+
     <Select
       name="visibility"
       label="Visibility"
@@ -295,7 +336,12 @@
     />
 
     <div class="flex justify-end gap-2 pt-2">
-      <Button variant="ghost" type="button" onclick={() => (showCreateModal = false)} disabled={creating}>
+      <Button
+        variant="ghost"
+        type="button"
+        onclick={() => (showCreateModal = false)}
+        disabled={creating}
+      >
         Cancel
       </Button>
       <Button variant="primary" type="submit" disabled={creating}>
@@ -309,7 +355,9 @@
 <ConfirmDialog
   bind:open={showDeleteDialog}
   title="Delete Post"
-  message={deleteTarget ? `Are you sure you want to delete "${deleteTarget.title}"? This action cannot be undone.` : ""}
+  message={deleteTarget
+    ? `Are you sure you want to delete "${deleteTarget.title}"? This action cannot be undone.`
+    : ""}
   confirmLabel="Delete"
   confirmVariant="danger"
   loading={deleting}

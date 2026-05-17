@@ -42,7 +42,9 @@
     aria-modal="true"
     aria-label={title}
   >
-    <div class="bg-white rounded-xl shadow-xl w-full max-w-sm animate-scale-in p-6">
+    <div
+      class="bg-white rounded-xl shadow-xl w-full max-w-sm animate-scale-in p-6"
+    >
       <h3 class="text-base font-semibold text-gray-900 mb-2">{title}</h3>
       {#if message}
         <p class="text-sm text-gray-500 mb-5">{message}</p>
@@ -51,7 +53,12 @@
         <Button variant="ghost" size="sm" onclick={onCancel} disabled={loading}>
           Cancel
         </Button>
-        <Button variant={confirmVariant} size="sm" onclick={onConfirm} disabled={loading}>
+        <Button
+          variant={confirmVariant}
+          size="sm"
+          onclick={onConfirm}
+          disabled={loading}
+        >
           {loading ? "..." : confirmLabel}
         </Button>
       </div>

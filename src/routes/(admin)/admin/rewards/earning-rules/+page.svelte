@@ -8,7 +8,11 @@
     UpdateRewardSchemeInput,
     RewardSchemeType,
   } from "$lib/types/admin";
-  import { formatCurrency, formatDate, getErrorMessage } from "$lib/utils/formatting";
+  import {
+    formatCurrency,
+    formatDate,
+    getErrorMessage,
+  } from "$lib/utils/formatting";
 
   import SearchInput from "$lib/components/ui/SearchInput.svelte";
   import Pagination from "$lib/components/ui/Pagination.svelte";
@@ -80,7 +84,9 @@
       page = 1;
     }
     page;
-    untrack(() => { loadData(); });
+    untrack(() => {
+      loadData();
+    });
   });
 
   function resetForm() {
@@ -139,7 +145,10 @@
       };
 
       if (editingScheme) {
-        await adminRewardSchemesApi.update(editingScheme.id, input as UpdateRewardSchemeInput);
+        await adminRewardSchemesApi.update(
+          editingScheme.id,
+          input as UpdateRewardSchemeInput,
+        );
       } else {
         await adminRewardSchemesApi.create(input);
       }
@@ -183,7 +192,9 @@
     }
   }
 
-  const modalTitle = $derived(editingScheme ? "Edit Earning Rule" : "New Earning Rule");
+  const modalTitle = $derived(
+    editingScheme ? "Edit Earning Rule" : "New Earning Rule",
+  );
 </script>
 
 <div>
@@ -215,12 +226,16 @@
   {:else if data && data.items.length === 0}
     <EmptyState
       title="No earning rules found"
-      message={search ? "Try adjusting your search terms" : "Create your first earning rule to start rewarding customers"}
+      message={search
+        ? "Try adjusting your search terms"
+        : "Create your first earning rule to start rewarding customers"}
     >
       {#snippet icon()}<Coins class="w-6 h-6" />{/snippet}
       {#snippet actions()}
         {#if !search}
-          <Button size="sm" onclick={openCreate}><Plus class="w-4 h-4" /> New Rule</Button>
+          <Button size="sm" onclick={openCreate}
+            ><Plus class="w-4 h-4" /> New Rule</Button
+          >
         {/if}
       {/snippet}
     </EmptyState>
@@ -230,34 +245,61 @@
         <table class="w-full text-sm">
           <thead>
             <tr class="border-b border-gray-200 bg-gray-50">
-              <th class="text-left px-4 py-3 font-medium text-gray-600">Name</th>
-              <th class="text-left px-4 py-3 font-medium text-gray-600">Type</th>
-              <th class="text-right px-4 py-3 font-medium text-gray-600">Spend Amount</th>
-              <th class="text-right px-4 py-3 font-medium text-gray-600">Points</th>
-              <th class="text-right px-4 py-3 font-medium text-gray-600">Stamps</th>
-              <th class="text-center px-4 py-3 font-medium text-gray-600">Default</th>
-              <th class="text-right px-4 py-3 font-medium text-gray-600">Actions</th>
+              <th class="text-left px-4 py-3 font-medium text-gray-600">Name</th
+              >
+              <th class="text-left px-4 py-3 font-medium text-gray-600">Type</th
+              >
+              <th class="text-right px-4 py-3 font-medium text-gray-600"
+                >Spend Amount</th
+              >
+              <th class="text-right px-4 py-3 font-medium text-gray-600"
+                >Points</th
+              >
+              <th class="text-right px-4 py-3 font-medium text-gray-600"
+                >Stamps</th
+              >
+              <th class="text-center px-4 py-3 font-medium text-gray-600"
+                >Default</th
+              >
+              <th class="text-right px-4 py-3 font-medium text-gray-600"
+                >Actions</th
+              >
             </tr>
           </thead>
           <tbody>
             {#each data.items as scheme (scheme.id)}
-              <tr class="border-b border-gray-100 hover:bg-gray-50 transition-colors">
+              <tr
+                class="border-b border-gray-100 hover:bg-gray-50 transition-colors"
+              >
                 <td class="px-4 py-3">
                   <p class="font-medium text-gray-900">{scheme.name}</p>
                   {#if scheme.description}
-                    <p class="text-xs text-gray-500 mt-0.5 truncate max-w-xs">{scheme.description}</p>
+                    <p class="text-xs text-gray-500 mt-0.5 truncate max-w-xs">
+                      {scheme.description}
+                    </p>
                   {/if}
                 </td>
                 <td class="px-4 py-3">
-                  <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium {scheme.rewardSchemeType === 'FIXED' ? 'bg-blue-100 text-blue-800' : 'bg-purple-100 text-purple-800'}">
+                  <span
+                    class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium {scheme.rewardSchemeType ===
+                    'FIXED'
+                      ? 'bg-blue-100 text-blue-800'
+                      : 'bg-purple-100 text-purple-800'}"
+                  >
                     {scheme.rewardSchemeType}
                   </span>
                 </td>
-                <td class="px-4 py-3 text-right font-medium text-gray-900 tabular-nums">
+                <td
+                  class="px-4 py-3 text-right font-medium text-gray-900 tabular-nums"
+                >
                   {formatCurrency(scheme.amount)}
                 </td>
-                <td class="px-4 py-3 text-right text-gray-700 tabular-nums">{scheme.points}</td>
-                <td class="px-4 py-3 text-right text-gray-700 tabular-nums">{scheme.stamps}</td>
+                <td class="px-4 py-3 text-right text-gray-700 tabular-nums"
+                  >{scheme.points}</td
+                >
+                <td class="px-4 py-3 text-right text-gray-700 tabular-nums"
+                  >{scheme.stamps}</td
+                >
                 <td class="px-4 py-3 text-center">
                   {#if scheme.isDefault}
                     <Check class="w-4 h-4 text-green-600 inline-block" />
@@ -307,9 +349,18 @@
 
 <!-- Create / Edit Modal -->
 <Modal bind:open={modalOpen} title={modalTitle}>
-  <form novalidate onsubmit={(e) => { e.preventDefault(); handleSave(); }} class="space-y-4">
+  <form
+    novalidate
+    onsubmit={(e) => {
+      e.preventDefault();
+      handleSave();
+    }}
+    class="space-y-4"
+  >
     {#if formError}
-      <div class="p-3 bg-red-50 text-red-700 rounded-lg text-sm">{formError}</div>
+      <div class="p-3 bg-red-50 text-red-700 rounded-lg text-sm">
+        {formError}
+      </div>
     {/if}
 
     <Input
@@ -388,11 +439,18 @@
         bind:checked={formIsDefault}
         class="rounded border-gray-300"
       />
-      <label for="isDefault" class="text-sm text-gray-700">Set as default earning rule</label>
+      <label for="isDefault" class="text-sm text-gray-700"
+        >Set as default earning rule</label
+      >
     </div>
 
     <div class="flex justify-end gap-2 pt-2">
-      <Button variant="ghost" type="button" onclick={() => (modalOpen = false)} disabled={saving}>
+      <Button
+        variant="ghost"
+        type="button"
+        onclick={() => (modalOpen = false)}
+        disabled={saving}
+      >
         Cancel
       </Button>
       <Button variant="primary" type="submit" disabled={saving}>
@@ -406,10 +464,15 @@
 <ConfirmDialog
   bind:open={deleteOpen}
   title="Delete Earning Rule"
-  message={deleteTarget ? `Are you sure you want to delete "${deleteTarget.name}"? This action cannot be undone.` : ""}
+  message={deleteTarget
+    ? `Are you sure you want to delete "${deleteTarget.name}"? This action cannot be undone.`
+    : ""}
   confirmLabel="Delete"
   confirmVariant="danger"
   loading={deleteLoading}
   onConfirm={handleDelete}
-  onCancel={() => { deleteOpen = false; deleteTarget = null; }}
+  onCancel={() => {
+    deleteOpen = false;
+    deleteTarget = null;
+  }}
 />

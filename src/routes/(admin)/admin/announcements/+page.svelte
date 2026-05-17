@@ -1,7 +1,12 @@
 <script lang="ts">
   import { untrack } from "svelte";
   import { adminAnnouncementsApi } from "$lib/api/admin";
-  import type { Announcement, AdminPaginatedResponse, CreateAnnouncementInput, AnnouncementStatus } from "$lib/types/admin";
+  import type {
+    Announcement,
+    AdminPaginatedResponse,
+    CreateAnnouncementInput,
+    AnnouncementStatus,
+  } from "$lib/types/admin";
   import { formatDate, getErrorMessage } from "$lib/utils/formatting";
 
   import StatusBadge from "$lib/components/admin/StatusBadge.svelte";
@@ -76,7 +81,9 @@
       page = 1;
     }
     page;
-    untrack(() => { loadAnnouncements(); });
+    untrack(() => {
+      loadAnnouncements();
+    });
   });
 
   function resetCreateForm() {
@@ -160,7 +167,8 @@
     {#each statusFilters as filter (filter.value)}
       <button
         onclick={() => (statusFilter = filter.value)}
-        class="px-3 py-1.5 text-sm font-medium rounded-full transition-colors {statusFilter === filter.value
+        class="px-3 py-1.5 text-sm font-medium rounded-full transition-colors {statusFilter ===
+        filter.value
           ? 'bg-gray-900 text-white'
           : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}"
       >
@@ -182,11 +190,18 @@
   {:else if error}
     <div class="p-4 bg-red-50 text-red-700 rounded-lg text-sm">{error}</div>
   {:else if data && data.items.length === 0}
-    <EmptyState title="No announcements found" message={search ? "Try adjusting your search terms" : "Create your first announcement to get started"}>
+    <EmptyState
+      title="No announcements found"
+      message={search
+        ? "Try adjusting your search terms"
+        : "Create your first announcement to get started"}
+    >
       {#snippet icon()}<Megaphone class="w-6 h-6" />{/snippet}
       {#snippet actions()}
         {#if !search}
-          <Button size="sm" onclick={openCreateModal}><Plus class="w-4 h-4" /> New Announcement</Button>
+          <Button size="sm" onclick={openCreateModal}
+            ><Plus class="w-4 h-4" /> New Announcement</Button
+          >
         {/if}
       {/snippet}
     </EmptyState>
@@ -196,26 +211,48 @@
         <table class="w-full text-sm">
           <thead>
             <tr class="border-b border-gray-200 bg-gray-50">
-              <th class="text-left px-4 py-3 font-medium text-gray-600">Title</th>
-              <th class="text-left px-4 py-3 font-medium text-gray-600">Status</th>
-              <th class="text-left px-4 py-3 font-medium text-gray-600">Created</th>
-              <th class="text-left px-4 py-3 font-medium text-gray-600">Updated</th>
-              <th class="text-right px-4 py-3 font-medium text-gray-600">Actions</th>
+              <th class="text-left px-4 py-3 font-medium text-gray-600"
+                >Title</th
+              >
+              <th class="text-left px-4 py-3 font-medium text-gray-600"
+                >Status</th
+              >
+              <th class="text-left px-4 py-3 font-medium text-gray-600"
+                >Created</th
+              >
+              <th class="text-left px-4 py-3 font-medium text-gray-600"
+                >Updated</th
+              >
+              <th class="text-right px-4 py-3 font-medium text-gray-600"
+                >Actions</th
+              >
             </tr>
           </thead>
           <tbody>
             {#each data.items as announcement (announcement.id)}
-              <tr class="border-b border-gray-100 hover:bg-gray-50 transition-colors">
+              <tr
+                class="border-b border-gray-100 hover:bg-gray-50 transition-colors"
+              >
                 <td class="px-4 py-3">
-                  <a href="/admin/announcements/{announcement.id}" class="font-medium text-gray-900 hover:text-blue-600">
+                  <a
+                    href="/admin/announcements/{announcement.id}"
+                    class="font-medium text-gray-900 hover:text-blue-600"
+                  >
                     {announcement.title}
                   </a>
                 </td>
                 <td class="px-4 py-3">
-                  <StatusBadge status={announcement.status} variant="announcement" />
+                  <StatusBadge
+                    status={announcement.status}
+                    variant="announcement"
+                  />
                 </td>
-                <td class="px-4 py-3 text-gray-500">{formatDate(announcement.createdAt)}</td>
-                <td class="px-4 py-3 text-gray-500">{formatDate(announcement.updatedAt)}</td>
+                <td class="px-4 py-3 text-gray-500"
+                  >{formatDate(announcement.createdAt)}</td
+                >
+                <td class="px-4 py-3 text-gray-500"
+                  >{formatDate(announcement.updatedAt)}</td
+                >
                 <td class="px-4 py-3">
                   <div class="flex items-center justify-end gap-1">
                     <a
@@ -253,9 +290,18 @@
 
 <!-- Create Announcement Modal -->
 <Modal bind:open={showCreateModal} title="New Announcement">
-  <form novalidate onsubmit={(e) => { e.preventDefault(); handleCreate(); }} class="space-y-4">
+  <form
+    novalidate
+    onsubmit={(e) => {
+      e.preventDefault();
+      handleCreate();
+    }}
+    class="space-y-4"
+  >
     {#if createError}
-      <div class="p-3 bg-red-50 text-red-700 rounded-lg text-sm">{createError}</div>
+      <div class="p-3 bg-red-50 text-red-700 rounded-lg text-sm">
+        {createError}
+      </div>
     {/if}
 
     <Input
@@ -274,7 +320,12 @@
     />
 
     <div class="flex justify-end gap-2 pt-2">
-      <Button variant="ghost" type="button" onclick={() => (showCreateModal = false)} disabled={creating}>
+      <Button
+        variant="ghost"
+        type="button"
+        onclick={() => (showCreateModal = false)}
+        disabled={creating}
+      >
         Cancel
       </Button>
       <Button variant="primary" type="submit" disabled={creating}>
@@ -288,7 +339,9 @@
 <ConfirmDialog
   bind:open={showDeleteDialog}
   title="Delete Announcement"
-  message={deleteTarget ? `Are you sure you want to delete "${deleteTarget.title}"? This action cannot be undone.` : ""}
+  message={deleteTarget
+    ? `Are you sure you want to delete "${deleteTarget.title}"? This action cannot be undone.`
+    : ""}
   confirmLabel="Delete"
   confirmVariant="danger"
   loading={deleting}

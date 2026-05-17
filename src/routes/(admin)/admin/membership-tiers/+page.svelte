@@ -1,7 +1,11 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import { adminTiersApi } from "$lib/api/admin";
-  import type { MembershipTier, AdminPaginatedResponse, CreateTierInput } from "$lib/types/admin";
+  import type {
+    MembershipTier,
+    AdminPaginatedResponse,
+    CreateTierInput,
+  } from "$lib/types/admin";
   import { formatCurrency } from "$lib/utils/formatting";
   import StatusBadge from "$lib/components/admin/StatusBadge.svelte";
   import LoadingSkeleton from "$lib/components/ui/LoadingSkeleton.svelte";
@@ -53,7 +57,9 @@
     { value: "YEARS", label: "Years" },
   ];
 
-  onMount(() => { loadTiers(); });
+  onMount(() => {
+    loadTiers();
+  });
 
   async function loadTiers() {
     loading = true;
@@ -61,7 +67,8 @@
     try {
       data = await adminTiersApi.list({ pageSize: 50, ordering: "sortOrder" });
     } catch (err: unknown) {
-      error = err instanceof Error ? err.message : "Failed to load membership tiers";
+      error =
+        err instanceof Error ? err.message : "Failed to load membership tiers";
     } finally {
       loading = false;
     }
@@ -195,10 +202,15 @@
   {:else if error}
     <div class="p-4 bg-red-50 text-red-700 rounded-lg text-sm">{error}</div>
   {:else if data && data.items.length === 0}
-    <EmptyState title="No membership tiers" message="Create tiers to offer loyalty programs to your customers">
+    <EmptyState
+      title="No membership tiers"
+      message="Create tiers to offer loyalty programs to your customers"
+    >
       {#snippet icon()}<Crown class="w-6 h-6" />{/snippet}
       {#snippet actions()}
-        <Button size="sm" onclick={openCreateModal}><Plus class="w-4 h-4" /> Add Tier</Button>
+        <Button size="sm" onclick={openCreateModal}
+          ><Plus class="w-4 h-4" /> Add Tier</Button
+        >
       {/snippet}
     </EmptyState>
   {:else if data}
@@ -206,7 +218,9 @@
       {#each data.items as tier (tier.id)}
         <div class="bg-white rounded-lg border border-gray-200 p-5 relative">
           {#if tier.isPopular}
-            <span class="absolute top-3 right-3 bg-amber-100 text-amber-800 text-[10px] font-medium px-2 py-0.5 rounded-full">
+            <span
+              class="absolute top-3 right-3 bg-amber-100 text-amber-800 text-[10px] font-medium px-2 py-0.5 rounded-full"
+            >
               Popular
             </span>
           {/if}
@@ -220,7 +234,10 @@
             {tier.price > 0 ? formatCurrency(tier.price) : "Free"}
           </div>
           <p class="text-xs text-gray-500 mb-4">
-            Valid for {formatValidity(tier.validPeriodValue, tier.validPeriodUnit)}
+            Valid for {formatValidity(
+              tier.validPeriodValue,
+              tier.validPeriodUnit,
+            )}
           </p>
 
           <dl class="text-sm space-y-2 mb-4">
@@ -261,11 +278,19 @@
           {/if}
 
           <div class="flex items-center gap-2 pt-3 border-t border-gray-100">
-            <Button variant="ghost" size="sm" onclick={() => openEditModal(tier)}>
+            <Button
+              variant="ghost"
+              size="sm"
+              onclick={() => openEditModal(tier)}
+            >
               <Pencil class="w-3.5 h-3.5" />
               Edit
             </Button>
-            <Button variant="ghost" size="sm" onclick={() => openDeleteDialog(tier)}>
+            <Button
+              variant="ghost"
+              size="sm"
+              onclick={() => openDeleteDialog(tier)}
+            >
               <Trash2 class="w-3.5 h-3.5 text-red-500" />
               <span class="text-red-500">Delete</span>
             </Button>
@@ -278,8 +303,12 @@
 
 <!-- Create / Edit Modal -->
 <Modal bind:open={modalOpen} title={modalTitle}>
-  <form novalidate
-    onsubmit={(e) => { e.preventDefault(); handleSave(); }}
+  <form
+    novalidate
+    onsubmit={(e) => {
+      e.preventDefault();
+      handleSave();
+    }}
     class="space-y-4"
   >
     <Input
@@ -381,10 +410,15 @@
 <ConfirmDialog
   bind:open={deleteDialogOpen}
   title="Delete Tier"
-  message={deletingTier ? `Are you sure you want to delete "${deletingTier.name}"? This action cannot be undone.` : ""}
+  message={deletingTier
+    ? `Are you sure you want to delete "${deletingTier.name}"? This action cannot be undone.`
+    : ""}
   confirmLabel="Delete"
   confirmVariant="danger"
   loading={deleting}
   onConfirm={handleDelete}
-  onCancel={() => { deleteDialogOpen = false; deletingTier = null; }}
+  onCancel={() => {
+    deleteDialogOpen = false;
+    deletingTier = null;
+  }}
 />

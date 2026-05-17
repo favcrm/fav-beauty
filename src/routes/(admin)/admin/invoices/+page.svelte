@@ -62,7 +62,9 @@
     search;
     statusFilter;
     page;
-    untrack(() => { loadInvoices(); });
+    untrack(() => {
+      loadInvoices();
+    });
   });
 
   function openDelete(invoice: Invoice) {
@@ -122,7 +124,12 @@
   {:else if error}
     <div class="p-4 bg-red-50 text-red-700 rounded-lg text-sm">{error}</div>
   {:else if data && data.items.length === 0}
-    <EmptyState title="No invoices found" message={search || statusFilter ? "Try adjusting your search or filters" : "Create your first invoice to start billing"}>
+    <EmptyState
+      title="No invoices found"
+      message={search || statusFilter
+        ? "Try adjusting your search or filters"
+        : "Create your first invoice to start billing"}
+    >
       {#snippet icon()}<FileText class="w-6 h-6" />{/snippet}
       {#snippet actions()}
         {#if !search && !statusFilter}
@@ -138,27 +145,48 @@
         <table class="w-full text-sm">
           <thead>
             <tr class="border-b border-gray-200 bg-gray-50">
-              <th class="text-left px-4 py-3 font-medium text-gray-600">Invoice #</th>
-              <th class="text-left px-4 py-3 font-medium text-gray-600">Customer</th>
-              <th class="text-right px-4 py-3 font-medium text-gray-600">Total</th>
-              <th class="text-left px-4 py-3 font-medium text-gray-600">Status</th>
-              <th class="text-left px-4 py-3 font-medium text-gray-600">Due Date</th>
-              <th class="text-left px-4 py-3 font-medium text-gray-600">Created</th>
-              <th class="text-right px-4 py-3 font-medium text-gray-600">Actions</th>
+              <th class="text-left px-4 py-3 font-medium text-gray-600"
+                >Invoice #</th
+              >
+              <th class="text-left px-4 py-3 font-medium text-gray-600"
+                >Customer</th
+              >
+              <th class="text-right px-4 py-3 font-medium text-gray-600"
+                >Total</th
+              >
+              <th class="text-left px-4 py-3 font-medium text-gray-600"
+                >Status</th
+              >
+              <th class="text-left px-4 py-3 font-medium text-gray-600"
+                >Due Date</th
+              >
+              <th class="text-left px-4 py-3 font-medium text-gray-600"
+                >Created</th
+              >
+              <th class="text-right px-4 py-3 font-medium text-gray-600"
+                >Actions</th
+              >
             </tr>
           </thead>
           <tbody>
             {#each data.items as invoice (invoice.id)}
-              <tr class="border-b border-gray-100 hover:bg-gray-50 transition-colors">
+              <tr
+                class="border-b border-gray-100 hover:bg-gray-50 transition-colors"
+              >
                 <td class="px-4 py-3">
-                  <a href="/admin/invoices/{invoice.id}" class="font-medium text-blue-600 hover:text-blue-800">
+                  <a
+                    href="/admin/invoices/{invoice.id}"
+                    class="font-medium text-blue-600 hover:text-blue-800"
+                  >
                     {invoice.invoiceNumber}
                   </a>
                 </td>
                 <td class="px-4 py-3 text-gray-700">
                   {invoice.accountName || "—"}
                 </td>
-                <td class="px-4 py-3 text-right font-medium text-gray-900 tabular-nums">
+                <td
+                  class="px-4 py-3 text-right font-medium text-gray-900 tabular-nums"
+                >
                   {formatCurrency(parseFloat(invoice.total))}
                 </td>
                 <td class="px-4 py-3">
@@ -167,7 +195,9 @@
                 <td class="px-4 py-3 text-gray-500">
                   {invoice.dueDate ? formatDate(invoice.dueDate) : "—"}
                 </td>
-                <td class="px-4 py-3 text-gray-500">{formatDate(invoice.createdAt)}</td>
+                <td class="px-4 py-3 text-gray-500"
+                  >{formatDate(invoice.createdAt)}</td
+                >
                 <td class="px-4 py-3">
                   <div class="flex items-center justify-end gap-1">
                     {#if invoice.status === "DRAFT"}
@@ -201,10 +231,15 @@
 <ConfirmDialog
   bind:open={deleteOpen}
   title="Delete Invoice"
-  message={deleteTarget ? `Are you sure you want to delete invoice "${deleteTarget.invoiceNumber}"? This action cannot be undone.` : ""}
+  message={deleteTarget
+    ? `Are you sure you want to delete invoice "${deleteTarget.invoiceNumber}"? This action cannot be undone.`
+    : ""}
   confirmLabel="Delete"
   confirmVariant="danger"
   loading={deleteLoading}
   onConfirm={handleDelete}
-  onCancel={() => { deleteOpen = false; deleteTarget = null; }}
+  onCancel={() => {
+    deleteOpen = false;
+    deleteTarget = null;
+  }}
 />

@@ -62,10 +62,14 @@
   <div class="w-full max-w-sm">
     <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
       <h1 class="text-lg font-semibold text-gray-900 mb-1">Admin Login</h1>
-      <p class="text-sm text-gray-500 mb-6">Sign in with your merchant account</p>
+      <p class="text-sm text-gray-500 mb-6">
+        Sign in with your merchant account
+      </p>
 
       {#if error}
-        <div class="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-700">
+        <div
+          class="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-700"
+        >
           {error}
         </div>
       {/if}
@@ -87,14 +91,21 @@
           error={fieldErrors.password}
           required
         />
-        <Button type="submit" variant="primary" class="w-full" disabled={loading}>
+        <Button
+          type="submit"
+          variant="primary"
+          class="w-full"
+          disabled={loading}
+        >
           {loading ? "Signing in..." : "Sign in"}
         </Button>
       </form>
     </div>
 
     <p class="mt-4 text-center text-xs text-gray-400">
-      <a href="/" class="hover:text-gray-600 transition-colors">&larr; Back to site</a>
+      <a href="/" class="hover:text-gray-600 transition-colors"
+        >&larr; Back to site</a
+      >
     </p>
   </div>
 </div>

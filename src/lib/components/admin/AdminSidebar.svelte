@@ -39,7 +39,12 @@
   const navGroups: NavGroup[] = [
     {
       items: [
-        { href: "/admin", label: "Dashboard", icon: LayoutDashboard, exact: true },
+        {
+          href: "/admin",
+          label: "Dashboard",
+          icon: LayoutDashboard,
+          exact: true,
+        },
       ],
     },
     {
@@ -63,19 +68,19 @@
       items: [
         { href: "/admin/promotions", label: "Promotions", icon: Ticket },
         { href: "/admin/rewards", label: "Rewards", icon: Gift },
-        { href: "/admin/announcements", label: "Announcements", icon: Megaphone },
+        {
+          href: "/admin/announcements",
+          label: "Announcements",
+          icon: Megaphone,
+        },
       ],
     },
     {
       label: "Content",
-      items: [
-        { href: "/admin/blog", label: "Blog", icon: FileText },
-      ],
+      items: [{ href: "/admin/blog", label: "Blog", icon: FileText }],
     },
     {
-      items: [
-        { href: "/admin/settings", label: "Settings", icon: Settings },
-      ],
+      items: [{ href: "/admin/settings", label: "Settings", icon: Settings }],
     },
   ];
 
@@ -98,12 +103,12 @@
 {/if}
 
 <!-- Sidebar -->
-<aside
-  class="admin-sidebar {isOpen ? 'is-open' : ''}"
->
+<aside class="admin-sidebar {isOpen ? 'is-open' : ''}">
   <div class="flex flex-col h-full">
     <!-- Header -->
-    <div class="flex items-center justify-between p-4 border-b border-slate-800">
+    <div
+      class="flex items-center justify-between p-4 border-b border-slate-800"
+    >
       <span class="font-semibold text-sm text-white tracking-wide">Admin</span>
       <button
         onclick={onClose}
@@ -119,7 +124,9 @@
       {#each navGroups as group}
         <div>
           {#if group.label}
-            <p class="px-3 mb-1 text-[10px] font-semibold uppercase tracking-widest text-slate-500">
+            <p
+              class="px-3 mb-1 text-[10px] font-semibold uppercase tracking-widest text-slate-500"
+            >
               {group.label}
             </p>
           {/if}

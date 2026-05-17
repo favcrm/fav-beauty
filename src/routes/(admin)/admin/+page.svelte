@@ -1,6 +1,18 @@
 <script lang="ts">
-  import { adminDashboardApi, adminOrdersApi, adminCustomersApi, adminProductsApi, adminInvoicesApi } from "$lib/api/admin";
-  import type { DashboardStats, AcquisitionChannel, Order, InvoiceStats, OrderStatus } from "$lib/types/admin";
+  import {
+    adminDashboardApi,
+    adminOrdersApi,
+    adminCustomersApi,
+    adminProductsApi,
+    adminInvoicesApi,
+  } from "$lib/api/admin";
+  import type {
+    DashboardStats,
+    AcquisitionChannel,
+    Order,
+    InvoiceStats,
+    OrderStatus,
+  } from "$lib/types/admin";
   import { formatCurrency, formatRelativeTime } from "$lib/utils/formatting";
   import StatusBadge from "$lib/components/admin/StatusBadge.svelte";
   import LoadingSkeleton from "$lib/components/ui/LoadingSkeleton.svelte";
@@ -38,7 +50,14 @@
     loading = true;
     error = "";
     try {
-      const [statsRes, channelsRes, ordersRes, productsRes, customersRes, invoiceStatsRes] = await Promise.all([
+      const [
+        statsRes,
+        channelsRes,
+        ordersRes,
+        productsRes,
+        customersRes,
+        invoiceStatsRes,
+      ] = await Promise.all([
         adminDashboardApi.stats(),
         adminDashboardApi.acquisitionChannels(),
         adminOrdersApi.list({ page: 1, pageSize: 100, ordering: "-createdAt" }),
@@ -71,19 +90,21 @@
   }
 
   const filteredOrders = $derived(
-    allOrders.filter((o) => new Date(o.createdAt) >= periodCutoff(period))
+    allOrders.filter((o) => new Date(o.createdAt) >= periodCutoff(period)),
   );
 
   const revenueOrders = $derived(
-    filteredOrders.filter((o) => o.status !== "cancelled" && o.status !== "refunded")
+    filteredOrders.filter(
+      (o) => o.status !== "cancelled" && o.status !== "refunded",
+    ),
   );
 
   const totalRevenue = $derived(
-    revenueOrders.reduce((sum, o) => sum + parseFloat(o.totalAmount), 0)
+    revenueOrders.reduce((sum, o) => sum + parseFloat(o.totalAmount), 0),
   );
 
   const avgOrderValue = $derived(
-    revenueOrders.length > 0 ? totalRevenue / revenueOrders.length : 0
+    revenueOrders.length > 0 ? totalRevenue / revenueOrders.length : 0,
   );
 
   const recentOrders = $derived(allOrders.slice(0, 5));
@@ -100,12 +121,12 @@
   });
 
   const maxStatusCount = $derived(
-    Math.max(...(statusBreakdown().map((s) => s.count)), 1)
+    Math.max(...statusBreakdown().map((s) => s.count), 1),
   );
 
   // Channel chart
   const maxChannelCount = $derived(
-    Math.max(...channels.map((c) => c.count), 1)
+    Math.max(...channels.map((c) => c.count), 1),
   );
 
   function channelLabel(source: string | null): string {
@@ -116,7 +137,11 @@
   function customerName(order: Order): string {
     if (!order.customerInfo) return "Guest";
     const { firstName, lastName } = order.customerInfo;
-    return [firstName, lastName].filter(Boolean).join(" ") || order.customerInfo.email || "Guest";
+    return (
+      [firstName, lastName].filter(Boolean).join(" ") ||
+      order.customerInfo.email ||
+      "Guest"
+    );
   }
 
   const statusColors: Record<string, string> = {
@@ -151,7 +176,9 @@
   <!-- Page Header -->
   <div>
     <h1 class="text-xl font-semibold text-gray-900">Dashboard</h1>
-    <p class="text-sm text-gray-500 mt-1">Overview of your business at a glance</p>
+    <p class="text-sm text-gray-500 mt-1">
+      Overview of your business at a glance
+    </p>
   </div>
 
   {#if loading}
@@ -161,59 +188,93 @@
   {:else}
     <!-- KPI Cards — top row -->
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
-      <a href="/admin/customers" class="group block bg-white rounded-xl border border-gray-200 p-5 hover:border-gray-300 hover:shadow-sm transition-all">
+      <a
+        href="/admin/customers"
+        class="group block bg-white rounded-xl border border-gray-200 p-5 hover:border-gray-300 hover:shadow-sm transition-all"
+      >
         <div class="flex items-center justify-between mb-3">
-          <div class="w-9 h-9 rounded-lg bg-emerald-50 flex items-center justify-center">
+          <div
+            class="w-9 h-9 rounded-lg bg-emerald-50 flex items-center justify-center"
+          >
             <Users class="w-4.5 h-4.5 text-emerald-600" />
           </div>
-          <ArrowUpRight class="w-4 h-4 text-gray-300 group-hover:text-gray-500 transition-colors" />
+          <ArrowUpRight
+            class="w-4 h-4 text-gray-300 group-hover:text-gray-500 transition-colors"
+          />
         </div>
-        <div class="text-2xl font-semibold text-gray-900 tabular-nums">{customerCount.toLocaleString()}</div>
+        <div class="text-2xl font-semibold text-gray-900 tabular-nums">
+          {customerCount.toLocaleString()}
+        </div>
         <div class="text-xs text-gray-500 mt-1">Total Customers</div>
       </a>
 
       <div class="bg-white rounded-xl border border-gray-200 p-5">
         <div class="flex items-center justify-between mb-3">
-          <div class="w-9 h-9 rounded-lg bg-sky-50 flex items-center justify-center">
+          <div
+            class="w-9 h-9 rounded-lg bg-sky-50 flex items-center justify-center"
+          >
             <UserPlus class="w-4.5 h-4.5 text-sky-600" />
           </div>
         </div>
-        <div class="text-2xl font-semibold text-gray-900 tabular-nums">{stats?.newMembersThisWeek ?? 0}</div>
+        <div class="text-2xl font-semibold text-gray-900 tabular-nums">
+          {stats?.newMembersThisWeek ?? 0}
+        </div>
         <div class="text-xs text-gray-500 mt-1">New This Week</div>
       </div>
 
-      <a href="/admin/orders" class="group block bg-white rounded-xl border border-gray-200 p-5 hover:border-gray-300 hover:shadow-sm transition-all">
+      <a
+        href="/admin/orders"
+        class="group block bg-white rounded-xl border border-gray-200 p-5 hover:border-gray-300 hover:shadow-sm transition-all"
+      >
         <div class="flex items-center justify-between mb-3">
-          <div class="w-9 h-9 rounded-lg bg-amber-50 flex items-center justify-center">
+          <div
+            class="w-9 h-9 rounded-lg bg-amber-50 flex items-center justify-center"
+          >
             <ShoppingBag class="w-4.5 h-4.5 text-amber-600" />
           </div>
-          <ArrowUpRight class="w-4 h-4 text-gray-300 group-hover:text-gray-500 transition-colors" />
+          <ArrowUpRight
+            class="w-4 h-4 text-gray-300 group-hover:text-gray-500 transition-colors"
+          />
         </div>
-        <div class="text-2xl font-semibold text-gray-900 tabular-nums">{orderTotal.toLocaleString()}</div>
+        <div class="text-2xl font-semibold text-gray-900 tabular-nums">
+          {orderTotal.toLocaleString()}
+        </div>
         <div class="text-xs text-gray-500 mt-1">Total Orders</div>
       </a>
 
-      <a href="/admin/products" class="group block bg-white rounded-xl border border-gray-200 p-5 hover:border-gray-300 hover:shadow-sm transition-all">
+      <a
+        href="/admin/products"
+        class="group block bg-white rounded-xl border border-gray-200 p-5 hover:border-gray-300 hover:shadow-sm transition-all"
+      >
         <div class="flex items-center justify-between mb-3">
-          <div class="w-9 h-9 rounded-lg bg-violet-50 flex items-center justify-center">
+          <div
+            class="w-9 h-9 rounded-lg bg-violet-50 flex items-center justify-center"
+          >
             <Package class="w-4.5 h-4.5 text-violet-600" />
           </div>
-          <ArrowUpRight class="w-4 h-4 text-gray-300 group-hover:text-gray-500 transition-colors" />
+          <ArrowUpRight
+            class="w-4 h-4 text-gray-300 group-hover:text-gray-500 transition-colors"
+          />
         </div>
-        <div class="text-2xl font-semibold text-gray-900 tabular-nums">{productCount.toLocaleString()}</div>
+        <div class="text-2xl font-semibold text-gray-900 tabular-nums">
+          {productCount.toLocaleString()}
+        </div>
         <div class="text-xs text-gray-500 mt-1">Products</div>
       </a>
     </div>
 
     <!-- Sales Overview -->
     <div class="bg-white rounded-xl border border-gray-200">
-      <div class="flex items-center justify-between px-5 py-4 border-b border-gray-100">
+      <div
+        class="flex items-center justify-between px-5 py-4 border-b border-gray-100"
+      >
         <h2 class="text-sm font-semibold text-gray-900">Sales Overview</h2>
         <div class="flex rounded-lg border border-gray-200 overflow-hidden">
           {#each periods as p (p.value)}
             <button
               onclick={() => (period = p.value)}
-              class="px-3 py-1.5 text-xs font-medium transition-colors {period === p.value
+              class="px-3 py-1.5 text-xs font-medium transition-colors {period ===
+              p.value
                 ? 'bg-gray-900 text-white'
                 : 'bg-white text-gray-600 hover:bg-gray-50'}"
             >
@@ -224,21 +285,29 @@
       </div>
 
       <!-- Sales KPI row -->
-      <div class="grid grid-cols-2 lg:grid-cols-4 divide-x divide-gray-100 border-b border-gray-100">
+      <div
+        class="grid grid-cols-2 lg:grid-cols-4 divide-x divide-gray-100 border-b border-gray-100"
+      >
         <div class="px-5 py-4">
           <div class="flex items-center gap-2 mb-1">
             <DollarSign class="w-3.5 h-3.5 text-emerald-500" />
             <span class="text-xs text-gray-500">Revenue</span>
           </div>
-          <div class="text-xl font-semibold text-gray-900 tabular-nums">{formatCurrency(totalRevenue)}</div>
-          <div class="text-xs text-gray-400 mt-0.5">{revenueOrders.length} orders</div>
+          <div class="text-xl font-semibold text-gray-900 tabular-nums">
+            {formatCurrency(totalRevenue)}
+          </div>
+          <div class="text-xs text-gray-400 mt-0.5">
+            {revenueOrders.length} orders
+          </div>
         </div>
         <div class="px-5 py-4">
           <div class="flex items-center gap-2 mb-1">
             <Receipt class="w-3.5 h-3.5 text-sky-500" />
             <span class="text-xs text-gray-500">Avg Order</span>
           </div>
-          <div class="text-xl font-semibold text-gray-900 tabular-nums">{formatCurrency(avgOrderValue)}</div>
+          <div class="text-xl font-semibold text-gray-900 tabular-nums">
+            {formatCurrency(avgOrderValue)}
+          </div>
         </div>
         {#if invoiceStats}
           <div class="px-5 py-4">
@@ -246,7 +315,9 @@
               <FileText class="w-3.5 h-3.5 text-violet-500" />
               <span class="text-xs text-gray-500">Invoiced</span>
             </div>
-            <div class="text-xl font-semibold text-gray-900 tabular-nums">{formatCurrency(parseFloat(invoiceStats.totalPaid))}</div>
+            <div class="text-xl font-semibold text-gray-900 tabular-nums">
+              {formatCurrency(parseFloat(invoiceStats.totalPaid))}
+            </div>
             <div class="text-xs text-gray-400 mt-0.5">paid</div>
           </div>
           <div class="px-5 py-4">
@@ -254,9 +325,13 @@
               <AlertCircle class="w-3.5 h-3.5 text-amber-500" />
               <span class="text-xs text-gray-500">Outstanding</span>
             </div>
-            <div class="text-xl font-semibold text-gray-900 tabular-nums">{formatCurrency(parseFloat(invoiceStats.totalOutstanding))}</div>
+            <div class="text-xl font-semibold text-gray-900 tabular-nums">
+              {formatCurrency(parseFloat(invoiceStats.totalOutstanding))}
+            </div>
             {#if invoiceStats.overdueCount > 0}
-              <div class="text-xs text-red-500 mt-0.5">{invoiceStats.overdueCount} overdue</div>
+              <div class="text-xs text-red-500 mt-0.5">
+                {invoiceStats.overdueCount} overdue
+              </div>
             {/if}
           </div>
         {/if}
@@ -265,18 +340,33 @@
       <!-- Order Status Breakdown -->
       {#if statusBreakdown().length > 0}
         <div class="px-5 py-4">
-          <h3 class="text-xs font-medium text-gray-500 uppercase tracking-wide mb-3">Order Status</h3>
+          <h3
+            class="text-xs font-medium text-gray-500 uppercase tracking-wide mb-3"
+          >
+            Order Status
+          </h3>
           <div class="space-y-2.5">
             {#each statusBreakdown() as item (item.status)}
               <div class="flex items-center gap-3">
-                <span class="text-xs text-gray-600 w-20 shrink-0 capitalize">{item.status}</span>
-                <div class="flex-1 h-2 bg-gray-100 rounded-full overflow-hidden">
+                <span class="text-xs text-gray-600 w-20 shrink-0 capitalize"
+                  >{item.status}</span
+                >
+                <div
+                  class="flex-1 h-2 bg-gray-100 rounded-full overflow-hidden"
+                >
                   <div
-                    class="h-full rounded-full transition-all duration-500 {statusColors[item.status] ?? 'bg-gray-400'}"
-                    style="width: {Math.max((item.count / maxStatusCount) * 100, 3)}%"
+                    class="h-full rounded-full transition-all duration-500 {statusColors[
+                      item.status
+                    ] ?? 'bg-gray-400'}"
+                    style="width: {Math.max(
+                      (item.count / maxStatusCount) * 100,
+                      3,
+                    )}%"
                   ></div>
                 </div>
-                <span class="text-xs text-gray-500 tabular-nums w-8 text-right">{item.count}</span>
+                <span class="text-xs text-gray-500 tabular-nums w-8 text-right"
+                  >{item.count}</span
+                >
               </div>
             {/each}
           </div>
@@ -287,29 +377,47 @@
     <!-- Middle Row: Recent Orders + Acquisition Channels -->
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
       <div class="lg:col-span-2 bg-white rounded-xl border border-gray-200">
-        <div class="flex items-center justify-between px-5 py-4 border-b border-gray-100">
+        <div
+          class="flex items-center justify-between px-5 py-4 border-b border-gray-100"
+        >
           <h2 class="text-sm font-semibold text-gray-900">Recent Orders</h2>
-          <a href="/admin/orders" class="inline-flex items-center gap-1 text-xs text-gray-500 hover:text-gray-800 transition-colors">
+          <a
+            href="/admin/orders"
+            class="inline-flex items-center gap-1 text-xs text-gray-500 hover:text-gray-800 transition-colors"
+          >
             View all
             <ArrowRight class="w-3 h-3" />
           </a>
         </div>
         {#if recentOrders.length === 0}
-          <div class="px-5 py-10 text-center text-sm text-gray-400">No orders yet</div>
+          <div class="px-5 py-10 text-center text-sm text-gray-400">
+            No orders yet
+          </div>
         {:else}
           <div class="divide-y divide-gray-50">
             {#each recentOrders as order (order.id)}
-              <a href="/admin/orders/{order.orderId}" class="flex items-center gap-4 px-5 py-3.5 hover:bg-gray-50/60 transition-colors">
+              <a
+                href="/admin/orders/{order.orderId}"
+                class="flex items-center gap-4 px-5 py-3.5 hover:bg-gray-50/60 transition-colors"
+              >
                 <div class="flex-1 min-w-0">
                   <div class="flex items-center gap-2">
-                    <span class="text-sm font-medium text-gray-900">{order.orderNumber}</span>
+                    <span class="text-sm font-medium text-gray-900"
+                      >{order.orderNumber}</span
+                    >
                     <StatusBadge status={order.status} variant="order" />
                   </div>
-                  <div class="text-xs text-gray-500 mt-0.5">{customerName(order)}</div>
+                  <div class="text-xs text-gray-500 mt-0.5">
+                    {customerName(order)}
+                  </div>
                 </div>
                 <div class="text-right shrink-0">
-                  <div class="text-sm font-medium text-gray-900 tabular-nums">{formatCurrency(parseFloat(order.totalAmount))}</div>
-                  <div class="text-xs text-gray-400 mt-0.5">{formatRelativeTime(order.createdAt)}</div>
+                  <div class="text-sm font-medium text-gray-900 tabular-nums">
+                    {formatCurrency(parseFloat(order.totalAmount))}
+                  </div>
+                  <div class="text-xs text-gray-400 mt-0.5">
+                    {formatRelativeTime(order.createdAt)}
+                  </div>
                 </div>
               </a>
             {/each}
@@ -319,22 +427,35 @@
 
       <div class="bg-white rounded-xl border border-gray-200">
         <div class="px-5 py-4 border-b border-gray-100">
-          <h2 class="text-sm font-semibold text-gray-900">Acquisition Channels</h2>
+          <h2 class="text-sm font-semibold text-gray-900">
+            Acquisition Channels
+          </h2>
         </div>
         {#if channels.length === 0}
-          <div class="px-5 py-10 text-center text-sm text-gray-400">No data yet</div>
+          <div class="px-5 py-10 text-center text-sm text-gray-400">
+            No data yet
+          </div>
         {:else}
           <div class="p-5 space-y-4">
             {#each channels as channel, i (channel.source ?? "unknown")}
               <div>
                 <div class="flex items-center justify-between mb-1.5">
-                  <span class="text-xs font-medium text-gray-700">{channelLabel(channel.source)}</span>
-                  <span class="text-xs text-gray-500 tabular-nums">{channel.count}</span>
+                  <span class="text-xs font-medium text-gray-700"
+                    >{channelLabel(channel.source)}</span
+                  >
+                  <span class="text-xs text-gray-500 tabular-nums"
+                    >{channel.count}</span
+                  >
                 </div>
                 <div class="h-2 bg-gray-100 rounded-full overflow-hidden">
                   <div
-                    class="h-full rounded-full transition-all duration-500 {channelColors[i % channelColors.length]}"
-                    style="width: {Math.max((channel.count / maxChannelCount) * 100, 2)}%"
+                    class="h-full rounded-full transition-all duration-500 {channelColors[
+                      i % channelColors.length
+                    ]}"
+                    style="width: {Math.max(
+                      (channel.count / maxChannelCount) * 100,
+                      2,
+                    )}%"
                   ></div>
                 </div>
               </div>
@@ -348,42 +469,58 @@
     <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
       <div class="bg-white rounded-xl border border-gray-200 p-4">
         <div class="flex items-center gap-2.5 mb-2">
-          <div class="w-7 h-7 rounded-md bg-emerald-50 flex items-center justify-center">
+          <div
+            class="w-7 h-7 rounded-md bg-emerald-50 flex items-center justify-center"
+          >
             <TrendingUp class="w-3.5 h-3.5 text-emerald-600" />
           </div>
           <span class="text-xs text-gray-500">Subscriptions</span>
         </div>
-        <div class="text-lg font-semibold text-gray-900 tabular-nums">{stats?.activeSubscriptions ?? 0}</div>
+        <div class="text-lg font-semibold text-gray-900 tabular-nums">
+          {stats?.activeSubscriptions ?? 0}
+        </div>
       </div>
 
       <div class="bg-white rounded-xl border border-gray-200 p-4">
         <div class="flex items-center gap-2.5 mb-2">
-          <div class="w-7 h-7 rounded-md bg-amber-50 flex items-center justify-center">
+          <div
+            class="w-7 h-7 rounded-md bg-amber-50 flex items-center justify-center"
+          >
             <Gift class="w-3.5 h-3.5 text-amber-600" />
           </div>
           <span class="text-xs text-gray-500">Rewards Redeemed</span>
         </div>
-        <div class="text-lg font-semibold text-gray-900 tabular-nums">{stats?.rewardsRedeemed ?? 0}</div>
+        <div class="text-lg font-semibold text-gray-900 tabular-nums">
+          {stats?.rewardsRedeemed ?? 0}
+        </div>
       </div>
 
       <div class="bg-white rounded-xl border border-gray-200 p-4">
         <div class="flex items-center gap-2.5 mb-2">
-          <div class="w-7 h-7 rounded-md bg-rose-50 flex items-center justify-center">
+          <div
+            class="w-7 h-7 rounded-md bg-rose-50 flex items-center justify-center"
+          >
             <Megaphone class="w-3.5 h-3.5 text-rose-600" />
           </div>
           <span class="text-xs text-gray-500">Active Promos</span>
         </div>
-        <div class="text-lg font-semibold text-gray-900 tabular-nums">{stats?.activePromotions ?? 0}</div>
+        <div class="text-lg font-semibold text-gray-900 tabular-nums">
+          {stats?.activePromotions ?? 0}
+        </div>
       </div>
 
       <div class="bg-white rounded-xl border border-gray-200 p-4">
         <div class="flex items-center gap-2.5 mb-2">
-          <div class="w-7 h-7 rounded-md bg-sky-50 flex items-center justify-center">
+          <div
+            class="w-7 h-7 rounded-md bg-sky-50 flex items-center justify-center"
+          >
             <MessageCircle class="w-3.5 h-3.5 text-sky-600" />
           </div>
           <span class="text-xs text-gray-500">Messages Sent</span>
         </div>
-        <div class="text-lg font-semibold text-gray-900 tabular-nums">{stats?.messagesSent ?? 0}</div>
+        <div class="text-lg font-semibold text-gray-900 tabular-nums">
+          {stats?.messagesSent ?? 0}
+        </div>
       </div>
     </div>
   {/if}

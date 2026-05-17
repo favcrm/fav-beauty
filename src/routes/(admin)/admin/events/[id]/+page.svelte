@@ -10,7 +10,7 @@
   import type { PageData } from "./$types";
 
   let { data }: { data: PageData } = $props();
-  
+
   let loading = $state(true);
   let error = $state("");
   let event = $state<any>(null);
@@ -25,13 +25,14 @@
     try {
       const [eventRes, regsRes] = await Promise.all([
         adminEventsApi.get(data.id),
-        adminEventsApi.listRegistrations(data.id, { page, pageSize })
+        adminEventsApi.listRegistrations(data.id, { page, pageSize }),
       ]);
       event = eventRes;
       registrations = regsRes.items;
       total = regsRes.total;
     } catch (err: unknown) {
-      error = err instanceof Error ? err.message : "Failed to load event details";
+      error =
+        err instanceof Error ? err.message : "Failed to load event details";
     } finally {
       loading = false;
     }
@@ -40,7 +41,10 @@
   onMount(load);
 
   // Reload on page change
-  $effect(() => { page; load(); });
+  $effect(() => {
+    page;
+    load();
+  });
 
   const totalPages = $derived(Math.max(1, Math.ceil(total / pageSize)));
 </script>
@@ -48,10 +52,13 @@
 <div>
   <!-- Header -->
   <div class="mb-6">
-    <a href="/admin/events" class="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-gray-900 mb-4">
+    <a
+      href="/admin/events"
+      class="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-gray-900 mb-4"
+    >
       <ArrowLeft size={16} /> Back to Events
     </a>
-    
+
     {#if event}
       <div class="flex items-start justify-between">
         <div>
@@ -66,8 +73,12 @@
   </div>
 
   <div class="bg-white rounded-lg border border-gray-200 overflow-hidden">
-    <div class="px-6 py-4 border-b border-gray-100 bg-gray-50/50 flex justify-between items-center">
-      <h2 class="text-base font-semibold text-gray-900">Guest List & Registrations</h2>
+    <div
+      class="px-6 py-4 border-b border-gray-100 bg-gray-50/50 flex justify-between items-center"
+    >
+      <h2 class="text-base font-semibold text-gray-900">
+        Guest List & Registrations
+      </h2>
       {#if total > 0}
         <span class="text-sm text-gray-500">{total} total guests</span>
       {/if}
@@ -95,19 +106,36 @@
         <table class="w-full text-sm">
           <thead>
             <tr class="border-b border-gray-200 bg-gray-50">
-              <th class="text-left px-6 py-3 font-medium text-gray-600">Guest</th>
-              <th class="text-left px-6 py-3 font-medium text-gray-600">Contact</th>
-              <th class="text-left px-6 py-3 font-medium text-gray-600">Session</th>
-              <th class="text-right px-6 py-3 font-medium text-gray-600">Qty</th>
-              <th class="text-right px-6 py-3 font-medium text-gray-600">Total</th>
-              <th class="text-left px-6 py-3 font-medium text-gray-600">Status</th>
-              <th class="text-left px-6 py-3 font-medium text-gray-600">Registered</th>
+              <th class="text-left px-6 py-3 font-medium text-gray-600"
+                >Guest</th
+              >
+              <th class="text-left px-6 py-3 font-medium text-gray-600"
+                >Contact</th
+              >
+              <th class="text-left px-6 py-3 font-medium text-gray-600"
+                >Session</th
+              >
+              <th class="text-right px-6 py-3 font-medium text-gray-600">Qty</th
+              >
+              <th class="text-right px-6 py-3 font-medium text-gray-600"
+                >Total</th
+              >
+              <th class="text-left px-6 py-3 font-medium text-gray-600"
+                >Status</th
+              >
+              <th class="text-left px-6 py-3 font-medium text-gray-600"
+                >Registered</th
+              >
             </tr>
           </thead>
           <tbody>
             {#each registrations as reg (reg.id)}
-              <tr class="border-b border-gray-100 hover:bg-gray-50 transition-colors">
-                <td class="px-6 py-3 font-medium text-gray-900">{reg.guestName}</td>
+              <tr
+                class="border-b border-gray-100 hover:bg-gray-50 transition-colors"
+              >
+                <td class="px-6 py-3 font-medium text-gray-900"
+                  >{reg.guestName}</td
+                >
                 <td class="px-6 py-3 text-gray-600">
                   <div>{reg.email}</div>
                   {#if reg.phone}
@@ -115,16 +143,24 @@
                   {/if}
                 </td>
                 <td class="px-6 py-3 text-gray-600">
-                  {reg.sessionStartTime ? formatDate(reg.sessionStartTime) : '-'}
+                  {reg.sessionStartTime
+                    ? formatDate(reg.sessionStartTime)
+                    : "-"}
                 </td>
-                <td class="px-6 py-3 text-right font-medium text-gray-900">{reg.quantity}</td>
+                <td class="px-6 py-3 text-right font-medium text-gray-900"
+                  >{reg.quantity}</td
+                >
                 <td class="px-6 py-3 text-right text-gray-900 tabular-nums">
-                  {Number(reg.totalAmount) === 0 ? 'Free' : `${reg.currency} ${(Number(reg.totalAmount) / 100).toFixed(2)}`}
+                  {Number(reg.totalAmount) === 0
+                    ? "Free"
+                    : `${reg.currency} ${(Number(reg.totalAmount) / 100).toFixed(2)}`}
                 </td>
                 <td class="px-6 py-3">
                   <StatusBadge status={reg.status} variant="order" />
                 </td>
-                <td class="px-6 py-3 text-gray-500 text-xs">{formatDate(reg.registeredAt)}</td>
+                <td class="px-6 py-3 text-gray-500 text-xs"
+                  >{formatDate(reg.registeredAt)}</td
+                >
               </tr>
             {/each}
           </tbody>
@@ -135,7 +171,11 @@
 
   {#if totalPages > 1}
     <div class="mt-4">
-      <Pagination currentPage={page} {totalPages} onPageChange={(p) => (page = p)} />
+      <Pagination
+        currentPage={page}
+        {totalPages}
+        onPageChange={(p) => (page = p)}
+      />
     </div>
   {/if}
 </div>

@@ -10,7 +10,11 @@
     AutomaticRewardRepeat,
   } from "$lib/types/admin";
   import { formatDate, getErrorMessage } from "$lib/utils/formatting";
-  import { triggerLabels, triggerOptions, repeatOptions } from "$lib/utils/admin-helpers";
+  import {
+    triggerLabels,
+    triggerOptions,
+    repeatOptions,
+  } from "$lib/utils/admin-helpers";
 
   import StatusBadge from "$lib/components/admin/StatusBadge.svelte";
   import SearchInput from "$lib/components/ui/SearchInput.svelte";
@@ -88,7 +92,9 @@
       page = 1;
     }
     page;
-    untrack(() => { loadData(); });
+    untrack(() => {
+      loadData();
+    });
   });
 
   function resetCreateForm() {
@@ -190,12 +196,16 @@
   {:else if data && data.items.length === 0}
     <EmptyState
       title="No automatic rewards found"
-      message={search || statusFilter ? "Try adjusting your filters" : "Create automatic rewards to engage members"}
+      message={search || statusFilter
+        ? "Try adjusting your filters"
+        : "Create automatic rewards to engage members"}
     >
       {#snippet icon()}<Zap class="w-6 h-6" />{/snippet}
       {#snippet actions()}
         {#if !search && !statusFilter}
-          <Button size="sm" onclick={openCreateModal}><Plus class="w-4 h-4" /> New Auto Reward</Button>
+          <Button size="sm" onclick={openCreateModal}
+            ><Plus class="w-4 h-4" /> New Auto Reward</Button
+          >
         {/if}
       {/snippet}
     </EmptyState>
@@ -205,18 +215,33 @@
         <table class="w-full text-sm">
           <thead>
             <tr class="border-b border-gray-200 bg-gray-50">
-              <th class="text-left px-4 py-3 font-medium text-gray-600">Name</th>
-              <th class="text-left px-4 py-3 font-medium text-gray-600">Trigger</th>
-              <th class="text-left px-4 py-3 font-medium text-gray-600">Status</th>
-              <th class="text-left px-4 py-3 font-medium text-gray-600">Repeat</th>
-              <th class="text-right px-4 py-3 font-medium text-gray-600">Bonus Points</th>
-              <th class="text-right px-4 py-3 font-medium text-gray-600">Bonus Stamps</th>
-              <th class="text-right px-4 py-3 font-medium text-gray-600">Actions</th>
+              <th class="text-left px-4 py-3 font-medium text-gray-600">Name</th
+              >
+              <th class="text-left px-4 py-3 font-medium text-gray-600"
+                >Trigger</th
+              >
+              <th class="text-left px-4 py-3 font-medium text-gray-600"
+                >Status</th
+              >
+              <th class="text-left px-4 py-3 font-medium text-gray-600"
+                >Repeat</th
+              >
+              <th class="text-right px-4 py-3 font-medium text-gray-600"
+                >Bonus Points</th
+              >
+              <th class="text-right px-4 py-3 font-medium text-gray-600"
+                >Bonus Stamps</th
+              >
+              <th class="text-right px-4 py-3 font-medium text-gray-600"
+                >Actions</th
+              >
             </tr>
           </thead>
           <tbody>
             {#each data.items as reward (reward.id)}
-              <tr class="border-b border-gray-100 hover:bg-gray-50 transition-colors">
+              <tr
+                class="border-b border-gray-100 hover:bg-gray-50 transition-colors"
+              >
                 <td class="px-4 py-3">
                   <a
                     href="/admin/rewards/automatic-rewards/{reward.id}"
@@ -229,13 +254,23 @@
                   {triggerLabels[reward.trigger] ?? reward.trigger}
                 </td>
                 <td class="px-4 py-3">
-                  <StatusBadge status={reward.status} variant="automaticReward" />
+                  <StatusBadge
+                    status={reward.status}
+                    variant="automaticReward"
+                  />
                 </td>
                 <td class="px-4 py-3 text-gray-500">
-                  {reward.repeat === "NONE" ? "—" : reward.repeat.charAt(0) + reward.repeat.slice(1).toLowerCase()}
+                  {reward.repeat === "NONE"
+                    ? "—"
+                    : reward.repeat.charAt(0) +
+                      reward.repeat.slice(1).toLowerCase()}
                 </td>
-                <td class="px-4 py-3 text-right text-gray-700 tabular-nums">{reward.bonusPoints}</td>
-                <td class="px-4 py-3 text-right text-gray-700 tabular-nums">{reward.bonusStamps}</td>
+                <td class="px-4 py-3 text-right text-gray-700 tabular-nums"
+                  >{reward.bonusPoints}</td
+                >
+                <td class="px-4 py-3 text-right text-gray-700 tabular-nums"
+                  >{reward.bonusStamps}</td
+                >
                 <td class="px-4 py-3">
                   <div class="flex items-center justify-end gap-1">
                     <a
@@ -273,9 +308,18 @@
 
 <!-- Create Modal -->
 <Modal bind:open={showCreateModal} title="New Automatic Reward">
-  <form novalidate onsubmit={(e) => { e.preventDefault(); handleCreate(); }} class="space-y-4">
+  <form
+    novalidate
+    onsubmit={(e) => {
+      e.preventDefault();
+      handleCreate();
+    }}
+    class="space-y-4"
+  >
     {#if createError}
-      <div class="p-3 bg-red-50 text-red-700 rounded-lg text-sm">{createError}</div>
+      <div class="p-3 bg-red-50 text-red-700 rounded-lg text-sm">
+        {createError}
+      </div>
     {/if}
 
     <Input
@@ -325,7 +369,12 @@
     </div>
 
     <div class="flex justify-end gap-2 pt-2">
-      <Button variant="ghost" type="button" onclick={() => (showCreateModal = false)} disabled={creating}>
+      <Button
+        variant="ghost"
+        type="button"
+        onclick={() => (showCreateModal = false)}
+        disabled={creating}
+      >
         Cancel
       </Button>
       <Button variant="primary" type="submit" disabled={creating}>
@@ -339,10 +388,15 @@
 <ConfirmDialog
   bind:open={showDeleteDialog}
   title="Delete Automatic Reward"
-  message={deleteTarget ? `Are you sure you want to delete "${deleteTarget.name}"? This action cannot be undone.` : ""}
+  message={deleteTarget
+    ? `Are you sure you want to delete "${deleteTarget.name}"? This action cannot be undone.`
+    : ""}
   confirmLabel="Delete"
   confirmVariant="danger"
   loading={deleting}
   onConfirm={handleDelete}
-  onCancel={() => { showDeleteDialog = false; deleteTarget = null; }}
+  onCancel={() => {
+    showDeleteDialog = false;
+    deleteTarget = null;
+  }}
 />

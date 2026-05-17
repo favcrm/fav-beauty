@@ -8,7 +8,10 @@
     GiftOfferStatus,
   } from "$lib/types/admin";
   import { formatDate, getErrorMessage } from "$lib/utils/formatting";
-  import { faceValueTypeOptions, formatFaceValue } from "$lib/utils/admin-helpers";
+  import {
+    faceValueTypeOptions,
+    formatFaceValue,
+  } from "$lib/utils/admin-helpers";
 
   import StatusBadge from "$lib/components/admin/StatusBadge.svelte";
   import SearchInput from "$lib/components/ui/SearchInput.svelte";
@@ -89,7 +92,9 @@
       page = 1;
     }
     page;
-    untrack(() => { loadData(); });
+    untrack(() => {
+      loadData();
+    });
   });
 
   function resetCreateForm() {
@@ -159,7 +164,6 @@
       deleting = false;
     }
   }
-
 </script>
 
 <div>
@@ -196,12 +200,16 @@
   {:else if data && data.items.length === 0}
     <EmptyState
       title="No gift offers found"
-      message={search || statusFilter ? "Try adjusting your filters" : "Create gift offers for your loyalty program"}
+      message={search || statusFilter
+        ? "Try adjusting your filters"
+        : "Create gift offers for your loyalty program"}
     >
       {#snippet icon()}<Gift class="w-6 h-6" />{/snippet}
       {#snippet actions()}
         {#if !search && !statusFilter}
-          <Button size="sm" onclick={openCreateModal}><Plus class="w-4 h-4" /> New Gift Offer</Button>
+          <Button size="sm" onclick={openCreateModal}
+            ><Plus class="w-4 h-4" /> New Gift Offer</Button
+          >
         {/if}
       {/snippet}
     </EmptyState>
@@ -211,19 +219,36 @@
         <table class="w-full text-sm">
           <thead>
             <tr class="border-b border-gray-200 bg-gray-50">
-              <th class="text-left px-4 py-3 font-medium text-gray-600">Name</th>
-              <th class="text-left px-4 py-3 font-medium text-gray-600">Status</th>
-              <th class="text-right px-4 py-3 font-medium text-gray-600">Points Cost</th>
-              <th class="text-right px-4 py-3 font-medium text-gray-600">Stamps Cost</th>
-              <th class="text-center px-4 py-3 font-medium text-gray-600">Redeemable</th>
-              <th class="text-right px-4 py-3 font-medium text-gray-600">Quota</th>
-              <th class="text-right px-4 py-3 font-medium text-gray-600">Face Value</th>
-              <th class="text-right px-4 py-3 font-medium text-gray-600">Actions</th>
+              <th class="text-left px-4 py-3 font-medium text-gray-600">Name</th
+              >
+              <th class="text-left px-4 py-3 font-medium text-gray-600"
+                >Status</th
+              >
+              <th class="text-right px-4 py-3 font-medium text-gray-600"
+                >Points Cost</th
+              >
+              <th class="text-right px-4 py-3 font-medium text-gray-600"
+                >Stamps Cost</th
+              >
+              <th class="text-center px-4 py-3 font-medium text-gray-600"
+                >Redeemable</th
+              >
+              <th class="text-right px-4 py-3 font-medium text-gray-600"
+                >Quota</th
+              >
+              <th class="text-right px-4 py-3 font-medium text-gray-600"
+                >Face Value</th
+              >
+              <th class="text-right px-4 py-3 font-medium text-gray-600"
+                >Actions</th
+              >
             </tr>
           </thead>
           <tbody>
             {#each data.items as offer (offer.id)}
-              <tr class="border-b border-gray-100 hover:bg-gray-50 transition-colors">
+              <tr
+                class="border-b border-gray-100 hover:bg-gray-50 transition-colors"
+              >
                 <td class="px-4 py-3">
                   <a
                     href="/admin/rewards/gift-offers/{offer.id}"
@@ -232,14 +257,20 @@
                     {offer.name}
                   </a>
                   {#if offer.description}
-                    <p class="text-xs text-gray-500 mt-0.5 truncate max-w-xs">{offer.description}</p>
+                    <p class="text-xs text-gray-500 mt-0.5 truncate max-w-xs">
+                      {offer.description}
+                    </p>
                   {/if}
                 </td>
                 <td class="px-4 py-3">
                   <StatusBadge status={offer.status} variant="giftOffer" />
                 </td>
-                <td class="px-4 py-3 text-right text-gray-700 tabular-nums">{offer.points}</td>
-                <td class="px-4 py-3 text-right text-gray-700 tabular-nums">{offer.stamps}</td>
+                <td class="px-4 py-3 text-right text-gray-700 tabular-nums"
+                  >{offer.points}</td
+                >
+                <td class="px-4 py-3 text-right text-gray-700 tabular-nums"
+                  >{offer.stamps}</td
+                >
                 <td class="px-4 py-3 text-center text-gray-700">
                   {offer.isRedeemable ? "Yes" : "No"}
                 </td>
@@ -290,9 +321,18 @@
 
 <!-- Create Modal -->
 <Modal bind:open={showCreateModal} title="New Gift Offer">
-  <form novalidate onsubmit={(e) => { e.preventDefault(); handleCreate(); }} class="space-y-4">
+  <form
+    novalidate
+    onsubmit={(e) => {
+      e.preventDefault();
+      handleCreate();
+    }}
+    class="space-y-4"
+  >
     {#if createError}
-      <div class="p-3 bg-red-50 text-red-700 rounded-lg text-sm">{createError}</div>
+      <div class="p-3 bg-red-50 text-red-700 rounded-lg text-sm">
+        {createError}
+      </div>
     {/if}
 
     <Input
@@ -334,7 +374,9 @@
         bind:checked={createIsRedeemable}
         class="rounded border-gray-300"
       />
-      <label for="isRedeemable" class="text-sm text-gray-700">Redeemable by members</label>
+      <label for="isRedeemable" class="text-sm text-gray-700"
+        >Redeemable by members</label
+      >
     </div>
 
     <div class="grid grid-cols-2 gap-4">
@@ -354,7 +396,12 @@
     </div>
 
     <div class="flex justify-end gap-2 pt-2">
-      <Button variant="ghost" type="button" onclick={() => (showCreateModal = false)} disabled={creating}>
+      <Button
+        variant="ghost"
+        type="button"
+        onclick={() => (showCreateModal = false)}
+        disabled={creating}
+      >
         Cancel
       </Button>
       <Button variant="primary" type="submit" disabled={creating}>
@@ -368,10 +415,15 @@
 <ConfirmDialog
   bind:open={showDeleteDialog}
   title="Delete Gift Offer"
-  message={deleteTarget ? `Are you sure you want to delete "${deleteTarget.name}"? This action cannot be undone.` : ""}
+  message={deleteTarget
+    ? `Are you sure you want to delete "${deleteTarget.name}"? This action cannot be undone.`
+    : ""}
   confirmLabel="Delete"
   confirmVariant="danger"
   loading={deleting}
   onConfirm={handleDelete}
-  onCancel={() => { showDeleteDialog = false; deleteTarget = null; }}
+  onCancel={() => {
+    showDeleteDialog = false;
+    deleteTarget = null;
+  }}
 />
