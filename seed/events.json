@@ -1,0 +1,26 @@
+[
+  {
+    "slug": "spring-skin-clinic",
+    "title": "Spring Skin Clinic",
+    "summary": "An evening of one-to-one skin readings with Noor, a glass of something cold, and 20% off any treatment booked on the night.",
+    "date": "2026-06-14",
+    "startTime": "18:30",
+    "location": "The Lueur Atelier, Central",
+    "price": 0,
+    "currency": "HKD",
+    "seatsLeft": 9,
+    "hue": 26
+  },
+  {
+    "slug": "colour-masterclass",
+    "title": "Colour & Light Masterclass",
+    "summary": "Rui walks through the craft of lived-in colour — a small-group session with a take-home gloss kit included.",
+    "date": "2026-07-05",
+    "startTime": "15:00",
+    "location": "The Lueur Atelier, Central",
+    "price": 380,
+    "currency": "HKD",
+    "seatsLeft": 4,
+    "hue": 8
+  }
+]

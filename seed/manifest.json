@@ -1,0 +1,15 @@
+{
+  "generatedAt": "2026-05-17T14:48:23.961Z",
+  "source": "src/lib/data/mock",
+  "note": "Demo seed data for the fav-beauty template. Regenerate with `pnpm seed:export`.",
+  "counts": {
+    "brand": 1,
+    "treatments": 6,
+    "stylists": 4,
+    "products": 8,
+    "membershipTiers": 3,
+    "journalPosts": 4,
+    "events": 2,
+    "testimonials": 3
+  }
+}

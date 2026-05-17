@@ -1,0 +1,20 @@
+[
+  {
+    "id": "tst-1",
+    "quote": "I have never had skin read so carefully. I left with four products instead of a basket — and the best my skin has looked in years.",
+    "name": "Priya N.",
+    "detail": "Glow member, two years"
+  },
+  {
+    "id": "tst-2",
+    "quote": "The only place I trust with colour. It grows out beautifully, which means I am not chained to the chair.",
+    "name": "Hannah L.",
+    "detail": "Colour Craft client"
+  },
+  {
+    "id": "tst-3",
+    "quote": "An hour at Lueur resets my whole week. It is the calmest room in the city.",
+    "name": "Marcus T.",
+    "detail": "Maison member"
+  }
+]
