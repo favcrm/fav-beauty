@@ -10,17 +10,15 @@ a FavCRM workspace later to go live.
 
 ---
 
-## Deploy
+## Deploy in one click
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/favcrm/fav-beauty)
 
 No environment variables are required. The site ships with seed treatments, products,
-stylists, membership tiers and journal entries — push it to Vercel and it just works.
+stylists, membership tiers and journal entries — it just works.
 
-Once this template lives in a Git repository, add a one-click Deploy button by replacing
-`<OWNER>/<REPO>` below:
-
-```md
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/<OWNER>/<REPO>)
-```
+> This is a **GitHub template repository**. Click **“Use this template”** to create your
+> own copy, then deploy that.
 
 ## Run locally
 
