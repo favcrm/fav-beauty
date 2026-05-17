@@ -47,6 +47,8 @@ export interface AdminAuthResponse {
     status: string;
     trialEndsAt: string | null;
   };
+  /** Present on register responses — where the merchant portal sends you next. */
+  redirectTo?: string;
 }
 
 // ── Products ──

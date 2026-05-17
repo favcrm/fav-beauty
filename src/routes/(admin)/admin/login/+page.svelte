@@ -1,5 +1,6 @@
 <script lang="ts">
   import { goto } from "$app/navigation";
+  import { page } from "$app/stores";
   import { adminAuthApi } from "$lib/api/admin";
   import { adminLogin, isAdminAuthenticated } from "$lib/stores/admin-auth";
   import Button from "$lib/components/ui/Button.svelte";
@@ -42,7 +43,11 @@
     loading = true;
 
     try {
-      const res = await adminAuthApi.login(email, password);
+      const res = await adminAuthApi.login(
+        email,
+        password,
+        $page.data.companyId,
+      );
       adminLogin({
         jwt: res.token,
         refreshToken: res.refreshToken,

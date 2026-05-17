@@ -3,6 +3,7 @@ import { adminAuthStore, adminLogout } from "$lib/stores/admin-auth";
 import { ApiError } from "$lib/types/api";
 import type { ApiErrorResponse } from "$lib/types/api";
 import { unwrapApiResponse } from "./unwrap";
+import { FAVCRM_API_URL, FAVCRM_COMPANY_ID } from "$lib/data/config";
 import type {
   AdminAuthResponse,
   ListParams,
@@ -73,11 +74,8 @@ import type {
   ManualEarnInput,
 } from "$lib/types/admin";
 
-const API_URL = (
-  (import.meta.env.VITE_API_URL as string | undefined) ??
-  (import.meta.env.VITE_FAVCRM_API_URL as string | undefined) ??
-  "https://api.favcrm.io"
-).replace(/\/$/, "");
+// Admin and storefront share one workspace config (see $lib/data/config).
+const API_URL = FAVCRM_API_URL;
 
 // ── Shared fetch core ──
 
@@ -274,15 +272,44 @@ async function listResource<T>(
 
 // ── Auth ──
 
-const COMPANY_ID = import.meta.env.VITE_COMPANY_ID as string | undefined;
-
 export const adminAuthApi = {
-  login: (email: string, password: string) =>
-    adminApiRequest<AdminAuthResponse>("/v6/merchant/auth/login", {
+  /**
+   * Sign in to a merchant workspace. The workspace is selected by the
+   * `X-Company-Id` header: an explicit `companyId` (e.g. the hostname-resolved
+   * workspace) wins, falling back to the build-time `FAVCRM_COMPANY_ID`. When
+   * neither is set, no header is sent.
+   */
+  login: (email: string, password: string, companyId?: string) => {
+    const company = companyId?.trim() || FAVCRM_COMPANY_ID?.trim();
+    return adminApiRequest<AdminAuthResponse>("/v6/merchant/auth/login", {
       method: "POST",
       body: { email, password },
       requiresAuth: false,
-      headers: COMPANY_ID ? { "X-Company-Id": COMPANY_ID } : undefined,
+      headers: company ? { "X-Company-Id": company } : undefined,
+    });
+  },
+
+  /**
+   * Register a new merchant. Creates the company, so no `X-Company-Id` is
+   * sent. Responds 201 with the same envelope/shape as `login`.
+   */
+  register: (input: {
+    businessName: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+    password: string;
+  }) =>
+    adminApiRequest<AdminAuthResponse>("/v6/merchant/auth/register", {
+      method: "POST",
+      body: {
+        email: input.email,
+        password: input.password,
+        firstName: input.firstName,
+        lastName: input.lastName,
+        businessName: input.businessName,
+      },
+      requiresAuth: false,
     }),
 
   verify: () =>
