@@ -1,0 +1,119 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Editorial-luxury beauty palette — warm neutrals + rosewood accent */
+  --paper: #fbf8f3;
+  --bone: #f1eadf;
+  --shell: #e9ddcf;
+  --ink: #211c17;
+  --ink-soft: #6b6359;
+  --ink-faint: #9b9183;
+  --clay: #c2a98f;
+  --blush: #e4c9be;
+  --accent: #9a4a35;
+  --accent-deep: #6f3325;
+  --line: #ddd3c6;
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+
+  color-scheme: light;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: "Jost", ui-sans-serif, system-ui, sans-serif;
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--paper);
+}
+
+/* Paper-grain texture for atmosphere */
+.grain::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0.4;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.35'/%3E%3C/svg%3E");
+}
+
+@layer components {
+  .shell {
+    @apply mx-auto w-full max-w-shell px-6 sm:px-8 lg:px-12;
+  }
+
+  .eyebrow {
+    @apply font-sans text-[0.7rem] font-medium uppercase tracking-eyebrow text-accent;
+  }
+
+  .rule {
+    @apply h-px w-full bg-line;
+  }
+
+  .link-underline {
+    background-image: linear-gradient(var(--accent), var(--accent));
+    background-repeat: no-repeat;
+    background-position: 0 100%;
+    background-size: 0% 1px;
+    transition: background-size 0.4s var(--ease);
+  }
+  .link-underline:hover {
+    background-size: 100% 1px;
+  }
+
+  /* staggered page-load reveal */
+  .reveal > * {
+    animation: rise-in 0.9s var(--ease) both;
+  }
+  .reveal > *:nth-child(1) {
+    animation-delay: 0.05s;
+  }
+  .reveal > *:nth-child(2) {
+    animation-delay: 0.13s;
+  }
+  .reveal > *:nth-child(3) {
+    animation-delay: 0.21s;
+  }
+  .reveal > *:nth-child(4) {
+    animation-delay: 0.29s;
+  }
+  .reveal > *:nth-child(5) {
+    animation-delay: 0.37s;
+  }
+  .reveal > *:nth-child(6) {
+    animation-delay: 0.45s;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* form controls inherit the palette */
+input,
+textarea,
+select {
+  font-family: inherit;
+}
