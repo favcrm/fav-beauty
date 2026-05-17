@@ -19,14 +19,18 @@
 
 <div class="grain flex min-h-screen flex-col">
   {#if brand.demoMode}
-    <div class="bg-ink text-paper">
+    <a
+      href="/setup"
+      class="block bg-ink text-paper transition-colors hover:bg-accent-deep"
+    >
       <div
         class="shell flex items-center justify-center gap-2 py-1.5 text-center font-sans text-[0.64rem] uppercase tracking-wide"
       >
         <span class="h-1 w-1 rounded-full bg-blush"></span>
         Demo data — connect a FavCRM workspace to go live
+        <span aria-hidden="true">→</span>
       </div>
-    </div>
+    </a>
   {/if}
 
   <SiteHeader />
