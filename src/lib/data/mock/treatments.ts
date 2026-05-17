@@ -13,7 +13,7 @@ export const treatments: Treatment[] = [
     durationMinutes: 70,
     price: 1280,
     currency: "HKD",
-    image: null,
+    image: "/img/treatments/radiance-ritual-facial.webp",
     hue: 18,
     featured: true,
     includes: [
@@ -48,7 +48,7 @@ export const treatments: Treatment[] = [
     durationMinutes: 90,
     price: 1680,
     currency: "HKD",
-    image: null,
+    image: "/img/treatments/glass-skin-deep-treatment.webp",
     hue: 32,
     featured: true,
     includes: [
@@ -83,7 +83,7 @@ export const treatments: Treatment[] = [
     durationMinutes: 150,
     price: 2200,
     currency: "HKD",
-    image: null,
+    image: "/img/treatments/colour-craft-session.webp",
     hue: 8,
     featured: true,
     includes: [
@@ -118,7 +118,7 @@ export const treatments: Treatment[] = [
     durationMinutes: 60,
     price: 980,
     currency: "HKD",
-    image: null,
+    image: "/img/treatments/contour-sculpt-massage.webp",
     hue: 150,
     featured: false,
     includes: [
@@ -147,7 +147,7 @@ export const treatments: Treatment[] = [
     durationMinutes: 110,
     price: 880,
     currency: "HKD",
-    image: null,
+    image: "/img/treatments/lash-couture-set.webp",
     hue: 280,
     featured: false,
     includes: ["Eye-shape mapping", "Hand-applied extensions", "Aftercare kit"],
@@ -171,7 +171,7 @@ export const treatments: Treatment[] = [
     durationMinutes: 55,
     price: 480,
     currency: "HKD",
-    image: null,
+    image: "/img/treatments/atelier-manicure.webp",
     hue: 340,
     featured: false,
     includes: [

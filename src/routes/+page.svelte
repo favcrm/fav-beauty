@@ -68,12 +68,13 @@
 
     <div class="reveal relative">
       <div class="ml-auto w-[86%]">
-        <Img hue={14} label="Lueur Atelier" ratio="3 / 4" eager />
+        <Img src="/img/hero/atelier.webp" hue={14} label="Lueur Atelier" ratio="3 / 4" eager />
       </div>
       <div
         class="absolute -left-2 bottom-8 w-[52%] overflow-hidden rounded-petal border-4 border-paper shadow-soft"
       >
         <Img
+          src="/img/hero/glow.webp"
           hue={344}
           label="Treatment Room"
           ratio="1 / 1"
