@@ -37,4 +37,22 @@ export default ts.config(
       "svelte/no-at-html-tags": "off",
     },
   },
+  {
+    // Ported admin subsystem (from fav-storefront) — relaxed rules.
+    files: [
+      "src/routes/(admin)/**",
+      "src/lib/components/admin/**",
+      "src/lib/components/ui/**",
+      "src/lib/layouts/**",
+      "src/lib/api/**",
+      "src/lib/types/**",
+      "src/lib/utils/**",
+    ],
+    rules: {
+      "@typescript-eslint/no-unused-expressions": "off",
+      "@typescript-eslint/no-unused-vars": "off",
+      "@typescript-eslint/no-explicit-any": "off",
+      "@typescript-eslint/no-empty-object-type": "off",
+    },
+  },
 );
