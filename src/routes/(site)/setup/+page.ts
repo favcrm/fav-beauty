@@ -6,12 +6,14 @@ import {
 } from "$lib/data/provider";
 import type { PageLoad } from "./$types";
 
-export const load: PageLoad = async ({ fetch }) => {
+export const load: PageLoad = async ({ fetch, parent }) => {
+  const { companyId } = await parent();
+  const ctx = { fetch, companyId };
   const [treatments, products, stylists, tiers] = await Promise.all([
-    listTreatments(fetch),
-    listProducts(undefined, fetch),
-    listStylists(fetch),
-    listTiers(fetch),
+    listTreatments(ctx),
+    listProducts(undefined, ctx),
+    listStylists(ctx),
+    listTiers(ctx),
   ]);
   return {
     counts: {

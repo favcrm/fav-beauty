@@ -1,5 +1,6 @@
 <script lang="ts">
   import { get } from "svelte/store";
+  import { page } from "$app/stores";
   import { getTimeSlots } from "$lib/data/provider";
   import { formatMoney, formatDuration, formatDate } from "$lib/format";
   import { auth } from "$lib/stores/auth";
@@ -50,7 +51,10 @@
       return;
     }
     let cancelled = false;
-    getTimeSlots(treatmentId, date, staff).then((result) => {
+    getTimeSlots(treatmentId, date, staff, {
+      fetch,
+      companyId: $page.data.companyId,
+    }).then((result) => {
       if (!cancelled) slots = result;
     });
     return () => {

@@ -2,11 +2,13 @@ import { error } from "@sveltejs/kit";
 import { getTreatment, listStylists, listTreatments } from "$lib/data/provider";
 import type { PageLoad } from "./$types";
 
-export const load: PageLoad = async ({ params, fetch }) => {
+export const load: PageLoad = async ({ params, fetch, parent }) => {
+  const { companyId } = await parent();
+  const ctx = { fetch, companyId };
   const [treatment, stylists, allTreatments] = await Promise.all([
-    getTreatment(params.slug, fetch),
-    listStylists(fetch),
-    listTreatments(fetch),
+    getTreatment(params.slug, ctx),
+    listStylists(ctx),
+    listTreatments(ctx),
   ]);
   if (!treatment) throw error(404, "That treatment could not be found.");
   const related = allTreatments

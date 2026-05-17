@@ -2,10 +2,12 @@ import { error } from "@sveltejs/kit";
 import { getPost, listPosts } from "$lib/data/provider";
 import type { PageLoad } from "./$types";
 
-export const load: PageLoad = async ({ params, fetch }) => {
+export const load: PageLoad = async ({ params, fetch, parent }) => {
+  const { companyId } = await parent();
+  const ctx = { fetch, companyId };
   const [post, allPosts] = await Promise.all([
-    getPost(params.slug, fetch),
-    listPosts(fetch),
+    getPost(params.slug, ctx),
+    listPosts(ctx),
   ]);
   if (!post) throw error(404, "That journal entry could not be found.");
   const more = allPosts.filter((p) => p.slug !== post.slug).slice(0, 2);

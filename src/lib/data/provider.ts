@@ -4,13 +4,15 @@
  * Demo mode (default): serves the seed data in `./mock`. The template runs and
  * deploys with zero configuration.
  *
- * Live mode: when `VITE_FAVCRM_COMPANY_ID` is set these functions map
- * `@favcrm/sdk` responses for that workspace. The UI depends only on this
+ * Live mode: when a workspace is available — resolved from the deployment's
+ * hostname, or from `VITE_FAVCRM_COMPANY_ID` as a fallback — these functions
+ * map `@favcrm/sdk` responses for that workspace. The UI depends only on this
  * module, so the demo/live choice is fully contained here.
  *
  * Most data functions are `async` (the SDK is `fetch`-based) and accept an
- * optional `fetchFn` as their last argument so SvelteKit `load` functions can
- * pass `event.fetch`. `getBrand()` and `listTestimonials()` stay synchronous —
+ * optional `ProviderContext` as their last argument. `load` functions pass
+ * `{ fetch, companyId }` so requests correlate with the render and target the
+ * resolved workspace. `getBrand()` and `listTestimonials()` stay synchronous —
  * they have no SDK source and are always served statically.
  */
 import type {
@@ -34,7 +36,7 @@ import {
   findEvent,
   testimonials,
 } from "./mock/content";
-import { isLiveConfigured } from "./config";
+import { isLive, type ProviderContext } from "./config";
 import { getClient } from "./live/client";
 import {
   hueFromId,
@@ -48,32 +50,32 @@ import {
   mapTimeSlot,
 } from "./live/mappers";
 
-/** Whether the data functions are serving live FavCRM data. */
-export function isLiveMode(): boolean {
-  return isLiveConfigured();
+/** Whether the data functions are serving live FavCRM data for this request. */
+export function isLiveMode(ctx?: ProviderContext): boolean {
+  return isLive(ctx);
 }
 
-export function getBrand(): BrandConfig {
-  return { ...brand, demoMode: !isLiveMode() };
+export function getBrand(ctx?: ProviderContext): BrandConfig {
+  return { ...brand, demoMode: !isLive(ctx) };
 }
 
 /* ── Treatments / booking services ─────────────────────────────── */
 
 export async function listTreatments(
-  fetchFn: typeof fetch = globalThis.fetch,
+  ctx?: ProviderContext,
 ): Promise<Treatment[]> {
-  if (!isLiveConfigured()) return treatments;
-  const services = await getClient(fetchFn).bookings.listServices();
+  if (!isLive(ctx)) return treatments;
+  const services = await getClient(ctx).bookings.listServices();
   return services.map(mapBookingService);
 }
 
 export async function getTreatment(
   idOrSlug: string,
-  fetchFn: typeof fetch = globalThis.fetch,
+  ctx?: ProviderContext,
 ): Promise<Treatment | undefined> {
-  if (!isLiveConfigured()) return findTreatment(idOrSlug);
+  if (!isLive(ctx)) return findTreatment(idOrSlug);
   try {
-    const service = await getClient(fetchFn).bookings.getService(idOrSlug);
+    const service = await getClient(ctx).bookings.getService(idOrSlug);
     return mapBookingService(service);
   } catch {
     return undefined;
@@ -81,19 +83,17 @@ export async function getTreatment(
 }
 
 export async function featuredTreatments(
-  fetchFn: typeof fetch = globalThis.fetch,
+  ctx?: ProviderContext,
 ): Promise<Treatment[]> {
-  if (!isLiveConfigured()) return treatments.filter((t) => t.featured);
-  return (await listTreatments(fetchFn)).slice(0, 3);
+  if (!isLive(ctx)) return treatments.filter((t) => t.featured);
+  return (await listTreatments(ctx)).slice(0, 3);
 }
 
 /* ── Stylists / staff ──────────────────────────────────────────── */
 
-export async function listStylists(
-  fetchFn: typeof fetch = globalThis.fetch,
-): Promise<Stylist[]> {
-  if (!isLiveConfigured()) return stylists;
-  const client = getClient(fetchFn);
+export async function listStylists(ctx?: ProviderContext): Promise<Stylist[]> {
+  if (!isLive(ctx)) return stylists;
+  const client = getClient(ctx);
   const services = await client.bookings.listServices();
   const staffLists = await Promise.all(
     services.map((s) => client.bookings.getStaff(s.id)),
@@ -116,24 +116,24 @@ export async function listStylists(
 
 export async function getStylist(
   id: string,
-  fetchFn: typeof fetch = globalThis.fetch,
+  ctx?: ProviderContext,
 ): Promise<Stylist | undefined> {
-  if (!isLiveConfigured()) return findStylist(id);
-  return (await listStylists(fetchFn)).find((s) => s.id === id);
+  if (!isLive(ctx)) return findStylist(id);
+  return (await listStylists(ctx)).find((s) => s.id === id);
 }
 
 /* ── Products / retail ─────────────────────────────────────────── */
 
 export async function listProducts(
   opts?: { category?: Category },
-  fetchFn: typeof fetch = globalThis.fetch,
+  ctx?: ProviderContext,
 ): Promise<Product[]> {
-  if (!isLiveConfigured()) {
+  if (!isLive(ctx)) {
     if (opts?.category)
       return products.filter((p) => p.category === opts.category);
     return products;
   }
-  const items = await getClient(fetchFn).shop.listProducts();
+  const items = await getClient(ctx).shop.listProducts();
   const mapped = items.map(mapProductListItem);
   if (opts?.category) return mapped.filter((p) => p.category === opts.category);
   return mapped;
@@ -141,11 +141,11 @@ export async function listProducts(
 
 export async function getProduct(
   idOrSlug: string,
-  fetchFn: typeof fetch = globalThis.fetch,
+  ctx?: ProviderContext,
 ): Promise<Product | undefined> {
-  if (!isLiveConfigured()) return findProduct(idOrSlug);
+  if (!isLive(ctx)) return findProduct(idOrSlug);
   try {
-    const product = await getClient(fetchFn).shop.getProduct(idOrSlug);
+    const product = await getClient(ctx).shop.getProduct(idOrSlug);
     return mapProduct(product);
   } catch {
     return undefined;
@@ -153,72 +153,66 @@ export async function getProduct(
 }
 
 export async function featuredProducts(
-  fetchFn: typeof fetch = globalThis.fetch,
+  ctx?: ProviderContext,
 ): Promise<Product[]> {
-  if (!isLiveConfigured()) return products.filter((p) => p.featured);
-  return (await listProducts(undefined, fetchFn)).filter((p) => p.featured);
+  if (!isLive(ctx)) return products.filter((p) => p.featured);
+  return (await listProducts(undefined, ctx)).filter((p) => p.featured);
 }
 
 export async function productCategories(
-  fetchFn: typeof fetch = globalThis.fetch,
+  ctx?: ProviderContext,
 ): Promise<Category[]> {
-  if (!isLiveConfigured()) return [...new Set(products.map((p) => p.category))];
-  const all = await listProducts(undefined, fetchFn);
+  if (!isLive(ctx)) return [...new Set(products.map((p) => p.category))];
+  const all = await listProducts(undefined, ctx);
   return [...new Set(all.map((p) => p.category))];
 }
 
 /* ── Membership ────────────────────────────────────────────────── */
 
 export async function listTiers(
-  fetchFn: typeof fetch = globalThis.fetch,
+  ctx?: ProviderContext,
 ): Promise<MembershipTier[]> {
-  if (!isLiveConfigured()) return tiers;
-  const list = await getClient(fetchFn).tiers.list();
+  if (!isLive(ctx)) return tiers;
+  const list = await getClient(ctx).tiers.list();
   return list.map(mapMembershipTier);
 }
 
 export async function getTier(
   id: string,
-  fetchFn: typeof fetch = globalThis.fetch,
+  ctx?: ProviderContext,
 ): Promise<MembershipTier | undefined> {
-  if (!isLiveConfigured()) return findTier(id);
-  return (await listTiers(fetchFn)).find((t) => t.id === id);
+  if (!isLive(ctx)) return findTier(id);
+  return (await listTiers(ctx)).find((t) => t.id === id);
 }
 
 /* ── Journal / events / testimonials ───────────────────────────── */
 
-export async function listPosts(fetchFn: typeof fetch = globalThis.fetch) {
-  if (!isLiveConfigured()) return posts;
-  const result = await getClient(fetchFn).blog.list();
+export async function listPosts(ctx?: ProviderContext) {
+  if (!isLive(ctx)) return posts;
+  const result = await getClient(ctx).blog.list();
   return result.items.map(mapBlogPostListItem);
 }
 
-export async function getPost(
-  slug: string,
-  fetchFn: typeof fetch = globalThis.fetch,
-) {
-  if (!isLiveConfigured()) return findPost(slug);
+export async function getPost(slug: string, ctx?: ProviderContext) {
+  if (!isLive(ctx)) return findPost(slug);
   try {
-    const post = await getClient(fetchFn).blog.getBySlug(slug);
+    const post = await getClient(ctx).blog.getBySlug(slug);
     return mapBlogPost(post);
   } catch {
     return undefined;
   }
 }
 
-export async function listEvents(fetchFn: typeof fetch = globalThis.fetch) {
-  if (!isLiveConfigured()) return events;
-  const list = await getClient(fetchFn).events.list();
+export async function listEvents(ctx?: ProviderContext) {
+  if (!isLive(ctx)) return events;
+  const list = await getClient(ctx).events.list();
   return list.map(mapEvent);
 }
 
-export async function getEvent(
-  slug: string,
-  fetchFn: typeof fetch = globalThis.fetch,
-) {
-  if (!isLiveConfigured()) return findEvent(slug);
+export async function getEvent(slug: string, ctx?: ProviderContext) {
+  if (!isLive(ctx)) return findEvent(slug);
   try {
-    const event = await getClient(fetchFn).events.get(slug);
+    const event = await getClient(ctx).events.get(slug);
     return mapEvent(event);
   } catch {
     return undefined;
@@ -253,13 +247,13 @@ export async function getTimeSlots(
   treatmentId: string,
   dateISO: string,
   stylistId?: string,
-  fetchFn: typeof fetch = globalThis.fetch,
+  ctx?: ProviderContext,
 ): Promise<TimeSlot[]> {
-  if (isLiveConfigured()) {
-    const response = await getClient(fetchFn).bookings.getTimeSlots(
-      treatmentId,
-      { date: dateISO, staffId: stylistId },
-    );
+  if (isLive(ctx)) {
+    const response = await getClient(ctx).bookings.getTimeSlots(treatmentId, {
+      date: dateISO,
+      staffId: stylistId,
+    });
     return response.slots.map(mapTimeSlot);
   }
   const slots: TimeSlot[] = [];

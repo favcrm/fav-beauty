@@ -5,8 +5,13 @@
 
   let { data }: { data: PageData } = $props();
 
-  const brand = getBrand();
-  const live = isLiveMode();
+  // companyId is resolved from the request hostname (hooks.server.ts) and
+  // exposed via the root +layout.server.ts — the mode card reflects it.
+  // It is stable per render, so capturing it once at init is intentional.
+  // svelte-ignore state_referenced_locally
+  const ctx = { companyId: data.companyId };
+  const brand = getBrand(ctx);
+  const live = isLiveMode(ctx);
 
   const seeded = $derived([
     { label: "Treatments", count: data.counts.treatments },

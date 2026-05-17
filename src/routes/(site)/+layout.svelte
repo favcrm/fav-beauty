@@ -3,8 +3,13 @@
   import SiteFooter from "$lib/components/SiteFooter.svelte";
   import { getBrand } from "$lib/data/provider";
 
-  let { children } = $props();
-  const brand = getBrand();
+  let { children, data } = $props();
+  // companyId is resolved from the request hostname by hooks.server.ts and
+  // exposed via the root +layout.server.ts — so the demo banner reflects the
+  // hostname-resolved live state, not just the build-time env var. It is
+  // stable per render, so capturing it once at init is intentional.
+  // svelte-ignore state_referenced_locally
+  const brand = getBrand({ companyId: data.companyId });
 </script>
 
 <svelte:head>
