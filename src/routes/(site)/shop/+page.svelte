@@ -1,9 +1,11 @@
 <script lang="ts">
-  import { listProducts, productCategories } from "$lib/data/provider";
   import ProductCard from "$lib/components/ProductCard.svelte";
+  import type { PageData } from "./$types";
 
-  const all = listProducts();
-  const categories = ["all", ...productCategories()];
+  let { data }: { data: PageData } = $props();
+
+  const all = $derived(data.products);
+  const categories = $derived(["all", ...data.categories]);
   let active = $state("all");
   const shown = $derived(
     active === "all" ? all : all.filter((p) => p.category === active),

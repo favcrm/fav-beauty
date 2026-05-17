@@ -1,10 +1,11 @@
 <script lang="ts">
-  import { listPosts } from "$lib/data/provider";
   import { formatDate } from "$lib/format";
   import Img from "$lib/components/Img.svelte";
+  import type { PageData } from "./$types";
 
-  const posts = listPosts();
-  const [lead, ...rest] = posts;
+  let { data }: { data: PageData } = $props();
+  const lead = $derived(data.posts[0]);
+  const rest = $derived(data.posts.slice(1));
 </script>
 
 <svelte:head><title>Journal — Lueur</title></svelte:head>

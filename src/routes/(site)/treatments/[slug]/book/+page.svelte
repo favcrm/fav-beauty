@@ -1,6 +1,6 @@
 <script lang="ts">
   import { get } from "svelte/store";
-  import { listStylists, getTimeSlots } from "$lib/data/provider";
+  import { getTimeSlots } from "$lib/data/provider";
   import { formatMoney, formatDuration, formatDate } from "$lib/format";
   import { auth } from "$lib/stores/auth";
   import { createBooking } from "$lib/stores/bookings";
@@ -8,15 +8,17 @@
   import Button from "$lib/components/Button.svelte";
   import Field from "$lib/components/Field.svelte";
   import Img from "$lib/components/Img.svelte";
-  import type { Booking } from "$lib/data/types";
+  import type { Booking, TimeSlot } from "$lib/data/types";
   import type { PageData } from "./$types";
 
   let { data }: { data: PageData } = $props();
   const treatment = $derived(data.treatment);
-  const stylists = listStylists();
+  const stylists = $derived(data.stylists);
 
   let step = $state(1);
-  let stylistId = $state(stylists[0].id);
+  // Default to the first specialist; captured once at component init.
+  // svelte-ignore state_referenced_locally
+  let stylistId = $state(data.stylists[0].id);
   let dateISO = $state("");
   let time = $state("");
   let addonIds = $state<string[]>([]);
@@ -36,7 +38,25 @@
     return d.toISOString().slice(0, 10);
   });
 
-  const slots = $derived(dateISO ? getTimeSlots(stylistId, dateISO) : []);
+  // Availability is fetched (async in live mode), so it lives in state and is
+  // refreshed by an effect whenever the date or specialist changes.
+  let slots = $state<TimeSlot[]>([]);
+  $effect(() => {
+    const date = dateISO;
+    const treatmentId = treatment.id;
+    const staff = stylistId;
+    if (!date) {
+      slots = [];
+      return;
+    }
+    let cancelled = false;
+    getTimeSlots(treatmentId, date, staff).then((result) => {
+      if (!cancelled) slots = result;
+    });
+    return () => {
+      cancelled = true;
+    };
+  });
   const stylist = $derived(stylists.find((s) => s.id === stylistId)!);
   const addonTotal = $derived(
     treatment.addons

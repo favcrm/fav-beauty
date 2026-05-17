@@ -1,24 +1,20 @@
 <script lang="ts">
-  import {
-    featuredTreatments,
-    featuredProducts,
-    listTiers,
-    listPosts,
-    listTestimonials,
-    getBrand,
-  } from "$lib/data/provider";
+  import { listTestimonials, getBrand } from "$lib/data/provider";
   import { formatMoney, formatDate } from "$lib/format";
   import Button from "$lib/components/Button.svelte";
   import Img from "$lib/components/Img.svelte";
   import SectionHead from "$lib/components/SectionHead.svelte";
   import TreatmentCard from "$lib/components/TreatmentCard.svelte";
   import ProductCard from "$lib/components/ProductCard.svelte";
+  import type { PageData } from "./$types";
+
+  let { data }: { data: PageData } = $props();
 
   const brand = getBrand();
-  const treatments = featuredTreatments();
-  const products = featuredProducts().slice(0, 4);
-  const glow = listTiers().find((t) => t.popular) ?? listTiers()[1];
-  const posts = listPosts().slice(0, 3);
+  const treatments = $derived(data.treatments);
+  const products = $derived(data.products);
+  const glow = $derived(data.tiers.find((t) => t.popular) ?? data.tiers[1]);
+  const posts = $derived(data.posts);
   const testimonials = listTestimonials();
 
   const marquee = [

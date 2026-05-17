@@ -1,22 +1,19 @@
 <script lang="ts">
   import { getBrand, isLiveMode } from "$lib/data/provider";
-  import {
-    listTreatments,
-    listProducts,
-    listStylists,
-    listTiers,
-  } from "$lib/data/provider";
   import Button from "$lib/components/Button.svelte";
+  import type { PageData } from "./$types";
+
+  let { data }: { data: PageData } = $props();
 
   const brand = getBrand();
   const live = isLiveMode();
 
-  const seeded = [
-    { label: "Treatments", count: listTreatments().length },
-    { label: "Products", count: listProducts().length },
-    { label: "Stylists", count: listStylists().length },
-    { label: "Membership tiers", count: listTiers().length },
-  ];
+  const seeded = $derived([
+    { label: "Treatments", count: data.counts.treatments },
+    { label: "Products", count: data.counts.products },
+    { label: "Stylists", count: data.counts.stylists },
+    { label: "Membership tiers", count: data.counts.tiers },
+  ]);
 
   const steps = [
     {

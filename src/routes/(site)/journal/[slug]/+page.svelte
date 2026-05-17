@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { listPosts } from "$lib/data/provider";
   import { formatDate } from "$lib/format";
   import Img from "$lib/components/Img.svelte";
   import type { PageData } from "./$types";
@@ -7,11 +6,7 @@
   let { data }: { data: PageData } = $props();
   const post = $derived(data.post);
   const paragraphs = $derived(post.body.split("\n\n"));
-  const more = $derived(
-    listPosts()
-      .filter((p) => p.slug !== post.slug)
-      .slice(0, 2),
-  );
+  const more = $derived(data.more);
 </script>
 
 <svelte:head><title>{post.title} — Lueur Journal</title></svelte:head>

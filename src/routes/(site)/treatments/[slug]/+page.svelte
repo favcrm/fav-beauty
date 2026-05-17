@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { listStylists, listTreatments } from "$lib/data/provider";
   import { formatMoney, formatDuration } from "$lib/format";
   import Button from "$lib/components/Button.svelte";
   import Img from "$lib/components/Img.svelte";
@@ -8,13 +7,8 @@
 
   let { data }: { data: PageData } = $props();
   const treatment = $derived(data.treatment);
-
-  const stylists = listStylists();
-  const related = $derived(
-    listTreatments()
-      .filter((t) => t.id !== treatment.id && t.category === treatment.category)
-      .slice(0, 3),
-  );
+  const stylists = $derived(data.stylists);
+  const related = $derived(data.related);
 </script>
 
 <svelte:head><title>{treatment.name} — Lueur</title></svelte:head>

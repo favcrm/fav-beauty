@@ -1,10 +1,13 @@
 <script lang="ts">
-  import { listStylists, getBrand } from "$lib/data/provider";
+  import { getBrand } from "$lib/data/provider";
   import Button from "$lib/components/Button.svelte";
   import Img from "$lib/components/Img.svelte";
+  import type { PageData } from "./$types";
+
+  let { data }: { data: PageData } = $props();
 
   const brand = getBrand();
-  const stylists = listStylists();
+  const stylists = $derived(data.stylists);
 
   const values = [
     {

@@ -1,11 +1,12 @@
 <script lang="ts">
-  import { listEvents } from "$lib/data/provider";
   import { formatMoney, formatDate } from "$lib/format";
   import { toasts } from "$lib/stores/toast";
   import Button from "$lib/components/Button.svelte";
   import Img from "$lib/components/Img.svelte";
+  import type { PageData } from "./$types";
 
-  const events = listEvents();
+  let { data }: { data: PageData } = $props();
+  const events = $derived(data.events);
   let reserved = $state<string[]>([]);
 
   function reserve(slug: string, title: string) {

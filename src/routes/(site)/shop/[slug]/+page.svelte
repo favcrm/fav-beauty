@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { listProducts } from "$lib/data/provider";
   import { formatMoney } from "$lib/format";
   import { addToCart } from "$lib/stores/cart";
   import { toasts } from "$lib/stores/toast";
@@ -10,13 +9,9 @@
 
   let { data }: { data: PageData } = $props();
   const product = $derived(data.product);
+  const related = $derived(data.related);
 
   let qty = $state(1);
-  const related = $derived(
-    listProducts()
-      .filter((p) => p.id !== product.id && p.category === product.category)
-      .slice(0, 4),
-  );
 
   function add() {
     addToCart(product, qty);

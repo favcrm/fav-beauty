@@ -1,12 +1,13 @@
 <script lang="ts">
-  import { listTiers } from "$lib/data/provider";
   import { formatMoney } from "$lib/format";
   import { auth, updateAccount } from "$lib/stores/auth";
   import { toasts } from "$lib/stores/toast";
   import { goto } from "$app/navigation";
   import Button from "$lib/components/Button.svelte";
+  import type { PageData } from "./$types";
 
-  const tiers = listTiers();
+  let { data }: { data: PageData } = $props();
+  const tiers = $derived(data.tiers);
   const billingLabel = {
     free: "",
     monthly: "/ month",

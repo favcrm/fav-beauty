@@ -1,9 +1,11 @@
 <script lang="ts">
-  import { listTreatments } from "$lib/data/provider";
   import TreatmentCard from "$lib/components/TreatmentCard.svelte";
+  import type { PageData } from "./$types";
 
-  const all = listTreatments();
-  const categories = ["all", ...new Set(all.map((t) => t.category))];
+  let { data }: { data: PageData } = $props();
+
+  const all = $derived(data.treatments);
+  const categories = $derived(["all", ...new Set(all.map((t) => t.category))]);
   let active = $state("all");
   const shown = $derived(
     active === "all" ? all : all.filter((t) => t.category === active),

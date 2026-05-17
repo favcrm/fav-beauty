@@ -10,14 +10,15 @@
   } from "$lib/stores/auth";
   import { bookings } from "$lib/stores/bookings";
   import { orders } from "$lib/stores/orders";
-  import { listTiers } from "$lib/data/provider";
   import { formatDate } from "$lib/format";
   import { toasts } from "$lib/stores/toast";
   import Button from "$lib/components/Button.svelte";
   import Field from "$lib/components/Field.svelte";
   import OtpInput from "$lib/components/OtpInput.svelte";
+  import type { PageData } from "./$types";
 
-  const tiers = listTiers();
+  let { data }: { data: PageData } = $props();
+  const tiers = $derived(data.tiers);
 
   // ── sign-in flow ──
   let stage = $state<"email" | "otp">("email");

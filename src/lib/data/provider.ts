@@ -4,9 +4,14 @@
  * Demo mode (default): serves the seed data in `./mock`. The template runs and
  * deploys with zero configuration.
  *
- * Live mode (phase 2): when `VITE_FAVCRM_COMPANY_ID` is set the same functions
- * will map `@favcrm/sdk` responses. The UI already depends only on this module,
- * so wiring the SDK is a contained change behind these exports.
+ * Live mode: when `VITE_FAVCRM_COMPANY_ID` is set these functions map
+ * `@favcrm/sdk` responses for that workspace. The UI depends only on this
+ * module, so the demo/live choice is fully contained here.
+ *
+ * Most data functions are `async` (the SDK is `fetch`-based) and accept an
+ * optional `fetchFn` as their last argument so SvelteKit `load` functions can
+ * pass `event.fetch`. `getBrand()` and `listTestimonials()` stay synchronous —
+ * they have no SDK source and are always served statically.
  */
 import type {
   BrandConfig,
@@ -29,29 +34,23 @@ import {
   findEvent,
   testimonials,
 } from "./mock/content";
+import { isLiveConfigured } from "./config";
+import { getClient } from "./live/client";
+import {
+  hueFromId,
+  mapBlogPost,
+  mapBlogPostListItem,
+  mapBookingService,
+  mapEvent,
+  mapMembershipTier,
+  mapProduct,
+  mapProductListItem,
+  mapTimeSlot,
+} from "./live/mappers";
 
-const LIVE_COMPANY_ID = import.meta.env.VITE_FAVCRM_COMPANY_ID as
-  | string
-  | undefined;
-
-/** True once a workspace UUID has been supplied via env. */
-const workspaceConfigured = Boolean(LIVE_COMPANY_ID && LIVE_COMPANY_ID.trim());
-
-/**
- * Whether the data functions are serving live FavCRM data.
- *
- * Phase 1 ships demo mode only — the `@favcrm/sdk` mapping is not wired yet, so
- * this is always `false`. If a workspace is configured we warn loudly rather
- * than silently serving mock data while pretending to be live.
- */
+/** Whether the data functions are serving live FavCRM data. */
 export function isLiveMode(): boolean {
-  if (workspaceConfigured && typeof console !== "undefined") {
-    console.warn(
-      "[fav-beauty] VITE_FAVCRM_COMPANY_ID is set, but live-mode SDK wiring " +
-        "is not yet implemented (phase 2). Still serving demo data.",
-    );
-  }
-  return false;
+  return isLiveConfigured();
 }
 
 export function getBrand(): BrandConfig {
@@ -60,76 +59,173 @@ export function getBrand(): BrandConfig {
 
 /* ── Treatments / booking services ─────────────────────────────── */
 
-export function listTreatments(): Treatment[] {
-  return treatments;
+export async function listTreatments(
+  fetchFn: typeof fetch = globalThis.fetch,
+): Promise<Treatment[]> {
+  if (!isLiveConfigured()) return treatments;
+  const services = await getClient(fetchFn).bookings.listServices();
+  return services.map(mapBookingService);
 }
 
-export function getTreatment(idOrSlug: string): Treatment | undefined {
-  return findTreatment(idOrSlug);
+export async function getTreatment(
+  idOrSlug: string,
+  fetchFn: typeof fetch = globalThis.fetch,
+): Promise<Treatment | undefined> {
+  if (!isLiveConfigured()) return findTreatment(idOrSlug);
+  try {
+    const service = await getClient(fetchFn).bookings.getService(idOrSlug);
+    return mapBookingService(service);
+  } catch {
+    return undefined;
+  }
 }
 
-export function featuredTreatments(): Treatment[] {
-  return treatments.filter((t) => t.featured);
+export async function featuredTreatments(
+  fetchFn: typeof fetch = globalThis.fetch,
+): Promise<Treatment[]> {
+  if (!isLiveConfigured()) return treatments.filter((t) => t.featured);
+  return (await listTreatments(fetchFn)).slice(0, 3);
 }
 
 /* ── Stylists / staff ──────────────────────────────────────────── */
 
-export function listStylists(): Stylist[] {
-  return stylists;
+export async function listStylists(
+  fetchFn: typeof fetch = globalThis.fetch,
+): Promise<Stylist[]> {
+  if (!isLiveConfigured()) return stylists;
+  const client = getClient(fetchFn);
+  const services = await client.bookings.listServices();
+  const staffLists = await Promise.all(
+    services.map((s) => client.bookings.getStaff(s.id)),
+  );
+  const seen = new Map<string, Stylist>();
+  for (const staff of staffLists.flat()) {
+    if (seen.has(staff.memberId)) continue;
+    seen.set(staff.memberId, {
+      id: staff.memberId,
+      name: staff.memberName,
+      title: "Stylist",
+      bio: "",
+      specialties: [],
+      image: null,
+      hue: hueFromId(staff.memberId),
+    });
+  }
+  return [...seen.values()];
 }
 
-export function getStylist(id: string): Stylist | undefined {
-  return findStylist(id);
+export async function getStylist(
+  id: string,
+  fetchFn: typeof fetch = globalThis.fetch,
+): Promise<Stylist | undefined> {
+  if (!isLiveConfigured()) return findStylist(id);
+  return (await listStylists(fetchFn)).find((s) => s.id === id);
 }
 
 /* ── Products / retail ─────────────────────────────────────────── */
 
-export function listProducts(opts?: { category?: Category }): Product[] {
-  if (opts?.category)
-    return products.filter((p) => p.category === opts.category);
-  return products;
+export async function listProducts(
+  opts?: { category?: Category },
+  fetchFn: typeof fetch = globalThis.fetch,
+): Promise<Product[]> {
+  if (!isLiveConfigured()) {
+    if (opts?.category)
+      return products.filter((p) => p.category === opts.category);
+    return products;
+  }
+  const items = await getClient(fetchFn).shop.listProducts();
+  const mapped = items.map(mapProductListItem);
+  if (opts?.category) return mapped.filter((p) => p.category === opts.category);
+  return mapped;
 }
 
-export function getProduct(idOrSlug: string): Product | undefined {
-  return findProduct(idOrSlug);
+export async function getProduct(
+  idOrSlug: string,
+  fetchFn: typeof fetch = globalThis.fetch,
+): Promise<Product | undefined> {
+  if (!isLiveConfigured()) return findProduct(idOrSlug);
+  try {
+    const product = await getClient(fetchFn).shop.getProduct(idOrSlug);
+    return mapProduct(product);
+  } catch {
+    return undefined;
+  }
 }
 
-export function featuredProducts(): Product[] {
-  return products.filter((p) => p.featured);
+export async function featuredProducts(
+  fetchFn: typeof fetch = globalThis.fetch,
+): Promise<Product[]> {
+  if (!isLiveConfigured()) return products.filter((p) => p.featured);
+  return (await listProducts(undefined, fetchFn)).filter((p) => p.featured);
 }
 
-export function productCategories(): Category[] {
-  return [...new Set(products.map((p) => p.category))];
+export async function productCategories(
+  fetchFn: typeof fetch = globalThis.fetch,
+): Promise<Category[]> {
+  if (!isLiveConfigured()) return [...new Set(products.map((p) => p.category))];
+  const all = await listProducts(undefined, fetchFn);
+  return [...new Set(all.map((p) => p.category))];
 }
 
 /* ── Membership ────────────────────────────────────────────────── */
 
-export function listTiers(): MembershipTier[] {
-  return tiers;
+export async function listTiers(
+  fetchFn: typeof fetch = globalThis.fetch,
+): Promise<MembershipTier[]> {
+  if (!isLiveConfigured()) return tiers;
+  const list = await getClient(fetchFn).tiers.list();
+  return list.map(mapMembershipTier);
 }
 
-export function getTier(id: string): MembershipTier | undefined {
-  return findTier(id);
+export async function getTier(
+  id: string,
+  fetchFn: typeof fetch = globalThis.fetch,
+): Promise<MembershipTier | undefined> {
+  if (!isLiveConfigured()) return findTier(id);
+  return (await listTiers(fetchFn)).find((t) => t.id === id);
 }
 
 /* ── Journal / events / testimonials ───────────────────────────── */
 
-export function listPosts() {
-  return posts;
+export async function listPosts(fetchFn: typeof fetch = globalThis.fetch) {
+  if (!isLiveConfigured()) return posts;
+  const result = await getClient(fetchFn).blog.list();
+  return result.items.map(mapBlogPostListItem);
 }
 
-export function getPost(slug: string) {
-  return findPost(slug);
+export async function getPost(
+  slug: string,
+  fetchFn: typeof fetch = globalThis.fetch,
+) {
+  if (!isLiveConfigured()) return findPost(slug);
+  try {
+    const post = await getClient(fetchFn).blog.getBySlug(slug);
+    return mapBlogPost(post);
+  } catch {
+    return undefined;
+  }
 }
 
-export function listEvents() {
-  return events;
+export async function listEvents(fetchFn: typeof fetch = globalThis.fetch) {
+  if (!isLiveConfigured()) return events;
+  const list = await getClient(fetchFn).events.list();
+  return list.map(mapEvent);
 }
 
-export function getEvent(slug: string) {
-  return findEvent(slug);
+export async function getEvent(
+  slug: string,
+  fetchFn: typeof fetch = globalThis.fetch,
+) {
+  if (!isLiveConfigured()) return findEvent(slug);
+  try {
+    const event = await getClient(fetchFn).events.get(slug);
+    return mapEvent(event);
+  } catch {
+    return undefined;
+  }
 }
 
+/** Static brand voice — no SDK source, always served from seed data. */
 export function listTestimonials() {
   return testimonials;
 }
@@ -147,15 +243,31 @@ function seeded(input: string): number {
 }
 
 /**
- * Time slots for a stylist on a date. In demo mode these are generated
- * deterministically so a given day always shows the same availability.
+ * Time slots for a treatment on a date.
+ *
+ * In demo mode these are generated deterministically (the `treatmentId` and
+ * `stylistId` only seed the pseudo-random roll). In live mode they come from
+ * `bookings.getTimeSlots`, optionally scoped to a staff member.
  */
-export function getTimeSlots(stylistId: string, dateISO: string): TimeSlot[] {
+export async function getTimeSlots(
+  treatmentId: string,
+  dateISO: string,
+  stylistId?: string,
+  fetchFn: typeof fetch = globalThis.fetch,
+): Promise<TimeSlot[]> {
+  if (isLiveConfigured()) {
+    const response = await getClient(fetchFn).bookings.getTimeSlots(
+      treatmentId,
+      { date: dateISO, staffId: stylistId },
+    );
+    return response.slots.map(mapTimeSlot);
+  }
   const slots: TimeSlot[] = [];
+  const seed = stylistId ?? treatmentId;
   for (let hour = 10; hour < 19; hour++) {
     for (const minute of [0, 30]) {
       const time = `${String(hour).padStart(2, "0")}:${String(minute).padStart(2, "0")}`;
-      const roll = seeded(`${stylistId}|${dateISO}|${time}`);
+      const roll = seeded(`${seed}|${dateISO}|${time}`);
       slots.push({ time, available: roll > 0.42 });
     }
   }
