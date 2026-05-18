@@ -143,6 +143,13 @@ export function mapProduct(product: SdkProduct): Product {
   };
 }
 
+/** A tier's billing cadence from its price and validity period. */
+function tierBilling(tier: PublicMembershipTier): MembershipTier["billing"] {
+  if (tier.price === 0) return "free";
+  if (tier.validPeriodUnit === "YEARS") return "yearly";
+  return "monthly";
+}
+
 export function mapMembershipTier(tier: PublicMembershipTier): MembershipTier {
   return {
     id: tier.id,
@@ -150,12 +157,7 @@ export function mapMembershipTier(tier: PublicMembershipTier): MembershipTier {
     blurb: tier.description ?? "",
     price: tier.price,
     currency: brand.currency,
-    billing:
-      tier.price === 0
-        ? "free"
-        : tier.validPeriodUnit === "YEARS"
-          ? "yearly"
-          : "monthly",
+    billing: tierBilling(tier),
     benefits: tier.benefits,
     popular: tier.isPopular,
   };
