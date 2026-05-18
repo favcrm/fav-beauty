@@ -1,6 +1,6 @@
 <script lang="ts">
   import { page } from "$app/stores";
-  import { Settings, CreditCard, BarChart3, Code } from "lucide-svelte";
+  import { Settings, CreditCard, BarChart3, Code, Globe } from "lucide-svelte";
 
   let { children } = $props();
 
@@ -12,6 +12,11 @@
       icon: CreditCard,
     },
     { name: "Analytics", href: "/admin/settings/analytics", icon: BarChart3 },
+    {
+      name: "Storefront Domains",
+      href: "/admin/settings/storefront",
+      icon: Globe,
+    },
     { name: "Developer", href: "/admin/settings/developer", icon: Code },
   ];
 </script>

@@ -988,6 +988,36 @@ export const adminSettingsApi = {
     }),
 };
 
+/** A storefront hostname registered to this workspace. */
+export interface StorefrontDomain {
+  id: string;
+  hostname: string;
+  verified: boolean;
+  createdAt: string;
+}
+
+/**
+ * Storefront domains — the hostnames a deployed storefront is served from.
+ * A registered hostname lets the storefront resolve this workspace without a
+ * hard-coded companyId env var.
+ */
+export const adminStorefrontDomainsApi = {
+  list: () =>
+    adminApiRequest<StorefrontDomain[]>("/v6/merchant/storefront-domains"),
+
+  create: (hostname: string) =>
+    adminApiRequest<{ id: string }>("/v6/merchant/storefront-domains", {
+      method: "POST",
+      body: { hostname },
+    }),
+
+  remove: (id: string) =>
+    adminApiRequest<{ success: boolean }>(
+      `/v6/merchant/storefront-domains/${id}`,
+      { method: "DELETE" },
+    ),
+};
+
 export interface BookingConfig {
   allowMemberCancellation?: boolean;
   memberCancellationCutoffHours?: number | null;
