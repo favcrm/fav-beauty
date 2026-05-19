@@ -65,9 +65,39 @@ and the template renders an elegant tinted gradient plate; set a URL to use real
 - **Accounts** — passwordless (OTP) sign-in, member dashboard, booking & order history
 - **Journal & Events** — content pages
 - **About / Contact** — company pages
+- **MCP** (`/mcp`) — template-hosted Model Context Protocol endpoint for AI agents
 
 In demo mode, bookings, orders and accounts persist to `localStorage` so the full flow is
 demoable without a backend.
+
+## MCP for AI agents
+
+The template exposes a Streamable HTTP MCP endpoint at **`/mcp`**. It resolves the
+FavCRM workspace the same way as the storefront itself: registered hostname first, then
+`VITE_FAVCRM_COMPANY_ID`.
+
+Public tools and resources cover the salon profile, treatments, stylists, booking slots,
+retail products, membership tiers, journal posts and events. Customer-owned reads and
+guarded actions require a customer bearer token:
+
+```http
+Authorization: Bearer <customer token>
+```
+
+The endpoint also publishes OAuth protected-resource metadata at
+`/.well-known/oauth-protected-resource` and
+`/.well-known/oauth-protected-resource/mcp`. FavCRM remains the authorization server;
+this template does not expose merchant admin APIs or merchant API keys through MCP.
+
+Initial MCP tools include:
+
+- `search_journal`, `list_treatments`, `get_treatment`, `list_stylists`
+- `get_booking_slots`, `create_guest_booking`, `cancel_my_booking`,
+  `reschedule_my_booking`
+- `list_products`, `get_product`, `create_order`
+- `list_membership_tiers`, `list_events`, `get_event`
+- `list_my_bookings`, `list_my_orders`, `list_my_invoices`
+- `create_contact_enquiry`
 
 ## Environment variables (optional)
 
